@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
-import GameCard from "@/app/components/GameCard";
-import LeagueTable from "@/app/components/LeagueTable";
-import RankingComponent from "@/app/components/RankingComponent";
-import SectionHeader from "@/app/components/SectionHeader";
-import Tournament from "@/app/components/Tournament";
-import { Game, Platform } from "@/app/models/models";
-import PlayerStats from "@/app/components/PlayerStats";
+import GameCard from "./components/GameCard";
+import LeagueTable from "./components/LeagueTable";
+import RankingComponent from "./components/RankingComponent";
+import SectionHeader from "./components/SectionHeader";
+import Tournament from "./components/Tournament";
+import { Game, Platform } from "./models/models";
+import PlayerStats from "./components/PlayerStats";
 // Mock data for leagues and divisions
 const leagues = {
   tarot: [

@@ -12,7 +12,7 @@ deployment:
     - git pull
 
     # Installation et build NextJS (maintenant dans l'environnement virtuel)
-    - npm ci
+    - npm install --prefix /home/cayi7350/nodevenv/wcgf.com/22
     - npm run build
 
     # Nettoyage du cache NextJS
