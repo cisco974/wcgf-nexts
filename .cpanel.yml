@@ -1,8 +1,10 @@
----
 deployment:
   tasks:
     # Activation de l'environnement virtuel Node.js
     - source /home/cayi7350/nodevenv/wcgf.com/22/bin/activate
+
+    # Définition du chemin des modules pour éviter les erreurs
+    - export NODE_PATH=/home/cayi7350/nodevenv/wcgf.com/22/lib/node_modules
 
     # Accès au répertoire du projet
     - cd /home/cayi7350/wcgf.com
@@ -11,10 +13,17 @@ deployment:
     - git reset --hard origin/main
     - git pull
 
-    # Installation et build NextJS (maintenant dans l'environnement virtuel)
-    - npm install --prefix /home/cayi7350/nodevenv/wcgf.com/22 --save-dev typescript @types/react @types/node eslint eslint-config-next
-    - NODE_ENV=production
+    # Installation des dépendances (sans --prefix)
+    - npm install
+
+    # Définition de l’environnement de production
+    - export NODE_ENV=production
+
+    # Build de l’application Next.js
     - npm run build
 
-    # Nettoyage du cache NextJS
+    # Nettoyage du cache Next.js
     - rm -rf .next/cache/*
+
+    # Redémarrage du serveur (ajoute cette ligne si tu utilises PM2)
+    - pm2 restart all
