@@ -1,0 +1,80 @@
+
+
+.footer {
+  background-color: #212529;
+  padding: 60px 0 30px;
+  color: #fff;
+  margin-top: auto;
+  border-top: solid 8px $danger;
+}
+
+.footer-logo {
+  height: 35px;
+  margin-bottom: 30px;
+}
+
+.footer h5 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.footer-bottom {
+  padding-top: 30px;
+  margin-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  a {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin: 0 10px;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.language-flags img {
+  width: 20px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.game-logos img {
+  height: 60px;
+  margin: 0 15px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}

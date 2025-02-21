@@ -1,0 +1,20 @@
+// section-header.scss
+
+.section-header {
+  position: relative;
+  padding-bottom: 1rem;
+
+  .display-6 {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .display-6 {
+      font-size: 1.75rem;
+    }
+
+    .lead {
+      font-size: 1rem;
+    }
+  }
+}

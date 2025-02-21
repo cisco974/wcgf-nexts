@@ -1,0 +1,82 @@
+@use "variables" as *;
+.page-header {
+  overflow: hidden;
+  border-bottom: solid 8px #f3004e
+}
+
+.tournament-cards-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  height: inherit
+}
+
+.tournament-cards-container::-webkit-scrollbar {
+  display: none
+}
+
+.tournament-carousel {
+  height: 70px
+}
+
+.carousel-button {
+  transition: all .3s ease
+}
+
+.carousel-button.prev {
+  transform: rotate(90deg)
+}
+
+.carousel-button.next {
+  transform: rotate(-90deg)
+}
+
+.tournament-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  border-left: 8px solid #007BFF;
+  gap: 8px;
+  box-shadow: 0 2px 4px #0000001a;
+  transition: transform .2s ease
+}
+
+.tournament-card:hover {
+  transform: translateY(-2px)
+}
+
+.date {
+  background: #007bff;
+  color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 60px
+}
+
+.tournament-info {
+  flex-grow: 1
+}
+
+.game-name {
+  color: #f3004e;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 4px
+}
+
+.players {
+  color: gray;
+  font-size: .9rem;
+  margin-bottom: 4px
+}
+
+.points {
+  background-color: #007bff1a;
+  color: #007bff;
+  font-size: .8rem
+}
+
+.game-icon {
+  width: 50px;
+  height: 50px
+}

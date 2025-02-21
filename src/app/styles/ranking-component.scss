@@ -1,0 +1,38 @@
+.rk-logo-container {
+  background-image: url('/img/bg-table.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; // Keeps alignment at bottom
+  min-height: 120px;
+}
+
+.rk-league-icon {
+  transform: translateY(8px);
+}
+
+.ranking-chart-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// Chart placeholder styles
+.chart-placeholder {
+  background: linear-gradient(135deg, rgba(0,0,0,0.03) 25%, transparent 25%) -10px 0,
+  linear-gradient(225deg, rgba(0,0,0,0.03) 25%, transparent 25%) -10px 0,
+  linear-gradient(315deg, rgba(0,0,0,0.03) 25%, transparent 25%),
+  linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%);
+  background-size: 20px 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}

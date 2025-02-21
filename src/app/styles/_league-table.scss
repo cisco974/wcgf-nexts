@@ -1,0 +1,115 @@
+@use 'variables' as *;
+
+.lt-logo-container {
+  background-image: url('/img/bg-table.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lt-league-logo {
+  height: 50px;
+  width: auto;
+}
+
+.lt-league-icon {
+  height: 80px;
+  width: auto;
+}
+
+.lt-timer {
+  background-color: $primary;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 10px 10px 0 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.lt-table-container {
+  background-color: $ranking-bg-color;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.lt-table {
+  background-color: $ranking-bg-color;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.lt-row {
+  background-color: $ranking-line-bg-color;
+  vertical-align: middle;
+  border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.lt-rank {
+  width: 40px;
+  text-align: center;
+  padding: 12px;
+}
+
+.lt-rank-number {
+  background-color: $ranking-line-rank-number;
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.lt-avatar {
+  img {
+    background-color: $point-color !important;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.lt-points {
+  text-align: center;
+
+  span {
+    background-color: $point-color;
+    color: white;
+  }
+}
+
+.lt-footer {
+  background-color: #efbc85;
+  color: #444;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 0px 0px 10px 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.lt-table.table {
+  > :not(caption) > * > * {
+    background: none;
+    border: none;
+    padding: 8px;
+  }
+}

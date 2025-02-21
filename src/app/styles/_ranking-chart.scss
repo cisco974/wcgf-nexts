@@ -1,0 +1,94 @@
+/* Chart label styling */
+.chart-label {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  fill: #333333;
+}/**
+ * Ranking Chart Styles
+ */
+
+.ranking-chart-container {
+  position: relative;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+/* Chart line styling */
+.chart-line {
+  stroke-width: 3;
+  fill: none;
+}
+
+/* Chart point styling */
+.chart-point {
+  r: 5;
+  stroke-width: 2;
+  stroke: white;
+}
+
+/* Chart grid styling */
+.chart-grid-line {
+  stroke: #cccccc;
+  stroke-width: 1;
+  stroke-dasharray: 5, 5;
+}
+
+/* Chart axis styling */
+.chart-axis {
+  stroke: #666666;
+  stroke-width: 1;
+}
+
+/* Chart value label styling - pour les valeurs affichées */
+.chart-value-label {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  fill: #333333;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawLine {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Apply animations when enabled */
+.chart-animate .chart-line {
+  animation: drawLine 1.5s ease-in-out forwards;
+}
+
+.chart-animate .chart-point {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.chart-animate .chart-label {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ranking-chart-container {
+    height: 250px !important;
+  }
+
+  .chart-label {
+    font-size: 10px;
+  }
+}

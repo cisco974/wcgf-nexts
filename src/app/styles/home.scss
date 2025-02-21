@@ -1,0 +1,60 @@
+@use 'variables' as *;
+
+// Section Spacing
+.section-spacer {
+  margin-top: 6rem;
+  margin-bottom: 6rem;
+}
+
+@media (max-width: 768px) {
+  .section-spacer {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+  }
+}
+
+// Cards Styling
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.sticky {
+  position: sticky !important;
+  z-index: 1000;
+}
+
+// Play game button
+.play-game-button {
+  background-color: $danger;
+  color: $white;
+  padding: 7px 50px;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Import component styles
+@import 'section-header';
+@import 'game-card';
+@import 'league-table';
+@import 'ranking-component';
+@import 'ranking-chart';
+@import 'tournament';
+@import 'player-stats';

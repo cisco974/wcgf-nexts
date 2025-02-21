@@ -1,0 +1,29 @@
+// src/styles/_variables.scss
+$dark: #000000;
+$secondary: #9d9d9d;
+$light: #f4f4f9;
+$primary: #007BFF;
+$danger: #f3004e;
+$point-color: #45bfe6;
+$ranking-bg-color: #efbc85;
+$ranking-line-bg-color: #f3a551;
+$ranking-line-rank-number: #ea5f28;
+$white: #FFFFFF;
+$font-size-base: 0.9rem;
+$font-sizes: (
+        1: $font-size-base * 4,
+        2: $font-size-base * 2.75,
+        3: $font-size-base * 2,
+        4: $font-size-base * 1.5,
+        5: $font-size-base * 1.25,
+        6: $font-size-base,
+        7: $font-size-base - 0.1,
+        8: $font-size-base - 0.2
+);
+
+// These are the defaults, but you can override any values
+$font-family-sans-serif: Arial, sans-serif !default;
+$font-family-serif: serif !default;
+$font-family-base: $font-family-sans-serif !default;
+
+

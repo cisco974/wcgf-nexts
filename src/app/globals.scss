@@ -1,0 +1,50 @@
+@use "styles/variables" as *;
+@import "bootstrap/scss/bootstrap";
+@import "./styles/navbar";
+@import "./styles/footer";
+@import "./styles/_page-header.scss";
+
+@import "./styles/home.scss";
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body a, a:hover {
+  text-decoration: none;
+}
+
+.footer-column-content a {
+  color: inherit;
+}
+.sticky {
+  position: sticky !important;
+  z-index: 1000;
+}
+.container {
+  width: 90% !important;
+  max-width: 80% !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+// Play game button
+.play-game-button {
+  background-color: $danger;
+  color: white;
+  padding: 7px 50px;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    color: white;
+  }
+}

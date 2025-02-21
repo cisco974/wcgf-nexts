@@ -1,0 +1,265 @@
+
+
+.ps_outer-container {
+  max-width: 100%;
+}
+
+.ps_card {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.ps_card-inner {
+  padding: 16px;
+}
+
+.ps_filters-container {
+  background-color: #f8f9fa;
+}
+
+.ps_time-filter, .ps_game-filter {
+  min-width: 100px;
+  max-width: 130px;
+}
+
+.ps_filter-button {
+  min-width: 50px;
+  background-color: $primary;
+}
+
+/* Updated header styles */
+.ps_header-container {
+  position: relative;
+  height: 130px;
+  margin-bottom: 60px !important;
+}
+
+.ps_header-bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #051d40;
+  overflow: hidden;
+}
+
+.ps_header-bg {
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.8;
+}
+
+/* Fixed game icon styles */
+.ps_game-icon-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+}
+
+.ps_game-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 3px;
+}
+
+.ps_game-icon {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+/* Fixed avatar styles */
+.ps_avatar-wrapper {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  width: 100px;
+  transform: translateX(-50%);
+}
+
+.ps_avatar-container {
+  background-color: $point-color;
+  border: 4px solid $white;
+  border-radius: 16px;
+}
+
+.ps_avatar-img {
+  /* width: 110px; */
+  height: 110px;
+  border-radius: 14px;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+
+.ps_player-name {
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+  color: $danger;
+  text-transform: uppercase;
+}
+
+.ps_player-title {
+  font-size: 0.95rem;
+  color: $primary;
+  letter-spacing: 0.5px;
+}
+
+/* Chart containers */
+.ps_chart-container,
+.ps_winloss-chart-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 10px 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.ps_winloss-chart-container {
+  height: auto;
+  max-height: 180px;
+}
+
+.ps_stats-grid {
+  margin: 0 auto;
+  max-width: 95%;
+}
+
+.ps_stat-box {
+  background-color: $white;
+  border-radius: 8px;
+  padding: 10px 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+/* Style pour les boîtes de stats avec couleur de fond */
+.ps_stat-box:has(.text-white) {
+  padding: 12px 5px;
+}
+
+.ps_stat-value {
+  display: block;
+  font-weight: bold;
+  color: $primary;
+  font-size: 1rem;
+}
+
+.ps_stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+.ps_section-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+.ps_section-header {
+  color: $primary;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.ps_progress-bar {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.ps_wins-count, .ps_losses-count {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Win/Loss counters */
+.ps_winloss-counters {
+  margin: 0 auto;
+  max-width: 200px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.ps_counter {
+  border-radius: 6px;
+  padding: 8px 20px;
+  text-align: center;
+  min-width: 60px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ps_wins-counter {
+  background-color: #8BC34A;
+}
+
+.ps_losses-counter {
+  background-color: #E53935;
+}
+
+.ps_counter-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: $white;
+}
+
+.ps_games-table {
+  background-color: $white;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.ps_game-type {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.ps_game-result {
+  font-size: 0.85rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .ps_avatar-img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .ps_player-name {
+    font-size: 1.3rem;
+  }
+
+  .ps_stat-value {
+    font-size: 0.9rem;
+  }
+
+  .ps_stat-label {
+    font-size: 0.7rem;
+  }
+
+  .ps_time-filter, .ps_game-filter {
+    min-width: 80px;
+    max-width: 100px;
+  }
+
+  .ps_counter {
+    padding: 6px 15px;
+  }
+
+  .ps_counter-value {
+    font-size: 1rem;
+  }
+
+  .ps_winloss-chart-container {
+    max-height: 150px;
+  }
+}

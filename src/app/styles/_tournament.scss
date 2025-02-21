@@ -1,0 +1,81 @@
+
+
+.tc_tournament-card {
+
+  background-image: url('/img/bg-table.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.tc_card-header {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.tc_tournament-logo {
+  height: 80px;
+  width: auto;
+}
+
+.tc_event-slider {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.tc_event-item {
+  border-left: 8px solid $primary;
+  background-color: $white;
+
+  margin: 10px;
+}
+
+.tc_event-item:last-child {
+  border-bottom: none;
+}
+
+.tc_event-icon img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+}
+
+.tc_event-date {
+  background-color: #007bff;
+  color: white;
+  min-width: 60px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.tc_month {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.tc_day {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.tc_buy-in {
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.tc_event-slider::-webkit-scrollbar {
+  width: 6px;
+}
+
+
