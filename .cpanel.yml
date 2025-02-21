@@ -13,4 +13,4 @@ deployment:
     - npm install
     -
     # 9️⃣ Build de l'application Next.js
-    - npx next build
+    - npm run build
