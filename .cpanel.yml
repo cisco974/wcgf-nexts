@@ -1,11 +1,6 @@
 deployment:
   tasks:
-    # 1️⃣ Activation de l'environnement virtuel Node.js
     - source /home/cayi7350/nodevenv/wcgf.com/22/bin/activate
-
-    # 2️⃣ Configuration du bon chemin pour les modules Node.js et Next.js
-    - export PATH="/home/cayi7350/nodevenv/wcgf.com/22/bin:$PATH"
-    - export NODE_PATH="/home/cayi7350/nodevenv/wcgf.com/22/lib/node_modules"
 
     # 3️⃣ Accès au répertoire du projet
     - cd /home/cayi7350/wcgf.com
@@ -15,24 +10,7 @@ deployment:
     - git pull origin main
 
     # 5️⃣ Vérification et installation de Next.js et ses dépendances
-    - npm install --no-bin-links --prefix /home/cayi7350/nodevenv/wcgf.com/22
-    - npm install -g next
-
-    # 6️⃣ Vérification de Next.js
-    - next -v || npx next -v
-
-    # 7️⃣ Désactivation temporaire d'ESLint si nécessaire
-    - export NEXT_DISABLE_ESLINT=1
-
-    # 8️⃣ Définition de l'environnement de production
-    - export NODE_ENV=production
-
+    - npm install
+    -
     # 9️⃣ Build de l'application Next.js
     - npx next build
-
-    # 🔟 Nettoyage du cache Next.js (optionnel)
-    - rm -rf .next/cache/*
-
-    # 1️⃣1️⃣ Démarrage de l’application Next.js via PM2 (optionnel)
-    - pm2 restart all || pm2 start npm --name "nextjs-app" -- run start
-    - pm2 save
