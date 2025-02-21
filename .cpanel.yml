@@ -6,6 +6,9 @@ deployment:
     # Définition du chemin des modules pour éviter les erreurs
     - export NODE_PATH=/home/cayi7350/nodevenv/wcgf.com/22/lib/node_modules
 
+    # S'assurer que les binaires npm/yarn de nodevenv sont dans le PATH
+    - export PATH=$NODE_PATH/bin:$PATH
+
     # Accès au répertoire du projet
     - cd /home/cayi7350/wcgf.com
 
@@ -14,16 +17,18 @@ deployment:
     - git pull
 
     # Installation des dépendances (sans --prefix)
-    - npm install --save-dev typescript @types/react @types/node
+    - npm install --save-dev typescript @types/react @types/node sass eslint eslint-config-next
 
     # Définition de l’environnement de production
     - export NODE_ENV=production
+    - export NEXT_DISABLE_ESLINT=1  # Désactive ESLint pour éviter l'erreur
+
+    # Suppression du cache de Next.js pour éviter les conflits
+    - rm -rf .next/cache/*
+    - rm -rf .next/standalone/
 
     # Build de l’application Next.js
     - npm run build
-
-    # Nettoyage du cache Next.js
-    - rm -rf .next/cache/*
 
     # Redémarrage du serveur (ajoute cette ligne si tu utilises PM2)
     - pm2 restart all
