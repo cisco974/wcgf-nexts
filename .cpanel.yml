@@ -12,7 +12,7 @@ deployment:
     - git pull
 
     # Installation et build NextJS (maintenant dans l'environnement virtuel)
-    - npm install --prefix /home/cayi7350/nodevenv/wcgf.com/22
+    - npm install --prefix /home/cayi7350/nodevenv/wcgf.com/22 --save-dev typescript @types/react @types/node eslint eslint-config-next
     - NODE_ENV=production
     - npm run build
 
