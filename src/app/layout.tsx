@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.scss";
 import Script from "next/script";
-import Navbar from "@/app/components/Navbar";
-import Footer from "@/app/components/Footer";
+
 import { cookies } from "next/headers";
 import Image from "next/image";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 

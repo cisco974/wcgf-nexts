@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import PageHeader from "@/app/components/PageHeader";
+import PageHeader from "./PageHeader";
 
 const Navbar = () => {
   const events = [
