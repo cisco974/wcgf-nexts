@@ -1,34 +1,38 @@
 deployment:
   tasks:
-    # Activation de l'environnement virtuel Node.js
+    # 1️⃣ Activation de l'environnement virtuel Node.js
     - source /home/cayi7350/nodevenv/wcgf.com/22/bin/activate
 
-    # Définition du chemin des modules pour éviter les erreurs
-    - export NODE_PATH=/home/cayi7350/nodevenv/wcgf.com/22/lib/node_modules
+    # 2️⃣ Configuration du bon chemin pour les modules Node.js et Next.js
+    - export PATH="/home/cayi7350/nodevenv/wcgf.com/22/bin:$PATH"
+    - export NODE_PATH="/home/cayi7350/nodevenv/wcgf.com/22/lib/node_modules"
 
-    # S'assurer que les binaires npm/yarn de nodevenv sont dans le PATH
-    - export PATH=$NODE_PATH/bin:$PATH
-
-    # Accès au répertoire du projet
+    # 3️⃣ Accès au répertoire du projet
     - cd /home/cayi7350/wcgf.com
 
-    # Nettoyage et mise à jour du code
+    # 4️⃣ Nettoyage et mise à jour du code
     - git reset --hard origin/main
-    - git pull
+    - git pull origin main
 
-    # Installation des dépendances (sans --prefix)
-    - npm install --save-dev typescript @types/react @types/node sass eslint eslint-config-next
+    # 5️⃣ Vérification et installation de Next.js et ses dépendances
+    - npm install --no-bin-links --prefix /home/cayi7350/nodevenv/wcgf.com/22
+    - npm install -g next
 
-    # Définition de l’environnement de production
+    # 6️⃣ Vérification de Next.js
+    - next -v || npx next -v
+
+    # 7️⃣ Désactivation temporaire d'ESLint si nécessaire
+    - export NEXT_DISABLE_ESLINT=1
+
+    # 8️⃣ Définition de l'environnement de production
     - export NODE_ENV=production
-    - export NEXT_DISABLE_ESLINT=1  # Désactive ESLint pour éviter l'erreur
 
-    # Suppression du cache de Next.js pour éviter les conflits
+    # 9️⃣ Build de l'application Next.js
+    - npx next build
+
+    # 🔟 Nettoyage du cache Next.js (optionnel)
     - rm -rf .next/cache/*
-    - rm -rf .next/standalone/
 
-    # Build de l’application Next.js
-    - npm run build
-
-    # Redémarrage du serveur (ajoute cette ligne si tu utilises PM2)
-    - pm2 restart all
+    # 1️⃣1️⃣ Démarrage de l’application Next.js via PM2 (optionnel)
+    - pm2 restart all || pm2 start npm --name "nextjs-app" -- run start
+    - pm2 save
