@@ -1,23 +1,19 @@
 ---
 deployment:
   tasks:
-    # Configuration de l'environnement
-    - export PATH="$PATH:/opt/alt/alt-nodejs22/root/usr/bin/"
-    - export NODE_ENV=production
-    
+    # Activation de l'environnement virtuel Node.js
+    - source /home/cayi7350/nodevenv/wcgf.com/22/bin/activate
+
     # Accès au répertoire du projet
     - cd /home/cayi7350/wcgf.com
-    
+
     # Nettoyage et mise à jour du code
-    - git reset --hard origin/main
+    - git reset --hard origin/master
     - git pull
-    
-    # Installation et build NextJS
-    - /opt/alt/alt-nodejs22/root/usr/bin/npm ci
-    - /opt/alt/alt-nodejs22/root/usr/bin/npm run build
-    
+
+    # Installation et build NextJS (maintenant dans l'environnement virtuel)
+    - npm ci
+    - npm run build
+
     # Nettoyage du cache NextJS
     - rm -rf .next/cache/*
-    
-    # Permissions pour le dossier public si nécessaire
-    - chmod -R 755 public
