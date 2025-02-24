@@ -6,7 +6,7 @@ deployment:
     - cd /home/cayi7350/test.wcgf.comf
 
     # 4️⃣ Nettoyage et mise à jour du code
-    #- git reset --hard origin/master
+    - git reset --hard origin/master
     - git pull origin master
 
     # 5️⃣ Vérification et installation de Next.js et ses dépendances
