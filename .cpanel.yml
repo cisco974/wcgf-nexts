@@ -1,9 +1,9 @@
 deployment:
   tasks:
-    - source /home/cayi7350/nodevenv/wcgf.com/22/bin/activate
+    - source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 
     # 3️⃣ Accès au répertoire du projet
-    - cd /home/cayi7350/wcgf.com
+    - cd /home/cayi7350/test.wcgf.comf
 
     # 4️⃣ Nettoyage et mise à jour du code
     - git reset --hard origin/main
