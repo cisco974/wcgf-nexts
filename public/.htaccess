@@ -1,5 +1,4 @@
 Options -MultiViews
-DirectoryIndex server/app/index.html
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ server/app/index.html [QSA,L]
