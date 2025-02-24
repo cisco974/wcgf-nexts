@@ -1,4 +1,4 @@
-Options -MultiViews
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ server/app/index.html [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ http://localhost:3000%{REQUEST_URI} [P,L]
