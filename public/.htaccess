@@ -1,3 +1,4 @@
+Options -MultiViews
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
+RewriteRule ^ index.html [QSA,L]
