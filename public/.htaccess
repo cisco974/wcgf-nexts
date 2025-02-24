@@ -1,4 +1,10 @@
 Options -MultiViews
 RewriteEngine On
+
+# Laisser passer les fichiers statiques (JS, CSS, images, etc.)
+RewriteCond %{REQUEST_URI} !\.(?:js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|otf|eot|mp4|webm|ogg|json|txt|xml|webmanifest|map)$ [NC]
+
+# Rediriger toutes les autres requêtes vers Next.js en mode proxy
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ server/app/index.html [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ http://127.0.0.1:3000/$1 [P,L]
