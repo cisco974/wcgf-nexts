@@ -3,7 +3,7 @@ deployment:
     - source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 
     # 3️⃣ Accès au répertoire du projet
-    - cd /home/cayi7350/test.wcgf.comf
+    - cd /home/cayi7350/test.wcgf.com
 
     # 4️⃣ Nettoyage et mise à jour du code
     - git reset --hard origin/master
