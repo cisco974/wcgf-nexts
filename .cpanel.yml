@@ -16,3 +16,4 @@ deployment:
     - npm run build
 
     - cp public/.htaccess build
+    - ./restart.sh
