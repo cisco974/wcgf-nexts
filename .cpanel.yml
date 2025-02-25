@@ -16,4 +16,3 @@ deployment:
     - npm run build
 
     - cp public/.htaccess build/
-    - npm run start
