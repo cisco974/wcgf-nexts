@@ -1,46 +1,52 @@
 #!/bin/bash
-# Script d'arrêt pour l'application Next.js
+# Script d'arrêt amélioré pour l'application Next.js
 
 # Répertoire de l'application
 APP_DIR="/home/cayi7350/test.wcgf.com"
 # Fichier contenant le PID
 PID_FILE="$APP_DIR/.nextjs.pid"
 
-# Vérifier si le fichier PID existe
-if [ ! -f "$PID_FILE" ]; then
-    echo "Aucune instance de l'application Next.js n'est en cours d'exécution (fichier PID non trouvé)"
-    exit 0
-fi
+echo "Arrêt de l'application Next.js..."
 
-# Récupérer le PID
-PID=$(cat "$PID_FILE")
+# 1. Rechercher et arrêter le processus next-server
+NEXT_PIDS=$(pgrep -f "next-server")
+if [ -n "$NEXT_PIDS" ]; then
+  echo "Arrêt des processus next-server (PIDs: $NEXT_PIDS)..."
+  for PID in $NEXT_PIDS; do
+    kill $PID
+  done
+  sleep 1
 
-# Vérifier si le processus existe
-if ! ps -p $PID > /dev/null; then
-    echo "Le processus avec PID $PID n'existe pas"
-    rm -f "$PID_FILE"
-    exit 0
-fi
-
-# Arrêter le processus
-echo "Arrêt de l'application Next.js (PID: $PID)..."
-kill $PID
-
-# Attendre que le processus se termine (maximum 10 secondes)
-for i in {1..10}; do
-    if ! ps -p $PID > /dev/null; then
-        echo "Application Next.js arrêtée"
-        rm -f "$PID_FILE"
-        exit 0
+  # Vérifier si les processus existent toujours et forcer l'arrêt si nécessaire
+  for PID in $NEXT_PIDS; do
+    if ps -p $PID > /dev/null 2>&1; then
+      echo "Forçage de l'arrêt du processus next-server (PID: $PID)..."
+      kill -9 $PID
     fi
-    sleep 1
-done
-
-# Si le processus existe toujours, forcer l'arrêt
-if ps -p $PID > /dev/null; then
-    echo "Forçage de l'arrêt de l'application Next.js..."
-    kill -9 $PID
-    rm -f "$PID_FILE"
+  done
 fi
 
-echo "Application Next.js arrêtée"
+# 2. Rechercher et arrêter les processus npm run start
+NPM_PIDS=$(pgrep -f "npm run start")
+if [ -n "$NPM_PIDS" ]; then
+  echo "Arrêt des processus npm (PIDs: $NPM_PIDS)..."
+  for PID in $NPM_PIDS; do
+    kill $PID
+  done
+  sleep 1
+
+  # Vérifier si les processus existent toujours et forcer l'arrêt si nécessaire
+  for PID in $NPM_PIDS; do
+    if ps -p $PID > /dev/null 2>&1; then
+      echo "Forçage de l'arrêt du processus npm (PID: $PID)..."
+      kill -9 $PID
+    fi
+  done
+fi
+
+# 3. Si un fichier PID existait, le supprimer
+if [ -f "$PID_FILE" ]; then
+  rm -f "$PID_FILE"
+fi
+
+echo "Application Next.js arrêtée avec succès"
