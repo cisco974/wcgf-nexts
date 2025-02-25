@@ -364,7 +364,7 @@ const Navbar = () => {
                     className="dropdown-item d-flex justify-content-between align-items-center"
                     href="#"
                   >
-                    <strong>All test</strong>
+                    <strong>All Games</strong>
                     <i className="fi fi-rr-angle-right"></i>
                   </Link>
                 </li>
