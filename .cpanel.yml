@@ -15,4 +15,4 @@ deployment:
     # 9️⃣ Build de l'application Next.js
     - npm run build
 
-    - cp public/.htaccess build/
+    - cp public/.htaccess build
