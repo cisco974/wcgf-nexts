@@ -9,11 +9,18 @@ deployment:
     - git reset --hard origin/master
     - git pull origin master
 
+    # 🧹 Nettoyage du cache
+    - rm -rf .next
+
     # 5️⃣ Vérification et installation de Next.js et ses dépendances
     - npm install
-    -
+
     # 9️⃣ Build de l'application Next.js
     - npm run build
 
-    - cp public/.htaccess build
+    # 📋 Copie des fichiers nécessaires
+    - cp public/.htaccess build/
+
+    # 🔄 Redémarrage de l'application
+    - chmod +x restart.sh
     - ./restart.sh
