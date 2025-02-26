@@ -1,16 +1,22 @@
-// Charge le module de Passenger si disponible
+const { spawn } = require("child_process");
+
+// Vérifie si Phusion Passenger est disponible
 if (typeof PhusionPassenger !== "undefined") {
   PhusionPassenger.configure({ autoInstall: false });
 }
 
-// Charge le module child_process pour exécuter npm run start
-const { spawn } = require("child_process");
+// Définition des chemins
+const envPath = "/home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate";
+const appPath = "/home/cayi7350/test.wcgf.com";
 
-// Exécute la commande "npm run start"
-const nextProcess = spawn("npm", ["run", "start"], {
-  cwd: __dirname, // Répertoire de ton application
-  stdio: "inherit", // Hérite de la sortie standard (affiche les logs)
-  shell: true, // Utilisation d'un shell pour exécuter la commande
+// Commande complète pour activer l'environnement et exécuter Next.js
+const command = `source ${envPath} && cd ${appPath} && npm run start`;
+
+// Exécute la commande dans un shell
+const nextProcess = spawn(command, {
+  cwd: appPath,
+  stdio: "inherit",
+  shell: true, // Obligatoire pour exécuter plusieurs commandes enchaînées
 });
 
 // Gestion des erreurs
@@ -23,5 +29,5 @@ nextProcess.on("exit", (code) => {
   console.log(`Next.js s'est arrêté avec le code ${code}`);
 });
 
-// Indique à Passenger que ce script est prêt
+// Indique à Passenger que le script est prêt
 module.exports = nextProcess;
