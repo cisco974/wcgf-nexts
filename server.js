@@ -1,33 +1,21 @@
-// server.js - Script simplifié pour exécuter npm run start sur Linux avec Phusion Passenger
 const { spawn } = require("child_process");
 
-console.log("Démarrage de l'application Next.js via npm run start...");
-
-// Définir les options pour le processus enfant
-const options = {
-  cwd: __dirname, // Répertoire courant
-  stdio: "inherit", // Rediriger stdin/stdout/stderr vers le processus parent
-};
-
-// Démarrer le processus npm directement (environnement Linux)
-const npmProcess = spawn("npm", ["run", "start"], options);
-
-// Gestion des événements du processus
-npmProcess.on("error", (err) => {
-  console.error("Erreur lors du démarrage de npm run start:", err);
-  process.exit(1);
+// Démarrer Next.js via npm run start
+const nextProcess = spawn("npm", ["run", "start"], {
+  cwd: __dirname, // Répertoire de l'application
+  stdio: "inherit", // Affiche les logs directement dans la console
+  shell: true, // Utilise un shell pour exécuter la commande
 });
 
-npmProcess.on("close", (code) => {
-  console.log(`Le processus npm s'est terminé avec le code: ${code}`);
-  process.exit(code);
+// Gestion des erreurs
+nextProcess.on("error", (err) => {
+  console.error("Erreur lors du démarrage de l’application:", err);
 });
 
-// Capturer les signaux pour une fermeture propre
-process.on("SIGTERM", () => {
-  console.log("Arrêt du processus npm...");
-  npmProcess.kill("SIGTERM");
+// Gestion de l'arrêt du processus
+nextProcess.on("exit", (code) => {
+  console.log(`Next.js s'est arrêté avec le code ${code}`);
 });
 
-// Indiquer que le script est prêt
-console.log("Script server.js exécuté avec succès");
+// Exporter un module vide pour Phusion Passenger
+module.exports = {};
