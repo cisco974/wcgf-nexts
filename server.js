@@ -1,18 +1,21 @@
-const { execSync } = require("child_process");
+const npm = require("npm");
 
-try {
-  console.log("🔄 Activation de l’environnement et démarrage de Next.js...");
+npm.load({}, function (err) {
+  if (err) {
+    console.error("❌ Erreur lors du chargement de npm :", err);
+    return;
+  }
 
-  // Active l'environnement Node.js et démarre l'application
-  execSync(
-    `source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate && cd /home/cayi7350/test.wcgf.com && npm run start`,
-    { stdio: "inherit", shell: true },
-  );
+  console.log("🔄 Démarrage de l’application avec npm run start...");
 
-  console.log("🚀 Next.js est lancé avec succès !");
-} catch (error) {
-  console.error("❌ Erreur lors du démarrage de Next.js :", error);
-}
+  npm.commands.run(["start"], function (err, data) {
+    if (err) {
+      console.error("❌ Erreur lors de l’exécution de npm run start :", err);
+    } else {
+      console.log("🚀 Next.js est lancé avec succès !");
+    }
+  });
+});
 
 // Indique à Phusion Passenger que le script est prêt
 module.exports = {};
