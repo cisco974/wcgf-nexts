@@ -1,28 +1,35 @@
-const pm2 = require("pm2");
+import { series } from "async";
+import { exec } from "child_process";
 
-pm2.connect((err) => {
-  if (err) {
-    console.error("❌ Impossible de se connecter à PM2:", err);
-    process.exit(1);
-  }
+// Définition des commandes
+const commands = [
+  "source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate",
+  "cd /home/cayi7350/test.wcgf.com",
+  "npm run start",
+];
 
-  pm2.start(
-    {
-      script: "npm",
-      args: ["run", "start"],
-      name: "nextjs-app",
-      autorestart: false,
-    },
-    (err, apps) => {
-      pm2.disconnect();
+console.log("🔄 Démarrage de l’application Next.js avec async.series...");
+
+series(
+  commands.map((cmd) => (cb) => {
+    console.log(`🛠️ Exécution de : ${cmd}`);
+    exec(cmd, (err, stdout, stderr) => {
       if (err) {
-        console.error("❌ Erreur lors du démarrage avec PM2:", err);
-        process.exit(1);
+        console.error(`❌ Erreur lors de l’exécution : ${cmd}`, err);
+        return cb(err);
       }
-      console.log("🚀 Next.js lancé avec PM2 !");
-    },
-  );
-});
+      console.log(`✅ Commande réussie : ${cmd}\n${stdout}`);
+      return cb();
+    });
+  }),
+  (err) => {
+    if (err) {
+      console.error("🚨 Une erreur est survenue dans la séquence :", err);
+    } else {
+      console.log("🚀 Next.js est lancé avec succès !");
+    }
+  },
+);
 
 // Indique à Phusion Passenger que le script est prêt
-module.exports = {};
+export default {};

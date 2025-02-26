@@ -15,6 +15,7 @@
     "@types/react-dom": "^19.0.4",
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
+    "async": "^3.2.6",
     "bootstrap": "^5.3.3",
     "eslint": "^9.20.1",
     "eslint-config-next": "^15.1.7",
