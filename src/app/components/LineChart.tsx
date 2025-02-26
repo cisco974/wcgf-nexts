@@ -20,7 +20,7 @@ interface RankingChartProps {
   animate?: boolean;
 }
 
-const RankingChart: React.FC<RankingChartProps> = ({
+const LineChart: React.FC<RankingChartProps> = ({
   id,
   series,
   colors = ["#0088FE", "#67c1eb", "#FF5252", "#45bfe6"],
@@ -269,4 +269,4 @@ class Chart {
   }
 }
 
-export default RankingChart;
+export default LineChart;

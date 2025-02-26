@@ -19,7 +19,7 @@ cd $APP_DIR
 
 # Démarrer l'application avec les variables d'environnement spécifiées
 echo "Démarrage de l'application Next.js..."
-nohup bash -c "source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate && NEXT_PUBLIC_API_URL=https://wcgf.test NEXT_PUBLIC_MAINTENANCE_MODE=true npm run start" > $LOG_FILE 2>&1 &
+nohup bash -c "source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate   npm run start" > $LOG_FILE 2>&1 &
 
 # Enregistrer le PID
 echo $! > $PID_FILE

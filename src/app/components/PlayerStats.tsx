@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import RankingChart from "./RankingChart";
+import LineChart from "./LineChart";
 
 // Define types for player statistics
 type RecentGame = {
@@ -128,7 +128,7 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({
           {/* Performance Chart */}
           {chartSeries.length > 0 && (
             <div className="ps_chart-container mb-4">
-              <RankingChart
+              <LineChart
                 id={chartId}
                 series={chartSeries}
                 colors={chartColors}
@@ -182,7 +182,7 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({
           {/* Win/Loss Chart */}
           {winLossSeries.length > 0 && (
             <div className="ps_winloss-chart-container mb-3">
-              <RankingChart
+              <LineChart
                 id={winLossChartId}
                 series={winLossSeries}
                 colors={winLossColors}

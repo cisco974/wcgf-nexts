@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 import RankingTable from "./RankingTable";
-import RankingChart from "./RankingChart";
+import LineChart from "./LineChart";
 
 // Définition des types
 interface ChartPoint {
@@ -88,7 +88,7 @@ const RankingComponent = () => {
           timer="Best Players"
         />
 
-        <RankingChart
+        <LineChart
           id={`ranking-chart`}
           series={chartSeries}
           colors={["#0088FE", "#67c1eb", "#FF5252", "#45bfe6"]}
