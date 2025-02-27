@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "NODE_OPTIONS='--max-old-space-size=4096' next start",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
