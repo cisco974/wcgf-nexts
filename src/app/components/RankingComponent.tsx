@@ -22,6 +22,13 @@ const RankingComponent = () => {
   const [selectedGame, setSelectedGame] = useState("tarot");
   const [playerLimit, setPlayerLimit] = useState(3);
 
+  // Définition des couleurs de base selon le type de classement
+  const baseColors = {
+    week: "#0088FE", // Bleu pour la semaine (comme sur l'image 1)
+    month: "#FF5252", // Rouge pour le mois (comme sur l'image 2)
+    year: "#8B4513", // Marron pour l'année (comme dans les données d'origine)
+  };
+
   useEffect(() => {
     const fetchRankings = async () => {
       try {
@@ -46,6 +53,11 @@ const RankingComponent = () => {
     fetchRankings();
   }, [selectedPeriod, selectedGame, playerLimit]);
 
+  // Obtenir la couleur de base en fonction de la période sélectionnée
+  const getBaseColor = () => {
+    return baseColors[selectedPeriod as keyof typeof baseColors] || "#0088FE";
+  };
+
   return (
     <div className="rk-container h-100">
       <div className="card border-0 shadow-sm p-3 d-flex flex-column h-100">
@@ -69,16 +81,6 @@ const RankingComponent = () => {
               <option value="tarot">Tarot</option>
               <option value="rummy">Rummy</option>
             </select>
-
-            <select
-              className="form-select"
-              value={playerLimit}
-              onChange={(e) => setPlayerLimit(Number(e.target.value))}
-            >
-              <option value="5">Top 5</option>
-              <option value="10">Top 10</option>
-              <option value="20">Top 20</option>
-            </select>
           </div>
         </div>
 
@@ -89,15 +91,22 @@ const RankingComponent = () => {
         />
 
         <LineChart
-          id={`ranking-chart`}
+          id={`ranking-chart-${selectedPeriod}`}
           series={chartSeries}
-          colors={["#0088FE", "#67c1eb", "#FF5252", "#45bfe6"]}
+          baseColor={getBaseColor()}
+          useGradient={true}
           height={350}
           animate={true}
         />
 
         <div className="text-center mt-3">
-          <button className="btn btn-primary text-white fw-bold">
+          <button
+            className="btn btn-primary text-white fw-bold"
+            style={{
+              backgroundColor: getBaseColor(),
+              borderColor: getBaseColor(),
+            }}
+          >
             {selectedGame.toUpperCase()} RANKINGS
           </button>
         </div>

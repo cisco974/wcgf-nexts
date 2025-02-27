@@ -1,6 +1,8 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import LineChart from "./LineChart";
+import LastGames from "./LastGames";
 
 // Define types for player statistics
 type RecentGame = {
@@ -29,9 +31,9 @@ type PlayerStatsProps = {
   wins: number;
   losses: number;
   recentGames: RecentGame[];
-  chartSeries: ChartSeries[]; // ✅ Remplace any[]
+  chartSeries: ChartSeries[];
   chartColors: string[];
-  winLossSeries: ChartSeries[]; // ✅ Remplace any[]
+  winLossSeries: ChartSeries[];
   winLossColors: string[];
   statColors: string[];
 };
@@ -53,9 +55,41 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({
   winLossColors,
   statColors,
 }) => {
+  // État pour détection du client (résolution du problème d'hydratation)
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Generate unique chart IDs
   const chartId = `player-stats-chart-${playerName.replace(/\s+/g, "-").toLowerCase()}`;
   const winLossChartId = `player-winloss-chart-${playerName.replace(/\s+/g, "-").toLowerCase()}`;
+
+  // Transformer les données récentes de jeux pour le composant LastGames
+  // Utilisation de valeurs fixes pour éviter les problèmes d'hydratation
+  const formattedGameResults = recentGames.map((game, index) => {
+    // Pour chaque jeu, on génère un résultat fixe en fonction du type de jeu
+    let fixedResult;
+    if (game.type === "Tarot") {
+      fixedResult = game.result > 0 ? 250 : -100;
+    } else if (game.type === "Rummy") {
+      fixedResult = game.result > 0 ? 100 : -100;
+    } else if (game.type === "Rummy 500") {
+      fixedResult = game.result > 0 ? 100 : -50;
+    } else {
+      // Valeur par défaut pour les autres types de jeux
+      fixedResult = game.result > 0 ? 100 : -100;
+    }
+
+    return {
+      rank: index + 1,
+      avatar: avatar,
+      name: playerName,
+      gameTitle: game.type,
+      result: fixedResult,
+    };
+  });
 
   return (
     <div className="ps_outer-container">
@@ -126,12 +160,14 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({
           </div>
 
           {/* Performance Chart */}
-          {chartSeries.length > 0 && (
+          {isClient && chartSeries.length > 0 && (
             <div className="ps_chart-container mb-4">
               <LineChart
                 id={chartId}
                 series={chartSeries}
                 colors={chartColors}
+                baseColor={chartColors[0]} // Utiliser la première couleur comme base pour le dégradé
+                useGradient={true}
                 height={300}
                 animate={true}
               />
@@ -180,13 +216,15 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({
           </div>
 
           {/* Win/Loss Chart */}
-          {winLossSeries.length > 0 && (
+          {isClient && winLossSeries.length > 0 && (
             <div className="ps_winloss-chart-container mb-3">
               <LineChart
                 id={winLossChartId}
                 series={winLossSeries}
                 colors={winLossColors}
-                height={180}
+                baseColor={winLossColors[0]}
+                useGradient={true}
+                height={300}
                 animate={true}
               />
             </div>
@@ -212,26 +250,15 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({
             </div>
           </div>
 
-          {/* Recent Games */}
-          {recentGames.length > 0 && (
-            <div className="ps_games-table bg-light rounded p-3">
-              <h6 className="text-center mb-3">Recent Games</h6>
-              <div className="table-responsive">
-                <table className="table table-sm">
-                  <tbody>
-                    {recentGames.map((game, index) => (
-                      <tr key={index}>
-                        <td className="ps_game-type">{game.type}</td>
-                        <td
-                          className={`ps_game-result ${game.result > 0 ? "text-success" : "text-danger"}`}
-                        >
-                          {game.result > 0 ? "Win" : "Loss"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+          {/* Recent Games avec le nouveau composant LastGames - Rendu côté client uniquement */}
+          {isClient && recentGames.length > 0 && (
+            <div className="ps_games-table">
+              <LastGames
+                results={formattedGameResults}
+                title="Official WCGF Super Leagues"
+                sectionTitle="LAST 3 GAMES SERIE"
+                buttonText="VIEW MORE"
+              />
             </div>
           )}
         </div>

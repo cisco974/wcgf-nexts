@@ -1,0 +1,119 @@
+
+// On garde votre structure et vos variables existantes
+// Ajout des styles pour le support des nouveaux éléments uniquement
+
+.lt-ranking-container {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.lt-timer {
+  background-color: #007bff; // Peut être remplacé par une variable si vous préférez
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.lt-table {
+  background-color: $ranking-bg-color;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.lt-row {
+  background-color: $ranking-line-bg-color;
+  vertical-align: middle;
+  border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.lt-rank {
+  width: 40px;
+  text-align: center;
+  padding: 12px;
+}
+
+.lt-rank-number {
+  background-color: $ranking-line-rank-number;
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.lt-avatar {
+  img, .lt-avatar-img {
+    background-color: $point-color !important;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.lt-points {
+  text-align: center;
+
+  span {
+    background-color: $point-color;
+    color: white;
+  }
+
+  // Nouveaux styles pour les résultats
+  .lt-result {
+    min-width: 80px;
+    text-align: center;
+
+    &.lt-positive {
+      background-color: #4CAF50; // Vert pour les résultats positifs
+    }
+
+    &.lt-negative {
+      background-color: #b10000; // Rouge pour les résultats négatifs
+    }
+  }
+}
+
+.lt-footer {
+  background-color: #efbc85;
+  color: #444;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 0px 0px 10px 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.lt-table.table {
+  > :not(caption) > * > * {
+    background: none;
+    border: none;
+    padding: 8px;
+  }
+}
+
+// Styles pour le bouton
+.view-more-btn {
+  padding: 0.5rem 2rem;
+  margin-top: 1rem;
+}
+
+// Styles pour LastGames
+.last-games-container {
+  margin-bottom: 1.5rem;
+}
+
+.last-games-title {
+  font-weight: bold;
+}

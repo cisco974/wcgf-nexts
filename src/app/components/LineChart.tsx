@@ -16,16 +16,20 @@ interface RankingChartProps {
   id: string;
   series: ChartSeries[];
   colors?: string[];
+  baseColor?: string; // Nouvelle prop pour la couleur principale
   height?: number;
   animate?: boolean;
+  useGradient?: boolean; // Option pour activer/désactiver le dégradé
 }
 
 const LineChart: React.FC<RankingChartProps> = ({
   id,
   series,
   colors = ["#0088FE", "#67c1eb", "#FF5252", "#45bfe6"],
+  baseColor, // Nouvelle prop
   height = 300,
   animate = true,
+  useGradient = true, // Par défaut, on utilise le dégradé
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -35,26 +39,30 @@ const LineChart: React.FC<RankingChartProps> = ({
       id,
       series,
       colors,
+      baseColor,
       height,
       animate,
+      useGradient,
     });
     return () => chart.destroy();
-  }, [id, series, colors, height, animate]);
+  }, [id, series, colors, baseColor, height, animate, useGradient]);
 
   return <canvas id={id} ref={canvasRef} width="100%" height={height} />;
 };
 
 class Chart {
-  private id: string; // Ajouter cette propriété
+  private id: string;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
 
   private series: ChartSeries[];
   private colors: string[];
+  private baseColor: string | undefined;
+  private useGradient: boolean;
   private height: number;
   private animate: boolean;
   private margin: number = 50;
-  private bottomMargin: number = 70; // Added extra margin for x-axis labels
+  private bottomMargin: number = 70;
   private pointRadius: number = 6;
   private lineWidth: number = 3;
   private gridColor: string = "#ccc";
@@ -72,11 +80,14 @@ class Chart {
       throw new Error("Failed to get 2D context");
     }
     this.ctx = ctx;
-    this.id = config.id; // Ajouter cette ligne
+    this.id = config.id;
     this.series = config.series;
     this.colors = config.colors || [];
+    this.baseColor = config.baseColor;
     this.height = config.height || 300;
     this.animate = config.animate !== undefined ? config.animate : true;
+    this.useGradient =
+      config.useGradient !== undefined ? config.useGradient : true;
     this.init();
   }
 
@@ -132,10 +143,48 @@ class Chart {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid();
     this.drawXAxisLabels();
+
+    // Génération des couleurs dégradées si nécessaire
+    const colorsToUse =
+      this.useGradient && this.baseColor
+        ? this.generateGradientColors(this.baseColor, this.series.length)
+        : this.colors;
+
     this.series.forEach((serie, index) => {
-      const color = this.colors[index % this.colors.length] || "#0088FE";
+      const color = colorsToUse[index % colorsToUse.length] || "#0088FE";
       this.drawSeries(serie, color);
     });
+  }
+
+  // Méthode pour générer des couleurs en dégradé
+  private generateGradientColors(baseColor: string, count: number): string[] {
+    // Convertir la couleur hexadécimale en RGB
+    const r = parseInt(baseColor.slice(1, 3), 16);
+    const g = parseInt(baseColor.slice(3, 5), 16);
+    const b = parseInt(baseColor.slice(5, 7), 16);
+
+    const colors: string[] = [];
+
+    // Ajouter la couleur de base comme première couleur
+    colors.push(baseColor);
+
+    // Générer des versions plus claires pour les couleurs suivantes
+    for (let i = 1; i < count; i++) {
+      // Calculer le facteur de luminosité (plus l'index est grand, plus la couleur est claire)
+      // Réduit l'intensité du dégradé pour que la dernière ligne reste visible
+      const factor = 0.3 + (i * 0.2) / count;
+
+      // Éclaircir la couleur
+      const newR = Math.min(255, Math.round(r + (255 - r) * factor));
+      const newG = Math.min(255, Math.round(g + (255 - g) * factor));
+      const newB = Math.min(255, Math.round(b + (255 - b) * factor));
+
+      // Convertir en hexadécimal et ajouter à la liste
+      const newColor = `#${newR.toString(16).padStart(2, "0")}${newG.toString(16).padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
+      colors.push(newColor);
+    }
+
+    return colors;
   }
 
   private drawGrid() {
@@ -257,14 +306,6 @@ class Chart {
       this.ctx.arc(x, y, this.pointRadius, 0, 2 * Math.PI);
       this.ctx.fillStyle = color;
       this.ctx.fill();
-
-      // Optional: Add value labels above points
-      /*
-            this.ctx.fillStyle = this.textColor;
-            this.ctx.textAlign = "center";
-            this.ctx.textBaseline = "bottom";
-            this.ctx.fillText(point.value.toString(), x, y - 10);
-            */
     });
   }
 }
