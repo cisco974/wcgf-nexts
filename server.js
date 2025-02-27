@@ -3,18 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Définir le chemin absolu du fichier de log
-const logFile = path.join(__dirname, "server_debug.log");
-
-// Écrire un message initial pour vérifier que l'écriture fonctionne
-try {
-  fs.writeFileSync(
-    logFile,
-    `=== DÉMARRAGE DU SERVEUR: ${new Date().toISOString()} ===\n`,
-  );
-  console.log(`Log créé à ${logFile}`);
-} catch (error) {
-  console.error(`ERREUR D'ÉCRITURE DU FICHIER LOG: ${error.message}`);
-}
+const logFile = "/home/cayi7350/test.wcgf.com/server_debug.log";
 
 // Fonction pour écrire dans le fichier de log
 function logToFile(message) {
@@ -29,6 +18,24 @@ function logToFile(message) {
     console.error(`Erreur de journalisation: ${err.message}`);
   }
 }
+
+// Écrire un message initial pour vérifier que l'écriture fonctionne
+try {
+  fs.writeFileSync(
+    logFile,
+    `=== DÉMARRAGE DU SERVEUR: ${new Date().toISOString()} ===\n`,
+  );
+  console.log(`Log créé à ${logFile}`);
+} catch (error) {
+  console.error(`ERREUR D'ÉCRITURE DU FICHIER LOG: ${error.message}`);
+}
+
+// Enregistrer les informations sur l'environnement
+logToFile("=============== DÉMARRAGE NOUVELLE INSTANCE ===============");
+logToFile(`Node version: ${process.version}`);
+logToFile(`Répertoire courant: ${__dirname}`);
+logToFile(`Fichier en cours d'exécution: ${__filename}`);
+logToFile(`Variables d'environnement: NODE_ENV=${process.env.NODE_ENV}`);
 
 // Capture des erreurs non gérées
 process.on("uncaughtException", (error) => {
@@ -45,12 +52,14 @@ try {
   logToFile("Démarrage de l'application...");
 
   // Création d'un fichier pour la sortie et l'erreur
-  const outStream = fs.createWriteStream(path.join(__dirname, "stdout.log"), {
-    flags: "a",
-  });
-  const errStream = fs.createWriteStream(path.join(__dirname, "stderr.log"), {
-    flags: "a",
-  });
+  const outStream = fs.createWriteStream(
+    "/home/cayi7350/test.wcgf.com/stdout.log",
+    { flags: "a" },
+  );
+  const errStream = fs.createWriteStream(
+    "/home/cayi7350/test.wcgf.com/stderr.log",
+    { flags: "a" },
+  );
 
   // Exécuter la commande avec redirection des flux stdout et stderr
   const childProcess = exec("npm run start", {
@@ -58,6 +67,8 @@ try {
     // Permet de détacher le processus enfant
     detached: false,
   });
+
+  logToFile(`Processus enfant démarré avec PID: ${childProcess.pid}`);
 
   // Rediriger les flux vers les fichiers
   childProcess.stdout.pipe(outStream);
