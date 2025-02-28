@@ -20,7 +20,7 @@ const RankingComponent = () => {
   const [chartSeries, setChartSeries] = useState<ChartSeries[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState("week");
   const [selectedGame, setSelectedGame] = useState("tarot");
-  const [playerLimit, setPlayerLimit] = useState(3);
+  const [playerLimit] = useState(3);
 
   // Définition des couleurs de base selon le type de classement
   const baseColors = {
