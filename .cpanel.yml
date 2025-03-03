@@ -1,5 +1,6 @@
 deployment:
   tasks:
+    - touch /home/cayi7350/test.wcgf.com/.deploying
     - source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 
     # 3️⃣ Accès au répertoire du projet
@@ -20,6 +21,9 @@ deployment:
 
     # 📋 Copie des fichiers nécessaires
     - cp public/.htaccess build/
+
+    # 📌 Débloquer le monitor après le déploiement
+    - rm -f /home/cayi7350/test.wcgf.com/.deploying
 
     # 🔄 Redémarrage de l'application
     - ./restart.sh
