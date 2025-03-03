@@ -22,5 +22,4 @@ deployment:
     - cp public/.htaccess build/
 
     # 🔄 Redémarrage de l'application
-    - chmod +x restart.sh
     - ./restart.sh
