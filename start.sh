@@ -20,7 +20,8 @@ source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 npx pm2 start npm --name "nextjs" --watch -- start
 
 # Sauvegarder la configuration PM2
-npx pm2 save
+npx  pm2 save --force
+
 
 
 echo "[$(date)] L'application Next.js a été démarrée avec PM2." | tee -a "$LOG_FILE"
