@@ -4,7 +4,7 @@ cd /home/cayi7350/test.wcgf.com || exit 1
 LOG_FILE="/home/cayi7350/test.wcgf.com/nextjs.log"
 DEPLOY_LOCK="/home/cayi7350/test.wcgf.com/.deploying"
 
-echo "[$(date)] 🔍 Vérification du serveur Next.js avec PM2..." >> "$LOG_FILE"
+echo "[$(date)] 🔍 Vérification du serveur test-wcgf avec PM2..." >> "$LOG_FILE"
 
 # Vérifier si un déploiement est en cours
 if [ -f "$DEPLOY_LOCK" ]; then
