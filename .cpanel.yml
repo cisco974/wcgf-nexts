@@ -21,7 +21,7 @@ deployment:
     - npm run build
 
     # 📋 Copie des fichiers nécessaires
-    # - cp public/.htaccess build/
+    - cp public/.htaccess build/
 
     # 📌 Débloquer le monitor après le déploiement
     - rm -f /home/cayi7350/test.wcgf.com/.deploying
