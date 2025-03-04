@@ -8,7 +8,7 @@ echo "[$(date)] Démarrage de l'application Next.js avec PM2..." | tee -a "$LOG_
 cd /home/cayi7350/test.wcgf.com || exit 1
 
 # Vérifier si l'application est déjà en cours d'exécution sous PM2
-if pm2 list | grep -q "test-wcgf"; then
+if npx pm2 list | grep -q "test-wcgf"; then
     echo "[$(date)] L'application est déjà en cours d'exécution sous PM2." | tee -a "$LOG_FILE"
     exit 0
 fi
