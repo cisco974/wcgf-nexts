@@ -18,7 +18,7 @@ fi
 source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 
 # Démarrer l'application avec PM2
-npx pm2 start npm --name "nextjs" --watch -- start
+npx pm2 start npm --name "test-wcgf" --watch -- start
 
 # Sauvegarder la configuration PM2
 npx  pm2 save --force
