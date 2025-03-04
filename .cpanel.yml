@@ -27,4 +27,4 @@ deployment:
     - rm -f /home/cayi7350/test.wcgf.com/.deploying
 
     # 🔄 Redémarrage de l'application
-    #- ./restart.sh
+    - touch /home/cayi7350/test.wcgf.com/tmp/restart.txt

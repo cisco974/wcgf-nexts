@@ -1,7 +1,7 @@
 #!/bin/bash
 source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 cd /home/cayi7350/test.wcgf.com || exit 1
-LOG_FILE="/home/cayi7350/test.wcgf.com/nextjs.log"
+LOG_FILE="/home/cayi7350/test.wcgf.com/monitor.log"
 DEPLOY_LOCK="/home/cayi7350/test.wcgf.com/.deploying"
 
 echo "[$(date)] 🔍 Vérification du serveur test-wcgf avec PM2..." >> "$LOG_FILE"
