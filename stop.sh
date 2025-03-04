@@ -1,4 +1,5 @@
 #!/bin/bash
+source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 LOG_FILE="/home/cayi7350/test.wcgf.com/nextjs.log"
 
 echo "[$(date)] Arrêt de l'application Next.js..." | tee -a "$LOG_FILE"

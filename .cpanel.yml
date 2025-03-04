@@ -12,6 +12,7 @@ deployment:
 
     # 🧹 Nettoyage du cache
     - rm -rf .next
+    - rm -rf build
 
     # 5️⃣ Vérification et installation de Next.js et ses dépendances
     - npm install

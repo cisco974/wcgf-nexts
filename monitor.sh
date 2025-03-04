@@ -1,4 +1,6 @@
 #!/bin/bash
+source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
+cd /home/cayi7350/test.wcgf.com || exit 1
 LOG_FILE="/home/cayi7350/test.wcgf.com/nextjs.log"
 DEPLOY_LOCK="/home/cayi7350/test.wcgf.com/.deploying"
 
