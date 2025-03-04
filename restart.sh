@@ -6,7 +6,7 @@ echo "[$(date)] Redémarrage de l'application Next.js avec PM2..." | tee -a "$LO
 # Vérifier si l'application est en cours d'exécution sous PM2
 if pm2 list | grep -q "test-wcgf"; then
     # Redémarrer l'application avec PM2
-    pm2 restart test-wcgf
+    npx pm2 restart test-wcgf
 
     echo "[$(date)] L'application a été redémarrée avec succès." | tee -a "$LOG_FILE"
 else
