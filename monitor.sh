@@ -13,7 +13,7 @@ if [ -f "$DEPLOY_LOCK" ]; then
 fi
 
 # Vérifier si l'application tourne déjà sous PM2
-if pm2 list | grep -q "test-wcgf"; then
+if npx pm2 list | grep -q "test-wcgf"; then
   echo "[$(date)] ✅ Next.js tourne déjà sous PM2, aucune action nécessaire." >> "$LOG_FILE"
 else
   echo "[$(date)] ❌ Next.js est arrêté. Redémarrage en cours..." >> "$LOG_FILE"

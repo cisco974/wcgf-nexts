@@ -5,7 +5,7 @@ LOG_FILE="/home/cayi7350/test.wcgf.com/nextjs.log"
 echo "[$(date)] Arrêt de l'application Next.js..." | tee -a "$LOG_FILE"
 
 # Vérifier si l'application est en cours d'exécution sous PM2
-if pm2 list | grep -q "test-wcgf"; then
+if npx pm2 list | grep -q "test-wcgf"; then
     # Arrêter l'application avec PM2
     npx pm2 stop test-wcgf
 
