@@ -32,6 +32,7 @@ const RankingComponent = () => {
   useEffect(() => {
     const fetchRankings = async () => {
       try {
+        console.log(process.env.NEXT_PUBLIC_API_URL);
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/rankings?period=${selectedPeriod}&game=${selectedGame}&limit=${playerLimit}`,
         );
