@@ -6,7 +6,6 @@ import Link from "next/link";
 
 // Styles - Minimales car on utilise principalement Bootstrap
 
-import GamePageHeader from "../components/GameHeader";
 import MoreGamesSlider from "../components/MoreGamesSlider";
 import SectionHeader from "../components/SectionHeader";
 import React from "react";
