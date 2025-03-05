@@ -96,13 +96,22 @@ const MoreGamesSlider: React.FC = () => {
               <h3 className="text-danger fs-4 fw-bold mb-2">{game.title}</h3>
               <p className="text-muted mb-4">{game.description}</p>
               <div className="d-flex flex-wrap justify-content-center gap-2">
-                <Button variant="primary" size="sm" className="fw-bold">
+                <Button
+                  size="sm"
+                  className="fw-bold play-game-button  text-white"
+                >
                   <i className="fi fi-brands-apple me-1"></i> iOS
                 </Button>
-                <Button variant="primary" size="sm" className="fw-bold">
+                <Button
+                  size="sm"
+                  className="fw-bold play-game-button text-white"
+                >
                   <i className="fi fi-brands-android me-1"></i> Android
                 </Button>
-                <Button variant="primary" size="sm" className="fw-bold">
+                <Button
+                  size="sm"
+                  className="fw-bold play-game-button text-white"
+                >
                   <i className="fi fi-ss-spade me-1"></i> Online
                 </Button>
               </div>
