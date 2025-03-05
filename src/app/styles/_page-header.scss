@@ -1,7 +1,8 @@
 @use "variables" as *;
 .page-header {
   overflow: hidden;
-  border-bottom: solid 8px #f3004e
+  border-bottom: solid 8px $danger;
+
 }
 
 .tournament-cards-container {

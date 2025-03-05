@@ -5,88 +5,6 @@ import Image from "next/image";
 import PageHeader from "./PageHeader";
 
 const Navbar = () => {
-  const events = [
-    {
-      title: "Tarot",
-      subtitle: "4 players",
-      icon: "/img/store/icon-tarot.webp",
-      month: "MAY",
-      day: "02",
-      buyin: "250",
-    },
-    {
-      title: "Rummy 500",
-      subtitle: "2 players",
-      icon: "/img/store/icon-rummy500.webp",
-      month: "MAY",
-      day: "04",
-      buyin: "500",
-    },
-    {
-      title: "Rummy",
-      subtitle: "3 players",
-      icon: "/img/store/icon-rummy.webp",
-      month: "MAY",
-      day: "06",
-      buyin: "1000",
-    },
-    {
-      title: "Tarot",
-      subtitle: "5 players",
-      icon: "/img/store/icon-tarot.webp",
-      month: "MAY",
-      day: "08",
-      buyin: "500",
-    },
-    {
-      title: "Rummy 500",
-      subtitle: "4 players",
-      icon: "/img/store/icon-rummy500.webp",
-      month: "MAY",
-      day: "10",
-      buyin: "1000",
-    },
-    {
-      title: "Tarot",
-      subtitle: "4 players",
-      icon: "/img/store/icon-tarot.webp",
-      month: "MAY",
-      day: "02",
-      buyin: "250",
-    },
-    {
-      title: "Rummy 500",
-      subtitle: "2 players",
-      icon: "/img/store/icon-rummy500.webp",
-      month: "MAY",
-      day: "04",
-      buyin: "500",
-    },
-    {
-      title: "Rummy",
-      subtitle: "3 players",
-      icon: "/img/store/icon-rummy.webp",
-      month: "MAY",
-      day: "06",
-      buyin: "1000",
-    },
-    {
-      title: "Tarot",
-      subtitle: "5 players",
-      icon: "/img/store/icon-tarot.webp",
-      month: "MAY",
-      day: "08",
-      buyin: "500",
-    },
-    {
-      title: "Rummy 500",
-      subtitle: "4 players",
-      icon: "/img/store/icon-rummy500.webp",
-      month: "MAY",
-      day: "10",
-      buyin: "1000",
-    },
-  ];
   return (
     <>
       {/* Top Bar */}
@@ -193,7 +111,7 @@ const Navbar = () => {
             <li className="nav-item dropdown">
               <Link
                 className="nav-link text-white d-inline-flex align-items-center gap-2"
-                href="#"
+                href="/game"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
@@ -205,7 +123,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     className="dropdown-item d-flex align-items-center gap-3 py-2"
-                    href="#"
+                    href="/game"
                   >
                     <Image
                       src="/img/store/icon-tarot.webp"
@@ -225,7 +143,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     className="dropdown-item d-flex align-items-center gap-3 py-2"
-                    href="#"
+                    href="/game"
                   >
                     <Image
                       src="/img/store/icon-rummy.webp"
@@ -390,8 +308,6 @@ const Navbar = () => {
           </ul>
         </div>
       </nav>
-
-      <PageHeader type="home" events={events} background="/img/header.jpg" />
     </>
   );
 };

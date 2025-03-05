@@ -1,0 +1,37 @@
+@use "variables" as *;
+.gh_nav_button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 120px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $primary;
+  border: none;
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary, 10%);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &.gh_left {
+    left: 10px;
+  }
+
+  &.gh_right {
+    right: 10px;
+  }
+}
+
+.gh_arrow_left {
+  transform: rotate(90deg);
+}
+
+.gh_arrow_right {
+  transform: rotate(-90deg);
+}

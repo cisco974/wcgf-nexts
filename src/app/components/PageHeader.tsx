@@ -1,7 +1,9 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
+// Types
 type Event = {
   title: string;
   subtitle: string;
@@ -11,16 +13,33 @@ type Event = {
   buyin: string;
 };
 
+type GameTab =
+  | "home"
+  | "rules"
+  | "leagues"
+  | "tournaments"
+  | "rankings"
+  | "game"
+  | "play";
+
 type PageHeaderProps = {
-  type?: string;
+  type?: "home" | "game" | "base";
   events?: Event[];
   background?: string;
+  title?: string;
+  logo?: string;
+  activeTab?: GameTab;
+  gamePath?: string; // Chemin de base pour les liens du jeu (ex: "/tarot")
 };
 
 const PageHeader: React.FC<PageHeaderProps> = ({
   type = "home",
   events = [],
   background = "/img/header.jpg",
+  title = "",
+  logo = "",
+  activeTab = "home",
+  gamePath = "/tarot",
 }) => {
   const pageHeaderRef = useRef<HTMLDivElement>(null);
   const fixPartRef = useRef<HTMLDivElement>(null);
@@ -44,6 +63,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         window.pageYOffset || document.documentElement.scrollTop;
 
       if (scrollTop > navbarHeight) {
+        console.log("navbarHeight", navbarHeight);
         pageHeader.classList.add("sticky");
         pageHeader.style.top = `-${pageHeaderHeight - fixPartInitialHeight - navbarHeight - 20}px`;
       } else {
@@ -70,6 +90,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     }
   };
 
+  // Rendu pour l'en-tête de type "home"
   if (type === "home") {
     return (
       <header
@@ -170,6 +191,100 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     );
   }
 
+  // Rendu pour l'en-tête de type "game"
+  if (type === "game") {
+    return (
+      <header
+        className="page-header   z-2"
+        ref={pageHeaderRef}
+        style={{
+          background: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('${background}') no-repeat top -80px center`,
+          backgroundSize: "cover",
+          overflow: "hidden",
+          borderBottom: "solid 8px #f3004e",
+        }}
+      >
+        <div
+          className="container d-flex flex-column align-items-center py-4  py-5 pb-2 "
+          ref={fixPartRef}
+        >
+          <Image
+            src={logo}
+            alt={title}
+            width={130}
+            height={130}
+            className="gh_logo"
+            priority
+          />
+          <h1 className="text-white fw-bold text-center mb-3">{title}</h1>
+          <div className="row fix-part" ref={fixPartRef}>
+            <nav className="d-flex gap-3 justify-content-center flex-wrap fix-part ">
+              <Link
+                href={`${gamePath}`}
+                className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
+                  activeTab === "home" ? "gh_active" : ""
+                }`}
+              >
+                HOME
+              </Link>
+              <Link
+                href={`${gamePath}/rules`}
+                className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
+                  activeTab === "rules" ? "gh_active" : ""
+                }`}
+              >
+                RULES
+              </Link>
+              <Link
+                href={`${gamePath}/leagues`}
+                className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
+                  activeTab === "leagues" ? "gh_active" : ""
+                }`}
+              >
+                LEAGUES
+              </Link>
+              <Link
+                href={`${gamePath}/tournaments`}
+                className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
+                  activeTab === "tournaments" ? "gh_active" : ""
+                }`}
+              >
+                TOURNAMENTS
+              </Link>
+              <Link
+                href={`${gamePath}/rankings`}
+                className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
+                  activeTab === "rankings" ? "gh_active" : ""
+                }`}
+              >
+                RANKINGS
+              </Link>
+              <Link
+                href={`${gamePath}/game`}
+                className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
+                  activeTab === "game" ? "gh_active" : ""
+                }`}
+              >
+                GAME
+              </Link>
+              <Link
+                href="https://webgl.tradigames.com/?g=tarot"
+                className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
+                  activeTab === "play" ? "gh_active" : ""
+                }`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                PLAY
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+  // Rendu pour l'en-tête de type "base" (par défaut pour tout autre type)
   return (
     <header
       className="page-header z-2"
@@ -181,7 +296,13 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         borderBottom: "solid 8px #f3004e",
       }}
     >
-      {/* Other header types would be rendered here if needed */}
+      <div className="container py-4">
+        <div className="row">
+          <div className="col-12 text-center">
+            <h1 className="text-white fw-bold">{title || "TITLE BASE"}</h1>
+          </div>
+        </div>
+      </div>
     </header>
   );
 };

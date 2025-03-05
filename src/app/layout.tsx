@@ -61,7 +61,7 @@ export default function RootLayout({
 
         <Navbar />
 
-        <main id="main-content" className="flex-shrink-0 container">
+        <main id="main-content" className="flex-shrink-0">
           {children}
         </main>
 

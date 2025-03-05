@@ -7,6 +7,7 @@ import SectionHeader from "./components/SectionHeader";
 import Tournament from "./components/Tournament";
 import { Game, Platform } from "./models/models";
 import PlayerStats from "./components/PlayerStats";
+import PageHeader from "./components/PageHeader";
 // Mock data for leagues and divisions
 const leagues = {
   tarot: [
@@ -695,158 +696,245 @@ const playerChartSeries: Record<
     winLossColors: ["#8BC34A", "#E53935"],
   },
 };
-
+const events = [
+  {
+    title: "Tarot",
+    subtitle: "4 players",
+    icon: "/img/store/icon-tarot.webp",
+    month: "MAY",
+    day: "02",
+    buyin: "250",
+  },
+  {
+    title: "Rummy 500",
+    subtitle: "2 players",
+    icon: "/img/store/icon-rummy500.webp",
+    month: "MAY",
+    day: "04",
+    buyin: "500",
+  },
+  {
+    title: "Rummy",
+    subtitle: "3 players",
+    icon: "/img/store/icon-rummy.webp",
+    month: "MAY",
+    day: "06",
+    buyin: "1000",
+  },
+  {
+    title: "Tarot",
+    subtitle: "5 players",
+    icon: "/img/store/icon-tarot.webp",
+    month: "MAY",
+    day: "08",
+    buyin: "500",
+  },
+  {
+    title: "Rummy 500",
+    subtitle: "4 players",
+    icon: "/img/store/icon-rummy500.webp",
+    month: "MAY",
+    day: "10",
+    buyin: "1000",
+  },
+  {
+    title: "Tarot",
+    subtitle: "4 players",
+    icon: "/img/store/icon-tarot.webp",
+    month: "MAY",
+    day: "02",
+    buyin: "250",
+  },
+  {
+    title: "Rummy 500",
+    subtitle: "2 players",
+    icon: "/img/store/icon-rummy500.webp",
+    month: "MAY",
+    day: "04",
+    buyin: "500",
+  },
+  {
+    title: "Rummy",
+    subtitle: "3 players",
+    icon: "/img/store/icon-rummy.webp",
+    month: "MAY",
+    day: "06",
+    buyin: "1000",
+  },
+  {
+    title: "Tarot",
+    subtitle: "5 players",
+    icon: "/img/store/icon-tarot.webp",
+    month: "MAY",
+    day: "08",
+    buyin: "500",
+  },
+  {
+    title: "Rummy 500",
+    subtitle: "4 players",
+    icon: "/img/store/icon-rummy500.webp",
+    month: "MAY",
+    day: "10",
+    buyin: "1000",
+  },
+];
 export default function HomePage() {
   return (
-    <div className="container-fluid py-4">
-      {/* WCGF OFFICIAL GAMES Section */}
-      <section className="mb-5">
-        <SectionHeader
-          title="WCGF OFFICIAL GAMES"
-          subtitle="Explore our selection of official games on WCGF. Discover our classics games like Super Tarot, Super Rummy, and Super Rummy 500 and more card games soon. These games are crafted for both casual players and competitive enthusiasts."
-        />
+    <>
+      <PageHeader type="home" events={events} background="/img/header.jpg" />
 
-        <div className="row g-4">
-          {games.map((game) => (
-            <div className="col-12 col-md-6 col-lg-4" key={game.key}>
-              <GameCard
-                title={game.title}
-                subtitle={game.subtitle}
-                image={game.header_image}
-                icon={game.icon}
-                platforms={platforms}
-              />
-            </div>
-          ))}
-        </div>
+      <div className="container py-4">
+        {/* WCGF OFFICIAL GAMES Section */}
+        <section className="mb-5">
+          <SectionHeader
+            title="WCGF OFFICIAL GAMES"
+            subtitle="Explore our selection of official games on WCGF. Discover our classics games like Super Tarot, Super Rummy, and Super Rummy 500 and more card games soon. These games are crafted for both casual players and competitive enthusiasts."
+          />
 
-        <div className="text-center mt-4">
-          <button className="play-game-button text-white fw-bold">
-            MORE GAMES
-          </button>
-        </div>
-      </section>
-
-      {/* WCGF SUPER LEAGUES Section */}
-      <section className="mb-5">
-        <SectionHeader
-          title="WCGF SUPER LEAGUES"
-          subtitle="Compete in the highly anticipated WCGF leagues, where players worldwide test their skills and climb the ranks."
-        />
-
-        <div className="row g-4">
-          {games.map((game) => {
-            const gameKey = game.key;
-            return (
-              <div className="col-12 col-lg-4" key={`league-${gameKey}`}>
-                <LeagueTable
+          <div className="row g-4">
+            {games.map((game) => (
+              <div className="col-12 col-md-6 col-lg-4" key={game.key}>
+                <GameCard
                   title={game.title}
+                  subtitle={game.subtitle}
+                  image={game.header_image}
+                  icon={game.icon}
+                  platforms={platforms}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-4">
+            <button className="play-game-button text-white fw-bold">
+              MORE GAMES
+            </button>
+          </div>
+        </section>
+
+        {/* WCGF SUPER LEAGUES Section */}
+        <section className="mb-5">
+          <SectionHeader
+            title="WCGF SUPER LEAGUES"
+            subtitle="Compete in the highly anticipated WCGF leagues, where players worldwide test their skills and climb the ranks."
+          />
+
+          <div className="row g-4">
+            {games.map((game) => {
+              const gameKey = game.key;
+              return (
+                <div className="col-12 col-lg-4" key={`league-${gameKey}`}>
+                  <LeagueTable
+                    title={game.title}
+                    logo={game.logo}
+                    leagues={leagues[gameKey as keyof typeof leagues] || []}
+                    divisions={
+                      divisions[gameKey as keyof typeof divisions] || []
+                    }
+                    players={game.players}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-4">
+            <button className="play-game-button">MORE LEAGUES</button>
+          </div>
+        </section>
+
+        {/* WCGF Ranking Section */}
+        <section className="mb-5">
+          <SectionHeader
+            title="WCGF RANKINGS"
+            subtitle="Stay updated with the latest rankings of your favorite games on WCGF. Our detailed leaderboards showcase the top players across different leagues and tournaments. See how you rank against other competitors, analyze their stats, and strategize your next move to secure your position at the top."
+          />
+
+          <div className="row g-4">
+            {rankingCategories.map((rankCategory) => (
+              <div
+                className="col-12 col-lg-4"
+                key={`ranking-${rankCategory.key}`}
+              >
+                <RankingComponent />
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-4">
+            <button className="play-game-button">ALL RANKINGS</button>
+          </div>
+        </section>
+
+        {/* WCGF Tournament Section */}
+        <section className="mb-5">
+          <SectionHeader
+            title="WCGF TOURNAMENTS"
+            subtitle="Dive into the thrill of WCGF tournaments! With exciting buy-ins, dynamic match formats, and generous prize pools."
+          />
+
+          <div className="row g-4">
+            {games.map((game: Game) => (
+              <div className="col-12 col-lg-4" key={`tournament-${game.key}`}>
+                <Tournament
                   logo={game.logo}
-                  leagues={leagues[gameKey as keyof typeof leagues] || []}
-                  divisions={divisions[gameKey as keyof typeof divisions] || []}
-                  players={game.players}
+                  events={game.tournaments}
+                  game={game.title}
                 />
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
 
-        <div className="text-center mt-4">
-          <button className="play-game-button">MORE LEAGUES</button>
-        </div>
-      </section>
+          <div className="text-center mt-4">
+            <button className="play-game-button">ALL RANKINGS</button>
+          </div>
+        </section>
 
-      {/* WCGF Ranking Section */}
-      <section className="mb-5">
-        <SectionHeader
-          title="WCGF RANKINGS"
-          subtitle="Stay updated with the latest rankings of your favorite games on WCGF. Our detailed leaderboards showcase the top players across different leagues and tournaments. See how you rank against other competitors, analyze their stats, and strategize your next move to secure your position at the top."
-        />
+        {/* BEST PLAYERS Section */}
+        <section className="mb-5">
+          <SectionHeader
+            title="BEST PLAYERS OF THE WEEK, MONTH, AND YEAR"
+            subtitle="Explore the champions of the moment on WCGF! From the stars of the week to the legends of the year."
+          />
 
-        <div className="row g-4">
-          {rankingCategories.map((rankCategory) => (
-            <div
-              className="col-12 col-lg-4"
-              key={`ranking-${rankCategory.key}`}
-            >
-              <RankingComponent />
-            </div>
-          ))}
-        </div>
+          <div className="row g-4">
+            {topPlayers.map((player) => {
+              const chartData = playerChartSeries[player.name] || null;
+              if (!chartData) {
+                console.error(`No data found for player: ${player.name}`);
+                return null; // Évite une erreur d'accès
+              }
+              if (!chartData) return null;
 
-        <div className="text-center mt-4">
-          <button className="play-game-button">ALL RANKINGS</button>
-        </div>
-      </section>
+              return (
+                <div className="col-12 col-md-4" key={player.name}>
+                  <PlayerStats
+                    playerName={player.name}
+                    avatar={player.avatar}
+                    title={player.title}
+                    game_icon={player.game_icon}
+                    experience={player.stats.experience}
+                    points={player.stats.points}
+                    coins={player.stats.coins}
+                    wins={player.stats.wins}
+                    losses={player.stats.losses}
+                    recentGames={player.recentGames}
+                    chartSeries={chartData.series}
+                    chartColors={chartData.colors}
+                    winLossSeries={chartData.winLoss}
+                    winLossColors={chartData.winLossColors}
+                    statColors={chartData.statColors}
+                  />
+                </div>
+              );
+            })}
+          </div>
 
-      {/* WCGF Tournament Section */}
-      <section className="mb-5">
-        <SectionHeader
-          title="WCGF TOURNAMENTS"
-          subtitle="Dive into the thrill of WCGF tournaments! With exciting buy-ins, dynamic match formats, and generous prize pools."
-        />
-
-        <div className="row g-4">
-          {games.map((game: Game) => (
-            <div className="col-12 col-lg-4" key={`tournament-${game.key}`}>
-              <Tournament
-                logo={game.logo}
-                events={game.tournaments}
-                game={game.title}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-4">
-          <button className="play-game-button">ALL RANKINGS</button>
-        </div>
-      </section>
-
-      {/* BEST PLAYERS Section */}
-      <section className="mb-5">
-        <SectionHeader
-          title="BEST PLAYERS OF THE WEEK, MONTH, AND YEAR"
-          subtitle="Explore the champions of the moment on WCGF! From the stars of the week to the legends of the year."
-        />
-
-        <div className="row g-4">
-          {topPlayers.map((player) => {
-            const chartData = playerChartSeries[player.name] || null;
-            if (!chartData) {
-              console.error(`No data found for player: ${player.name}`);
-              return null; // Évite une erreur d'accès
-            }
-            if (!chartData) return null;
-
-            return (
-              <div className="col-12 col-md-4" key={player.name}>
-                <PlayerStats
-                  playerName={player.name}
-                  avatar={player.avatar}
-                  title={player.title}
-                  game_icon={player.game_icon}
-                  experience={player.stats.experience}
-                  points={player.stats.points}
-                  coins={player.stats.coins}
-                  wins={player.stats.wins}
-                  losses={player.stats.losses}
-                  recentGames={player.recentGames}
-                  chartSeries={chartData.series}
-                  chartColors={chartData.colors}
-                  winLossSeries={chartData.winLoss}
-                  winLossColors={chartData.winLossColors}
-                  statColors={chartData.statColors}
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="text-center mt-4">
-          <button className="play-game-button">ALL PLAYERS</button>
-        </div>
-      </section>
-    </div>
+          <div className="text-center mt-4">
+            <button className="play-game-button">ALL PLAYERS</button>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }

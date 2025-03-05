@@ -1,0 +1,41 @@
+@use "../variables" as *;
+.gh_header {
+  position: relative;
+  border-bottom: solid 8px $danger;
+  overflow: hidden;
+  z-index: 10;
+  height: 220px;
+  transition: height 0.3s ease;
+
+  &.gh_sticky {
+    position: sticky;
+    top: 0;
+    height: 160px;
+
+    .gh_logo {
+      height: 80px !important;
+      width: auto !important;
+    }
+  }
+}
+
+.gh_logo {
+  height: 130px !important;
+  width: auto !important;
+  transition: height 0.3s ease;
+}
+
+.gh_active {
+  background-color: rgba(255, 255, 255, 0.4);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+// Styles pour les liens non actifs
+a:not(.gh_active) {
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
