@@ -32,14 +32,18 @@
 }
 
 .tournament-card {
-  background: #fff;
+  background: $white;
   border-radius: 10px;
   padding: 8px 12px;
   display: flex;
-  border-left: 8px solid #007BFF;
+  border-left: 8px solid $primary;
   gap: 8px;
   box-shadow: 0 2px 4px #0000001a;
   transition: transform .2s ease
+}
+
+.gh_active{
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .tournament-card:hover {
@@ -47,8 +51,8 @@
 }
 
 .date {
-  background: #007bff;
-  color: #fff;
+  background: $primary;
+  color: $white;
   border-radius: 8px;
   text-align: center;
   min-width: 60px
@@ -59,7 +63,7 @@
 }
 
 .game-name {
-  color: #f3004e;
+  color: $danger;
   font-weight: 700;
   font-size: 1.1rem;
   margin-bottom: 4px

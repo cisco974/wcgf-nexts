@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "Play Tarot Online | Rules, Leagues, and Rankings | WCGF",
     description:
       "Discover the world of Tarot with detailed rules, leagues, rankings, and exciting tournaments.",
-    images: ["/img/tarot/social-share.jpg"],
+    images: ["/img/tarot/tarot-en.webp"],
   },
 };
 
@@ -51,14 +51,14 @@ export default async function TarotPage() {
       />
       {/* Page Header - Client Component */}
 
-      <div className="container my-5">
+      <div className="container my-5 lead">
         {/* Introduction Section */}
         <div className="mb-5">
           <SectionHeader
             title={`Welcome to the official ${gameData.name ?? "Game"}`}
           />
 
-          <p className="lead">
+          <p>
             Discover the world of <strong>{gameData.name}</strong> from World
             Card Games Federation, a thrilling card game of strategy and skill.
             Explore the latest{" "}
@@ -100,9 +100,9 @@ export default async function TarotPage() {
           </p>
         </div>
 
-        <div className="row g-4">
+        <div className="row g-4 ">
           {/* Main Content */}
-          <div className="col-lg-8">
+          <div className="col-9">
             <section className="mb-5">
               <h3 className="text-danger fw-bold text-uppercase mb-3">
                 Tarot Rules Overview
@@ -228,20 +228,17 @@ export default async function TarotPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="col-lg-4">
+          <div className="col-3 px-5">
             {/* Advertisement */}
-            <div className="mb-4">
-              <div className="ad-container">
-                <div className="rounded rounded-4">
-                  <video autoPlay loop muted>
-                    <source src="/videos/rummy/ad1.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </div>
+            <div className="gh_ad_container mb-4 w-100 rounded-4 overflow-hidden">
+              <video autoPlay loop muted className="w-100">
+                <source src="/videos/rummy/ad1.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
+
             {/* CTA Box */}
-            <div className="gh_cta_box  rounded-4 p-4 text-white text-center">
+            <div className="gh_cta_box rounded-4 p-4 text-white text-center w-100">
               <Image
                 src="/img/store/icon-tarot.jpg"
                 alt="Tarot Logo"
@@ -255,11 +252,9 @@ export default async function TarotPage() {
               </p>
 
               <div className="d-flex flex-column gap-3 mb-4">
-                <button className="btn btn-danger fw-bold">Play on iOS</button>
-                <button className="btn btn-danger fw-bold">
-                  Play on Android
-                </button>
-                <button className="btn btn-danger fw-bold">Play Online</button>
+                <button className="play-game-button  ">Play on iOS</button>
+                <button className="play-game-button">Play on Android</button>
+                <button className="play-game-button">Play Online</button>
               </div>
 
               <p className="mb-2">The official partner game</p>
@@ -292,7 +287,7 @@ export default async function TarotPage() {
               History of the Tarot Game
             </h3>
 
-            <h4 className="text-primary fw-bold mb-2">The Origins of Tarot</h4>
+            <h4 className="text-primary  mb-2">The Origins of Tarot</h4>
             <p className="mb-3">
               Tarot, a game with roots tracing back to the 15th century, first
               emerged in Europe, specifically in Italy and France. Initially, it
@@ -303,7 +298,7 @@ export default async function TarotPage() {
               handmade cards that served as both entertainment and works of art.
             </p>
 
-            <h4 className="text-primary fw-bold mb-2">
+            <h4 className="text-primary   mb-2">
               The Evolution of Tarot Through the Centuries
             </h4>
             <p className="mb-3">
@@ -317,9 +312,7 @@ export default async function TarotPage() {
               Gébelin.
             </p>
 
-            <h4 className="text-primary fw-bold mb-2">
-              Tarot in the Modern World
-            </h4>
+            <h4 className="text-primary  mb-2">Tarot in the Modern World</h4>
             <p className="mb-3">
               In the 20th century, Tarot found a secure place both as a
               divinatory tool and as a card game. Societies like the Golden Dawn
@@ -339,23 +332,23 @@ export default async function TarotPage() {
 
           {/* Glossary section */}
           <div className="mb-5">
-            <h3 className="text-danger fw-bold mb-3">Tarot Glossary</h3>
+            <h3 className="text-danger  mb-3">Tarot Glossary</h3>
 
-            <h4 className="text-primary fw-bold mb-2">Trump</h4>
+            <h4 className="text-primary mb-2">Trump</h4>
             <p className="mb-3">
               Special cards in Tarot that can be played when a player cannot
               follow the suit. They have their own hierarchy, typically ranging
               from 1 (the Petit) to 21, plus the Excuse.
             </p>
 
-            <h4 className="text-primary fw-bold mb-2">Oudler</h4>
+            <h4 className="text-primary  mb-2">Oudler</h4>
             <p className="mb-3">
               Specific key cards in Tarot: the 1 (the Petit), the 21 of trumps,
               and the Excuse. These cards are crucial for scoring and winning a
               game.
             </p>
 
-            <h4 className="text-primary fw-bold mb-2">Dog</h4>
+            <h4 className="text-primary   mb-2">Dog</h4>
             <p className="mb-3">
               A pile of cards set aside during the initial deal. These cards are
               later picked up by the taker to improve their hand.

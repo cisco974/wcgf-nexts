@@ -1,17 +1,18 @@
 @use "variables" as *;
+
 .gh_nav_button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 40px;
-  height: 120px;
+  height: 80px;
   z-index: 5;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: $primary;
   border: none;
-  border-radius: 10px;
+  border-radius: 5px;
   transition: background-color 0.3s ease, transform 0.3s ease;
 
   &:hover {
@@ -20,18 +21,39 @@
   }
 
   &.gh_left {
-    left: 10px;
+    left: 0;
   }
 
   &.gh_right {
-    right: 10px;
+    right: 0;
   }
 }
 
-.gh_arrow_left {
-  transform: rotate(90deg);
+// Style for active/inactive slides
+.active-slide {
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-.gh_arrow_right {
-  transform: rotate(-90deg);
+.inactive-slide {
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .gh_nav_button {
+    width: 30px;
+    height: 80px;
+  }
+}
+
+// Button styles
+.play-game-button {
+  padding: 0.375rem 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary, 10%) !important;
+  }
 }

@@ -1,12 +1,18 @@
 @use 'variables';
 
-// Classe minimale pour le conteneur d'annonce
+// Classe pour le conteneur d'annonce
 .gh_ad_container {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease;
+  max-width: 100%;
 
   &:hover {
     transform: scale(1.02);
+  }
+
+  video {
+    display: block;
+    object-fit: cover;
   }
 }
 
@@ -14,10 +20,13 @@
 .gh_cta_box {
   background: url('/img/bg-table.jpg') no-repeat center;
   background-size: cover;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  max-width: 100%;
 
   button {
     transition: transform 0.2s ease;
+    width: 100%;
+    padding: 0.75rem;
 
     &:hover {
       transform: scale(1.05);

@@ -39,7 +39,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   title = "",
   logo = "",
   activeTab = "home",
-  gamePath = "/tarot",
+  gamePath = "/game",
 }) => {
   const pageHeaderRef = useRef<HTMLDivElement>(null);
   const fixPartRef = useRef<HTMLDivElement>(null);
@@ -204,10 +204,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           borderBottom: "solid 8px #f3004e",
         }}
       >
-        <div
-          className="container d-flex flex-column align-items-center py-4  py-5 pb-2 "
-          ref={fixPartRef}
-        >
+        <div className="container d-flex flex-column align-items-center py-4  py-5 pb-2 ">
           <Image
             src={logo}
             alt={title}
