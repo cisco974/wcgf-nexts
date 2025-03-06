@@ -18,7 +18,8 @@ fi
 source /home/cayi7350/nodevenv/test.wcgf.com/22/bin/activate
 
 # Démarrer l'application avec PM2
-npx pm2 start npm --name "test-wcgf" --watch --interpreter bash -- run start
+nohup npx pm2 start npm --name "test-wcgf" --watch --interpreter bash -- run start >> "$LOG_FILE" 2>&1 &
+
 
 # Sauvegarder la configuration PM2
 npx  pm2 save --force
