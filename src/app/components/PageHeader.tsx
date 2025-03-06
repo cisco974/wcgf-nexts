@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -44,6 +44,23 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const pageHeaderRef = useRef<HTMLDivElement>(null);
   const fixPartRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  // État pour stocker l'URL optimisée de l'image d'arrière-plan
+  const [bgImageUrl, setBgImageUrl] = useState<string>("");
+  // État pour gérer l'affichage pendant le chargement de l'image
+
+  useEffect(() => {
+    // Création d'une URL optimisée pour l'image d'arrière-plan
+    // Utilise l'API Next.js Image pour l'optimisation
+    const width = window.innerWidth;
+    // Réduire la taille pour les appareils mobiles
+    const optimizedWidth = width < 768 ? Math.min(width, 640) : width;
+    const quality = width < 768 ? 60 : 80; // Qualité plus basse sur mobile pour un chargement plus rapide
+    const optimizedBgUrl = `/_next/image?url=${encodeURIComponent(background)}&w=${optimizedWidth}&q=${quality}`;
+
+    // Utiliser l'URL optimisée directement dans un environnement Next.js/React
+    // L'approche avec new Image() ne fonctionne pas correctement dans cet environnement
+    setBgImageUrl(optimizedBgUrl);
+  }, [background]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -90,19 +107,46 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     }
   };
 
+  // Style d'arrière-plan commun avec l'URL optimisée - propriétés séparées pour éviter les conflits
+  const headerStyle = {
+    backgroundImage: bgImageUrl
+      ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${bgImageUrl}')`
+      : undefined,
+
+    backgroundPosition: "top -80px center",
+    backgroundSize: "cover",
+  };
+
+  // Commenté pour éviter l'avertissement ESLint sur les variables non utilisées
+  /* Méthode alternative : utiliser une div avec Image pour l'arrière-plan
+  const BackgroundImage = () => (
+    <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0, 0, 0, 0.3)", zIndex: 1 }} />
+      <Image
+        src={background}
+        alt="Background"
+        fill
+        quality={80}
+        priority
+        style={{ objectFit: "cover", objectPosition: "center -80px" }}
+      />
+    </div>
+  );
+  */
+
   // Rendu pour l'en-tête de type "home"
   if (type === "home") {
     return (
       <header
         className="page-header z-2"
         ref={pageHeaderRef}
-        style={{
-          background: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('${background}') no-repeat top -80px center`,
-          backgroundSize: "cover",
-          overflow: "hidden",
-          borderBottom: "solid 8px #f3004e",
-        }}
+        style={headerStyle}
       >
+        {/* Décommentez la ligne suivante et commentez le style headerStyle ci-dessus
+           pour utiliser l'approche Image comme arrière-plan */}
+        {/* Alternative: Décommenter si vous préférez utiliser la technique du composant Image:
+        <BackgroundImage />
+        */}
         <div className="container py-5 pb-2">
           <div className="row">
             <div className="col-12 text-center">
@@ -195,16 +239,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   if (type === "game") {
     return (
       <header
-        className="page-header   z-2"
+        className="page-header z-2"
         ref={pageHeaderRef}
-        style={{
-          background: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('${background}') no-repeat top -80px center`,
-          backgroundSize: "cover",
-          overflow: "hidden",
-          borderBottom: "solid 8px #f3004e",
-        }}
+        style={headerStyle}
       >
-        <div className="container d-flex flex-column align-items-center py-4  py-5 pb-2 ">
+        {/* <BackgroundImage /> */}
+        <div className="container d-flex flex-column align-items-center py-4 py-5 pb-2">
           <Image
             src={logo}
             alt={title}
@@ -215,7 +255,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           />
           <h1 className="text-white fw-bold text-center mb-3">{title}</h1>
           <div className="row fix-part" ref={fixPartRef}>
-            <nav className="d-flex gap-3 justify-content-center flex-wrap fix-part ">
+            <nav className="d-flex gap-3 justify-content-center flex-wrap fix-part">
               <Link
                 href={`${gamePath}`}
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
@@ -283,16 +323,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   // Rendu pour l'en-tête de type "base" (par défaut pour tout autre type)
   return (
-    <header
-      className="page-header z-2"
-      ref={pageHeaderRef}
-      style={{
-        background: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('${background}') no-repeat top -80px center`,
-        backgroundSize: "cover",
-        overflow: "hidden",
-        borderBottom: "solid 8px #f3004e",
-      }}
-    >
+    <header className="page-header z-2" ref={pageHeaderRef} style={headerStyle}>
+      {/* <BackgroundImage /> */}
       <div className="container py-4">
         <div className="row">
           <div className="col-12 text-center">

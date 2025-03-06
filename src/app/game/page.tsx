@@ -47,6 +47,7 @@ export default async function TarotPage() {
       <PageHeader
         logo="/img/tarot/logo.png"
         type="game"
+        title={`SUPER TAROT`}
         background="/img/header/header-tarot.jpg"
       />
       {/* Page Header - Client Component */}
