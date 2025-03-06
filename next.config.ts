@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     workerThreads: false,
     cpus: 4,
   },
+  sassOptions: {
+    additionalData: `@import "./src/app/styles/_variables.scss";`,
+  },
 };
 
 export default nextConfig;
