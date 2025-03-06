@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import styles from "../styles/PageHeader.module.scss";
 
 // Types
 type Event = {
@@ -138,7 +139,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   if (type === "home") {
     return (
       <header
-        className="page-header z-2"
+        className={`${styles["page-header"]} z-2`}
         ref={pageHeaderRef}
         style={headerStyle}
       >
@@ -162,9 +163,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             <div className="row fix-part" ref={fixPartRef}>
               {events.length > 0 && (
                 <div className="col-12 container">
-                  <div className="tournament-carousel mx-4 d-flex align-items-center">
+                  <div
+                    className={`${styles["tournament-carousel"]} mx-4 d-flex align-items-center`}
+                  >
                     <button
-                      className="my-2 btn btn-primary carousel-button prev z-3"
+                      className={`my-2 btn btn-primary ${styles.carouselButton} ${styles.prev} z-3`}
                       type="button"
                       onClick={() => scrollEvents(-1)}
                     >
@@ -177,15 +180,17 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                     </button>
 
                     <div
-                      className="tournament-cards-container text-uppercase gap-2 d-flex flex-nowrap overflow-auto"
+                      className={`${styles["tournament-cards-container"]} text-uppercase gap-2 d-flex flex-nowrap overflow-auto`}
                       ref={containerRef}
                     >
                       {events.map((event, index) => (
                         <div
-                          className="tournament-card flex-shrink-0"
+                          className={`${styles["tournament-card"]} flex-shrink-0`}
                           key={index}
                         >
-                          <div className="date fw-bold d-flex flex-column justify-content-center align-items-center rounded">
+                          <div
+                            className={`${styles.date} fw-bold d-flex flex-column justify-content-center align-items-center rounded`}
+                          >
                             <small className="fs-7 lh-1">{event.month}</small>
                             <span className="fs-4 lh-1">{event.day}</span>
                           </div>
@@ -194,10 +199,14 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             <div className="text-danger fw-bold fs-5 lh-1">
                               {event.title}
                             </div>
-                            <div className="players text-capitalize lh-1">
+                            <div
+                              className={`${styles.players} text-capitalize lh-1`}
+                            >
                               {event.subtitle}
                             </div>
-                            <span className="points rounded-pill lh-1">
+                            <span
+                              className={`${styles.points} rounded-pill lh-1`}
+                            >
                               {event.buyin}
                             </span>
                           </div>
@@ -207,14 +216,14 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             alt={event.title}
                             width={54}
                             height={54}
-                            className="d-flex flex-column justify-content-center align-items-center rounded"
+                            className={`${styles["game-icon"]} d-flex flex-column justify-content-center align-items-center rounded`}
                           />
                         </div>
                       ))}
                     </div>
 
                     <button
-                      className="btn btn-primary carousel-button next"
+                      className={`btn btn-primary ${styles.carouselButton} ${styles.next}`}
                       type="button"
                       onClick={() => scrollEvents(1)}
                     >
@@ -239,7 +248,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   if (type === "game") {
     return (
       <header
-        className="page-header z-2"
+        className={`${styles["page-header"]} z-2`}
         ref={pageHeaderRef}
         style={headerStyle}
       >
@@ -259,7 +268,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <Link
                 href={`${gamePath}`}
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
-                  activeTab === "home" ? "gh_active" : ""
+                  activeTab === "home" ? styles.gh_active : ""
                 }`}
               >
                 HOME
@@ -267,7 +276,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <Link
                 href={`${gamePath}/rules`}
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
-                  activeTab === "rules" ? "gh_active" : ""
+                  activeTab === "rules" ? styles.gh_active : ""
                 }`}
               >
                 RULES
@@ -275,7 +284,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <Link
                 href={`${gamePath}/leagues`}
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
-                  activeTab === "leagues" ? "gh_active" : ""
+                  activeTab === "leagues" ? styles.gh_active : ""
                 }`}
               >
                 LEAGUES
@@ -283,7 +292,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <Link
                 href={`${gamePath}/tournaments`}
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
-                  activeTab === "tournaments" ? "gh_active" : ""
+                  activeTab === "tournaments" ? styles.gh_active : ""
                 }`}
               >
                 TOURNAMENTS
@@ -291,7 +300,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <Link
                 href={`${gamePath}/rankings`}
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
-                  activeTab === "rankings" ? "gh_active" : ""
+                  activeTab === "rankings" ? styles.gh_active : ""
                 }`}
               >
                 RANKINGS
@@ -299,7 +308,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <Link
                 href={`${gamePath}/game`}
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
-                  activeTab === "game" ? "gh_active" : ""
+                  activeTab === "game" ? styles.gh_active : ""
                 }`}
               >
                 GAME
@@ -307,7 +316,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               <Link
                 href="https://webgl.tradigames.com/?g=tarot"
                 className={`text-white text-decoration-none fw-bold px-3 py-2 rounded ${
-                  activeTab === "play" ? "gh_active" : ""
+                  activeTab === "play" ? styles.gh_active : ""
                 }`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -323,7 +332,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   // Rendu pour l'en-tête de type "base" (par défaut pour tout autre type)
   return (
-    <header className="page-header z-2" ref={pageHeaderRef} style={headerStyle}>
+    <header
+      className={`${styles.pageHeader} z-2`}
+      ref={pageHeaderRef}
+      style={headerStyle}
+    >
       {/* <BackgroundImage /> */}
       <div className="container py-4">
         <div className="row">

@@ -19,15 +19,15 @@
   height: 70px
 }
 
-.carousel-button {
+.carouselButton {
   transition: all .3s ease
 }
 
-.carousel-button.prev {
+.carouselButton.prev {
   transform: rotate(90deg)
 }
 
-.carousel-button.next {
+.carouselButton.next {
   transform: rotate(-90deg)
 }
 

@@ -31,4 +31,3 @@ deployment:
 
     # 🔄 Redémarrage de l'application
     - touch /home/cayi7350/test.wcgf.com/tmp/restart.txt
-    - node app.js
