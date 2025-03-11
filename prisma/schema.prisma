@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+model Game {
+  id        Int        @id @default(autoincrement())
+  key       String     @unique
+  title     String
+  subtitle  String?
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  pages     GamePage[]
+
+  @@map("games")
+}
+
+model PageType {
+  id        Int        @id @default(autoincrement())
+  key       String     @unique
+  name      String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  gamePages GamePage[]
+
+  @@map("page_types")
+}
+
+model GamePage {
+  id          Int      @id @default(autoincrement())
+  gameId      Int      @map("game_id")
+  pageTypeId  Int      @map("page_type_id")
+  content     Json     @default("{}")
+  meta        Json     @default("{}")
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  game     Game     @relation(fields: [gameId], references: [id])
+  pageType PageType @relation(fields: [pageTypeId], references: [id])
+
+  @@map("game_pages")
+}

@@ -1,7 +1,7 @@
 
 @import "bootstrap/scss/bootstrap";
-@import "./styles/navbar";
-@import "./styles/footer";
+
+
 
 @import "./styles/game.scss";
 @import "./styles/home.scss";
@@ -45,6 +45,7 @@ body a, a:hover {
   transition: all 0.3s ease;
 
   &:hover {
+    background-color: $danger !important;
     transform: scale(1.05);
     color: white;
   }

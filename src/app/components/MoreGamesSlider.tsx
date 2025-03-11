@@ -1,132 +1,80 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { Button } from "react-bootstrap";
 
-// Types
-interface GameDetails {
-  id: string;
-  title: string;
-  description: string;
-  logo: string;
+// Props type
+interface MoreGamesSliderProps {
+  locale: string;
+  currentGame: string;
 }
 
-const MoreGamesSlider: React.FC = () => {
-  // État pour l'index du slide actif
-  const [activeSlide, setActiveSlide] = useState(1); // Commencer par le milieu
+// Define our games
+const GAMES = [
+  {
+    id: "tarot",
+    title: "Tarot",
+    image: "/img/tarot/thumb.jpg",
+  },
+  {
+    id: "rummy",
+    title: "Rummy",
+    image: "/img/rummy/thumb.jpg",
+  },
+  {
+    id: "bridge",
+    title: "Bridge",
+    image: "/img/bridge/thumb.jpg",
+  },
+];
 
-  // Données des jeux
-  const games: GameDetails[] = [
-    {
-      id: "tarot",
-      title: "SUPER TAROT",
-      description: "The classic French card game of strategy and skill.",
-      logo: "/img/store/icon-tarot.jpg",
-    },
-    {
-      id: "rummy",
-      title: "SUPER RUMMY",
-      description: "Match cards, form sets, and beat your opponents.",
-      logo: "/img/store/icon-rummy.jpg",
-    },
-    {
-      id: "scopa",
-      title: "SUPER SCOPA",
-      description: "The famous Italian card game, easy to learn and play.",
-      logo: "/img/store/icon-scopa.jpg",
-    },
-  ];
-
-  // Fonction pour gérer la navigation du slider
-  const navigateSlider = (direction: "prev" | "next") => {
-    if (direction === "prev") {
-      setActiveSlide((prev) => (prev > 0 ? prev - 1 : games.length - 1));
-    } else {
-      setActiveSlide((prev) => (prev < games.length - 1 ? prev + 1 : 0));
-    }
-  };
+export default function MoreGamesSlider({
+  locale,
+  currentGame,
+}: MoreGamesSliderProps) {
+  // Filter out the current game
+  const otherGames = GAMES.filter((game) => game.id !== currentGame);
 
   return (
-    <div className="container-fluid  bg-light">
-      <div className="row mb-4">
-        <div className="col-12 text-center">
-          <h2 className="text-danger fw-bold fs-2 mb-3">MORE GAMES?</h2>
-          <p className="text-muted mb-4 mx-auto" style={{ maxWidth: "800px" }}>
-            Discover and enjoy more exciting games like Tarot, Rummy,
-            <br />
-            and Scopa. Play online or on your favorite device now!
-          </p>
-        </div>
-      </div>
+    <div className="more-games-section my-5">
+      <h2 className="fw-bold mb-4">More Card Games</h2>
 
-      <div className="position-relative">
-        {/* Bouton navigation gauche */}
-        <Button
-          variant="primary"
-          className="gh_nav_button gh_left"
-          onClick={() => navigateSlider("prev")}
-          aria-label="Previous game"
-        >
-          <span className="fs-4 text-white">&lt;</span>
-        </Button>
-
-        {/* Container des jeux */}
-        <div className="row justify-content-center mx-5">
-          {games.map((game, index) => (
-            <div
-              key={game.id}
-              className={`col-md-4 px-3 ${
-                index === activeSlide ? "active-slide" : "inactive-slide"
-              }`}
+      <div className="row">
+        {otherGames.map((game) => (
+          <div key={game.id} className="col-md-6">
+            <Link
+              href={`/${locale}/${game.id}`}
+              className="text-decoration-none"
             >
-              <div className="bg-white rounded-4 shadow-sm p-4 text-center h-100">
-                <Image
-                  src={game.logo}
-                  alt={game.title}
-                  width={120}
-                  height={120}
-                  className="rounded mb-3"
-                />
-                <h3 className="text-danger fs-4 fw-bold mb-2">{game.title}</h3>
-                <p className="text-muted mb-4">{game.description}</p>
-                <div className="d-flex flex-wrap justify-content-center gap-2">
-                  <Button
-                    size="sm"
-                    className="fw-bold play-game-button bg-primary text-white border-0 px-2"
-                  >
-                    <i className="fi fi-brands-apple me-1"></i> iOS
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="fw-bold play-game-button bg-primary text-white border-0 px-2"
-                  >
-                    <i className="fi fi-brands-android me-1"></i> Android
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="fw-bold play-game-button bg-primary text-white border-0 px-2"
-                  >
-                    <i className="fi fi-ss-spade me-1"></i> Online
-                  </Button>
+              <div className="card mb-4 shadow-sm hover-effect">
+                <div className="row g-0">
+                  <div className="col-4">
+                    <Image
+                      src={game.image}
+                      alt={game.title}
+                      width={150}
+                      height={150}
+                      className="img-fluid rounded-start"
+                    />
+                  </div>
+                  <div className="col-8">
+                    <div className="card-body">
+                      <h5 className="card-title">{game.title}</h5>
+                      <p className="card-text">
+                        Discover the exciting world of {game.title}.
+                      </p>
+                      <span className="btn btn-sm btn-outline-primary">
+                        Learn More
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Bouton navigation droite */}
-        <Button
-          variant="primary"
-          className="gh_nav_button gh_right"
-          onClick={() => navigateSlider("next")}
-          aria-label="Next game"
-        >
-          <span className="fs-4 text-white">&gt;</span>
-        </Button>
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );
-};
-
-export default MoreGamesSlider;
+}

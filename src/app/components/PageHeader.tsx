@@ -45,6 +45,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const pageHeaderRef = useRef<HTMLDivElement>(null);
   const fixPartRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
   // État pour stocker l'URL optimisée de l'image d'arrière-plan
   const [bgImageUrl, setBgImageUrl] = useState<string>("");
   // État pour gérer l'affichage pendant le chargement de l'image
@@ -67,8 +68,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     const handleScroll = () => {
       const pageHeader = pageHeaderRef.current;
       const fixPart = fixPartRef.current;
-      const navbar = document.querySelector(".main-nav");
-
+      const navbar = document.getElementById("main-navbar");
+      // Logs pour déboguer les éléments
+      console.log("pageHeader:", pageHeader);
+      console.log("fixPart:", fixPart);
+      console.log("navbar:", navbar);
       if (!pageHeader || !fixPart || !navbar) {
         console.warn("Required elements not found");
         return;
@@ -139,7 +143,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   if (type === "home") {
     return (
       <header
-        className={`${styles["page-header"]} z-2`}
+        className={`${styles.pageHeader} z-2`}
         ref={pageHeaderRef}
         style={headerStyle}
       >
@@ -248,7 +252,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   if (type === "game") {
     return (
       <header
-        className={`${styles["page-header"]} z-2`}
+        className={`${styles["pageHeader"]} z-2`}
         ref={pageHeaderRef}
         style={headerStyle}
       >

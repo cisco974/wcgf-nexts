@@ -1,13 +1,13 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+
 import "./globals.scss"; // Changed from CSS to SCSS
 import Script from "next/script";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 // Font configuration
-const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NODE_ENV === "production"
@@ -57,9 +57,7 @@ export default function RootLayout({
           href="https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css"
         />
       </head>
-      <body
-        className={`d-flex flex-column min-h-100 bg-light ${inter.className}`}
-      >
+      <body className={`d-flex flex-column min-h-100 bg-light  `}>
         <a href="#main-content" className="visually-hidden-focusable">
           Skip to main content
         </a>

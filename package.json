@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@eslint/eslintrc": "^3",
+    "@prisma/client": "^6.4.1",
     "@types/node": "^20.17.19",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
+    "axios": "^1.8.2",
     "bootstrap": "^5.3.3",
     "eslint": "^9.20.1",
     "eslint-config-next": "^15.1.7",
@@ -25,9 +27,12 @@
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
     "sass": "^1.77.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "prettier": "^3.5.1"
+    "prettier": "^3.5.1",
+    "prisma": "^6.4.1",
+    "tsx": "^4.19.3"
   }
 }
