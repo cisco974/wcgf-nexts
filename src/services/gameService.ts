@@ -1,16 +1,8 @@
 // services/gameService.ts
-import { formatFirestoreData, getDb } from "../../lib/firebase-config";
+import { db, formatFirestoreData } from "../../lib/firebase-config";
 import { GamePage } from "@models/fireStoreModels";
-import { Firestore } from "firebase-admin/firestore";
 
 class GameService {
-  private dbPromise: Promise<Firestore>;
-
-  constructor() {
-    // Obtenir la référence à Firestore dès l'initialisation du service
-    this.dbPromise = getDb();
-  }
-
   /**
    * Récupère une page de jeu par sa clé et son type, dans une langue spécifique
    * @param gameKey - La clé du jeu (ex: "tarot", "rummy", etc.)
@@ -27,13 +19,6 @@ class GameService {
       console.log(
         `Récupération de la page ${pageType} pour le jeu ${gameKey} en ${locale}`,
       );
-
-      // Obtenir l'instance Firestore
-      const db = await this.dbPromise;
-      if (!db) {
-        console.error("La connexion à Firestore n'est pas établie");
-        return null;
-      }
 
       // 1. Récupérer le jeu par sa clé
       const gamesSnapshot = await db
@@ -129,6 +114,5 @@ class GameService {
     }
   }
 }
-
 const gameService = new GameService();
 export default gameService;
