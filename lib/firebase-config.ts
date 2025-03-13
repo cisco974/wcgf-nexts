@@ -20,7 +20,9 @@ async function initializeFirebase() {
     const serviceAccount = JSON.parse(
       version.payload?.data?.toString() || "{}",
     );
-
+    console.log("|||||||||||||");
+    console.log(serviceAccount);
+    console.log("|||||||||||||");
     // Vérifier si Firebase est déjà initialisé
     if (admin.apps.length > 0) {
       console.log("⚠️ Firebase Admin est déjà initialisé.");
