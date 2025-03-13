@@ -38,18 +38,21 @@ async function initializeFirebase() {
       );
     }
 
-    // Conversion au format ServiceAccount attendu par Firebase Admin
-    const servAccount: admin.ServiceAccount = {
-      privateKey: serviceAccount.private_key,
-      clientEmail: serviceAccount.client_email,
-      projectId: serviceAccount.project_id,
-    };
+    // Nettoyage de la clé privée pour éviter d’éventuels problèmes d'encodage
+    serviceAccount.private_key = serviceAccount.private_key.replace(
+      /\\n/g,
+      "\n",
+    );
 
     // Initialiser Firebase si ce n'est pas déjà fait
     if (!admin.apps.length) {
       console.log("🚀 Initialisation de Firebase Admin...");
       admin.initializeApp({
-        credential: admin.credential.cert(servAccount),
+        credential: admin.credential.cert({
+          projectId: serviceAccount.project_id,
+          clientEmail: serviceAccount.client_email,
+          privateKey: serviceAccount.private_key,
+        }),
       });
       console.log("✅ Firebase Admin initialisé avec succès");
     } else {
