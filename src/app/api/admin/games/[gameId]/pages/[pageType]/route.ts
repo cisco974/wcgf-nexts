@@ -1,270 +1,352 @@
+// app/api/admin/games/[gameId]/pages/[pageTypeId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../../../../../../lib/prisma";
+import {
+  db,
+  formatFirestoreData,
+  serverTimestamp,
+} from "@root/lib/firebase-config";
 
 // Type pour les paramètres de route
-type RouteParams = {
+type RouteParams = Promise<{
   gameId: string;
-  pageType: string;
-};
+  pageTypeId: string;
+}>;
 
 /**
- * GET - Récupère une page de jeu spécifique
+ * GET /api/admin/games/[gameId]/pages/[pageTypeId]
+ * Récupère une page de jeu spécifique
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageType } = await params;
-    const gameIdNum = parseInt(gameId, 10);
+    const { gameId, pageTypeId } = await params;
 
-    // Verify game exists
-    const game = await prisma.game.findUnique({
-      where: { id: gameIdNum },
-    });
-
-    if (!game) {
-      return NextResponse.json({ error: "Game not found" }, { status: 404 });
+    // Vérifier si le jeu existe
+    const gameDoc = await db.collection("games").doc(gameId).get();
+    if (!gameDoc.exists) {
+      return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
-    // Find page type
-    const pageTypeObj = await prisma.pageType.findUnique({
-      where: { key: pageType },
-    });
-
-    if (!pageTypeObj) {
+    // Vérifier si le type de page existe
+    const pageTypeDoc = await db.collection("pageTypes").doc(pageTypeId).get();
+    if (!pageTypeDoc.exists) {
       return NextResponse.json(
-        { error: "Page type not found" },
+        { error: "Type de page non trouvé" },
         { status: 404 },
       );
     }
 
-    // Find game page
-    const gamePage = await prisma.gamePage.findFirst({
-      where: {
-        gameId: gameIdNum,
-        pageTypeId: pageTypeObj.id,
-      },
-      include: {
-        pageType: true,
-      },
-    });
+    // Récupérer la page
+    const pageDoc = await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .get();
 
-    if (!gamePage) {
-      return NextResponse.json(
-        { error: "Game page not found" },
-        { status: 404 },
-      );
+    if (!pageDoc.exists) {
+      return NextResponse.json({ error: "Page non trouvée" }, { status: 404 });
     }
 
-    return NextResponse.json(gamePage);
+    // Récupérer et formater les données
+    const rawPageData = pageDoc.data() || {};
+    const rawPageTypeData = pageTypeDoc.data() || {};
+
+    const formattedPageData =
+      formatFirestoreData<Record<string, unknown>>(rawPageData);
+    const formattedPageTypeData =
+      formatFirestoreData<Record<string, unknown>>(rawPageTypeData);
+
+    // Construire l'objet de réponse
+    const page = {
+      id: pageDoc.id,
+      gameId,
+      pageTypeId,
+      content: formattedPageData.content || {},
+      meta: formattedPageData.meta || {},
+      isPublished: formattedPageData.isPublished || false,
+      createdAt: formattedPageData.createdAt || new Date(),
+      updatedAt: formattedPageData.updatedAt || new Date(),
+      pageType: {
+        id: pageTypeDoc.id,
+        key: formattedPageTypeData.key || "",
+        name: formattedPageTypeData.name || "",
+        createdAt: formattedPageTypeData.createdAt || new Date(),
+        updatedAt: formattedPageTypeData.updatedAt || new Date(),
+      },
+    };
+
+    return NextResponse.json(page);
   } catch (error) {
-    console.error("Error fetching game page:", error);
+    console.error("Erreur lors de la récupération de la page:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Erreur serveur interne" },
       { status: 500 },
     );
   }
 }
 
 /**
- * POST - Crée une nouvelle page de jeu
+ * POST /api/admin/games/[gameId]/pages/[pageTypeId]
+ * Crée une nouvelle page de jeu
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageType } = await params;
-    const gameIdNum = parseInt(gameId, 10);
+    const { gameId, pageTypeId } = await params;
     const data = await request.json();
 
-    // Verify game exists
-    const game = await prisma.game.findUnique({
-      where: { id: gameIdNum },
-    });
-
-    if (!game) {
-      return NextResponse.json({ error: "Game not found" }, { status: 404 });
+    // Vérifier si le jeu existe
+    const gameDoc = await db.collection("games").doc(gameId).get();
+    if (!gameDoc.exists) {
+      return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
-    // Find page type
-    const pageTypeObj = await prisma.pageType.findUnique({
-      where: { key: pageType },
-    });
-
-    if (!pageTypeObj) {
+    // Vérifier si le type de page existe
+    const pageTypeDoc = await db.collection("pageTypes").doc(pageTypeId).get();
+    if (!pageTypeDoc.exists) {
       return NextResponse.json(
-        { error: "Page type not found" },
+        { error: "Type de page non trouvé" },
         { status: 404 },
       );
     }
 
-    // Check if game page already exists
-    const existingPage = await prisma.gamePage.findFirst({
-      where: {
-        gameId: gameIdNum,
-        pageTypeId: pageTypeObj.id,
-      },
-    });
+    // Vérifier si la page existe déjà
+    const pageDoc = await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .get();
 
-    if (existingPage) {
+    if (pageDoc.exists) {
       return NextResponse.json(
-        { error: "Game page already exists. Use PUT to update." },
+        {
+          error: "Cette page existe déjà. Utilisez PUT pour la mettre à jour.",
+        },
         { status: 400 },
       );
     }
 
-    // Create new game page
-    const gamePage = await prisma.gamePage.create({
-      data: {
-        gameId: gameIdNum,
-        pageTypeId: pageTypeObj.id,
-        content: data.content || {},
-        meta: data.meta || {},
-        isPublished: data.isPublished || false,
-      },
-      include: {
-        pageType: true,
-      },
-    });
+    // Préparer les données avec timestamps
+    const pageData = {
+      content: data.content || {},
+      meta: data.meta || {},
+      isPublished: data.isPublished || false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
 
-    return NextResponse.json(gamePage);
+    // Créer la page
+    await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .set(pageData);
+
+    // Récupérer la page créée
+    const newPageDoc = await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .get();
+
+    // Récupérer et formater les données
+    const rawNewPageData = newPageDoc.data() || {};
+    const rawPageTypeData = pageTypeDoc.data() || {};
+
+    const formattedNewPageData =
+      formatFirestoreData<Record<string, unknown>>(rawNewPageData);
+    const formattedPageTypeData =
+      formatFirestoreData<Record<string, unknown>>(rawPageTypeData);
+
+    // Construire l'objet de réponse
+    const newPage = {
+      id: newPageDoc.id,
+      gameId,
+      pageTypeId,
+      content: formattedNewPageData.content || {},
+      meta: formattedNewPageData.meta || {},
+      isPublished: formattedNewPageData.isPublished || false,
+      createdAt: formattedNewPageData.createdAt || new Date(),
+      updatedAt: formattedNewPageData.updatedAt || new Date(),
+      pageType: {
+        id: pageTypeDoc.id,
+        key: formattedPageTypeData.key || "",
+        name: formattedPageTypeData.name || "",
+        createdAt: formattedPageTypeData.createdAt || new Date(),
+        updatedAt: formattedPageTypeData.updatedAt || new Date(),
+      },
+    };
+
+    return NextResponse.json(newPage, { status: 201 });
   } catch (error) {
-    console.error("Error creating game page:", error);
+    console.error("Erreur lors de la création de la page:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Erreur serveur interne" },
       { status: 500 },
     );
   }
 }
 
 /**
- * PUT - Met à jour une page de jeu existante
+ * PUT /api/admin/games/[gameId]/pages/[pageTypeId]
+ * Met à jour une page de jeu existante
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageType } = await params;
-    const gameIdNum = parseInt(gameId, 10);
+    const { gameId, pageTypeId } = await params;
     const data = await request.json();
 
-    // Verify game exists
-    const game = await prisma.game.findUnique({
-      where: { id: gameIdNum },
-    });
-
-    if (!game) {
-      return NextResponse.json({ error: "Game not found" }, { status: 404 });
+    // Vérifier si le jeu existe
+    const gameDoc = await db.collection("games").doc(gameId).get();
+    if (!gameDoc.exists) {
+      return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
-    // Find page type
-    const pageTypeObj = await prisma.pageType.findUnique({
-      where: { key: pageType },
-    });
-
-    if (!pageTypeObj) {
+    // Vérifier si le type de page existe
+    const pageTypeDoc = await db.collection("pageTypes").doc(pageTypeId).get();
+    if (!pageTypeDoc.exists) {
       return NextResponse.json(
-        { error: "Page type not found" },
+        { error: "Type de page non trouvé" },
         { status: 404 },
       );
     }
 
-    // Find game page
-    const gamePage = await prisma.gamePage.findFirst({
-      where: {
-        gameId: gameIdNum,
-        pageTypeId: pageTypeObj.id,
-      },
-    });
+    // Vérifier si la page existe
+    const pageDoc = await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .get();
 
-    if (!gamePage) {
+    if (!pageDoc.exists) {
       return NextResponse.json(
-        { error: "Game page not found. Use POST to create." },
+        { error: "Page non trouvée. Utilisez POST pour la créer." },
         { status: 404 },
       );
     }
 
-    // Update game page
-    const updatedGamePage = await prisma.gamePage.update({
-      where: {
-        id: gamePage.id,
-      },
-      data: {
-        content: data.content || gamePage.content,
-        meta: data.meta || gamePage.meta,
-        isPublished:
-          data.isPublished !== undefined
-            ? data.isPublished
-            : gamePage.isPublished,
-      },
-      include: {
-        pageType: true,
-      },
-    });
+    const currentData = pageDoc.data() || {};
 
-    return NextResponse.json(updatedGamePage);
+    // Préparer les données de mise à jour
+    const updateData = {
+      content:
+        data.content !== undefined ? data.content : currentData.content || {},
+      meta: data.meta !== undefined ? data.meta : currentData.meta || {},
+      isPublished:
+        data.isPublished !== undefined
+          ? data.isPublished
+          : currentData.isPublished || false,
+      updatedAt: serverTimestamp(),
+    };
+
+    // Mettre à jour la page
+    await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .update(updateData);
+
+    // Récupérer la page mise à jour
+    const updatedPageDoc = await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .get();
+
+    // Récupérer et formater les données
+    const rawUpdatedPageData = updatedPageDoc.data() || {};
+    const rawPageTypeData = pageTypeDoc.data() || {};
+
+    const formattedUpdatedPageData =
+      formatFirestoreData<Record<string, unknown>>(rawUpdatedPageData);
+    const formattedPageTypeData =
+      formatFirestoreData<Record<string, unknown>>(rawPageTypeData);
+
+    // Construire l'objet de réponse
+    const updatedPage = {
+      id: updatedPageDoc.id,
+      gameId,
+      pageTypeId,
+      content: formattedUpdatedPageData.content || {},
+      meta: formattedUpdatedPageData.meta || {},
+      isPublished: formattedUpdatedPageData.isPublished || false,
+      createdAt: formattedUpdatedPageData.createdAt || new Date(),
+      updatedAt: formattedUpdatedPageData.updatedAt || new Date(),
+      pageType: {
+        id: pageTypeDoc.id,
+        key: formattedPageTypeData.key || "",
+        name: formattedPageTypeData.name || "",
+        createdAt: formattedPageTypeData.createdAt || new Date(),
+        updatedAt: formattedPageTypeData.updatedAt || new Date(),
+      },
+    };
+
+    return NextResponse.json(updatedPage);
   } catch (error) {
-    console.error("Error updating game page:", error);
+    console.error("Erreur lors de la mise à jour de la page:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Erreur serveur interne" },
       { status: 500 },
     );
   }
 }
 
 /**
- * DELETE - Supprime une page de jeu
+ * DELETE /api/admin/games/[gameId]/pages/[pageTypeId]
+ * Supprime une page de jeu
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageType } = await params;
-    const gameIdNum = parseInt(gameId, 10);
+    const { gameId, pageTypeId } = await params;
 
-    // Find page type
-    const pageTypeObj = await prisma.pageType.findUnique({
-      where: { key: pageType },
-    });
-
-    if (!pageTypeObj) {
-      return NextResponse.json(
-        { error: "Page type not found" },
-        { status: 404 },
-      );
+    // Vérifier si le jeu existe
+    const gameDoc = await db.collection("games").doc(gameId).get();
+    if (!gameDoc.exists) {
+      return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
-    // Find game page
-    const gamePage = await prisma.gamePage.findFirst({
-      where: {
-        gameId: gameIdNum,
-        pageTypeId: pageTypeObj.id,
-      },
-    });
+    // Vérifier si la page existe
+    const pageDoc = await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .get();
 
-    if (!gamePage) {
-      return NextResponse.json(
-        { error: "Game page not found" },
-        { status: 404 },
-      );
+    if (!pageDoc.exists) {
+      return NextResponse.json({ error: "Page non trouvée" }, { status: 404 });
     }
 
-    // Delete game page
-    await prisma.gamePage.delete({
-      where: {
-        id: gamePage.id,
-      },
-    });
+    // Supprimer la page
+    await db
+      .collection("games")
+      .doc(gameId)
+      .collection("pages")
+      .doc(pageTypeId)
+      .delete();
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting game page:", error);
+    console.error("Erreur lors de la suppression de la page:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Erreur serveur interne" },
       { status: 500 },
     );
   }

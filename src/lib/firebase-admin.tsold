@@ -1,0 +1,66 @@
+// lib/firebase-admin.ts
+import admin from "firebase-admin";
+import fs from "fs";
+
+// Initialisation unique de Firebase Admin
+if (!admin.apps.length) {
+  try {
+    // Récupérer le chemin depuis la variable d'environnement
+    const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
+    if (!serviceAccountPath || !fs.existsSync(serviceAccountPath)) {
+      console.error(
+        `Le fichier de configuration Firebase n'existe pas à l'emplacement: ${serviceAccountPath}`,
+      );
+      throw new Error("Fichier de configuration Firebase non trouvé");
+    }
+
+    // Charger le fichier JSON
+    const serviceAccount = JSON.parse(
+      fs.readFileSync(serviceAccountPath, "utf8"),
+    );
+
+    // Initialiser l'application Firebase Admin
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+
+    console.log("Firebase Admin initialisé avec succès");
+  } catch (error) {
+    console.error("Erreur d'initialisation Firebase:", error);
+  }
+}
+
+// Exporter Firestore
+export const db = admin.firestore();
+
+// Exporter des fonctions utilitaires
+export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
+
+// Fonction utilitaire pour formater les dates Firestore
+export function formatFirestoreData(data: any): any {
+  if (!data) return data;
+
+  // Si c'est un tableau, formater chaque élément
+  if (Array.isArray(data)) {
+    return data.map((item) => formatFirestoreData(item));
+  }
+
+  // Si c'est un objet
+  if (typeof data === "object") {
+    // Si c'est un Timestamp Firestore, convertir en Date
+    if (data instanceof admin.firestore.Timestamp) {
+      return data.toDate();
+    }
+
+    // Traiter les objets normaux
+    const result: any = {};
+    for (const key in data) {
+      result[key] = formatFirestoreData(data[key]);
+    }
+    return result;
+  }
+
+  // Si c'est une valeur primitive, la retourner telle quelle
+  return data;
+}

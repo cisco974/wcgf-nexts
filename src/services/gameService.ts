@@ -1,121 +1,123 @@
-import { GameContent, GamePageData } from "../app/models/models";
-import prisma from "../../lib/prisma";
-import { GamePage } from "@prisma/client";
+// services/gameService.ts
+import { db, formatFirestoreData } from "../../lib/firebase-config";
+import { GamePage } from "../app/models/fireStoreModels";
 
-/**
- * Récupère les données d'une page de jeu en fonction de la clé du jeu, du type de page et de la langue
- *
- * @param gameKey - La clé du jeu (ex: "tarot", "rummy", "bridge")
- * @param pageTypeKey - Le type de page (ex: "game", "rules", "strategy")
- * @param locale - La langue (ex: "fr", "en", "es")
- * @returns Les données de la page ou null si non trouvé
- */
-export async function fetchGamePage(
-  gameKey: string,
-  pageTypeKey: string,
-  locale: string,
-): Promise<GamePageData | null> {
-  try {
-    // 1. Récupérer le jeu par sa clé
-    const game = await prisma.game.findUnique({
-      where: { key: gameKey },
-    });
+class GameService {
+  /**
+   * Récupère une page de jeu par sa clé et son type, dans une langue spécifique
+   * @param gameKey - La clé du jeu (ex: "tarot", "rummy", etc.)
+   * @param pageType - Le type de page (ex: "game", "rules", etc.)
+   * @param locale - La langue (en, fr, es)
+   * @returns La page du jeu ou null si non trouvée
+   */
+  async getGamePageByLocale(
+    gameKey: string,
+    pageType: string,
+    locale: "en" | "fr" | "es",
+  ): Promise<GamePage | null> {
+    try {
+      console.log(
+        `Récupération de la page ${pageType} pour le jeu ${gameKey} en ${locale}`,
+      );
 
-    if (!game) {
-      console.error(`Game with key '${gameKey}' not found`);
-      return null;
-    }
+      if (!db) {
+        console.error("La connexion à Firestore n'est pas établie");
+        return null;
+      }
 
-    // 2. Récupérer le type de page par sa clé
-    const pageType = await prisma.pageType.findUnique({
-      where: { key: pageTypeKey },
-    });
+      // 1. Récupérer le jeu par sa clé
+      const gamesSnapshot = await db
+        .collection("games")
+        .where("key", "==", gameKey)
+        .limit(1)
+        .get();
 
-    if (!pageType) {
-      console.error(`PageType with key '${pageTypeKey}' not found`);
-      return null;
-    }
+      if (gamesSnapshot.empty) {
+        console.error(`Jeu avec la clé '${gameKey}' non trouvé`);
+        return null;
+      }
 
-    // 3. Récupérer la page correspondante
-    const gamePage = await prisma.gamePage.findFirst({
-      where: {
-        gameId: game.id,
-        pageTypeId: pageType.id,
-        isPublished: true,
-      },
-    });
+      const gameDoc = gamesSnapshot.docs[0];
+      const gameId = gameDoc.id;
 
-    if (!gamePage) {
+      // 2. Récupérer le type de page par sa clé
+      const pageTypesSnapshot = await db
+        .collection("pageTypes")
+        .where("key", "==", pageType)
+        .limit(1)
+        .get();
+
+      if (pageTypesSnapshot.empty) {
+        console.error(`Type de page avec la clé '${pageType}' non trouvé`);
+        return null;
+      }
+
+      const pageTypeDoc = pageTypesSnapshot.docs[0];
+      const pageTypeId = pageTypeDoc.id;
+
+      // 3. Récupérer la page
+      const pageRef = db
+        .collection("games")
+        .doc(gameId)
+        .collection("pages")
+        .doc(pageTypeId);
+
+      const pageDoc = await pageRef.get();
+
+      if (!pageDoc.exists) {
+        console.error(
+          `Page non trouvée pour le jeu '${gameKey}' et le type '${pageType}'`,
+        );
+        return null;
+      }
+
+      // 4. Extraire les données brutes
+      const rawData = pageDoc.data();
+      if (!rawData) {
+        console.error(
+          `Document trouvé mais sans données pour ${gameKey}/${pageType}`,
+        );
+        return null;
+      }
+
+      // 5. Formater les données (sans inclure l'id qui sera ajouté séparément)
+      const pageData = formatFirestoreData<Omit<GamePage, "id">>(rawData);
+
+      // 6. Vérifier si la page est publiée
+      if (!pageData.isPublished) {
+        console.error(
+          `Page pour '${gameKey}/${pageType}' existe mais n'est pas publiée`,
+        );
+        return null;
+      }
+
+      // 7. Vérifier si le contenu existe pour la locale demandée
+      if (!pageData.content || !pageData.content[locale]) {
+        console.warn(
+          `Le contenu pour la locale ${locale} n'existe pas dans la page ${pageType} du jeu ${gameKey}`,
+        );
+        // On continue quand même - la page pourrait utiliser un contenu de secours
+      }
+
+      // 8. Retourner l'objet correctement formé
+      return {
+        id: pageDoc.id, // ID provenant du document Firestore
+        gameId,
+        pageTypeId,
+        content: pageData.content || {},
+        meta: pageData.meta || {},
+        isPublished: pageData.isPublished,
+        createdAt: pageData.createdAt || new Date(),
+        updatedAt: pageData.updatedAt || new Date(),
+      };
+    } catch (error) {
       console.error(
-        `Published game page not found for game '${gameKey}' and page type '${pageTypeKey}'`,
+        `Erreur lors de la récupération de la page ${pageType} du jeu ${gameKey} en ${locale}:`,
+        error,
       );
       return null;
     }
-
-    // 4. Extraire le contenu et les métadonnées pour la langue spécifiée
-    const content = getContentForLanguage(gamePage, locale);
-    const meta = getMetaForLanguage(gamePage, locale);
-
-    // 5. Si le contenu n'existe pas pour cette langue, essayer avec la langue par défaut (en)
-    const fallbackLocale = "en";
-    const finalContent =
-      Object.keys(content).length === 0 && locale !== fallbackLocale
-        ? getContentForLanguage(gamePage, fallbackLocale)
-        : content;
-
-    const finalMeta =
-      Object.keys(meta).length === 0 && locale !== fallbackLocale
-        ? getMetaForLanguage(gamePage, fallbackLocale)
-        : meta;
-
-    // 6. Retourner les données structurées
-    return {
-      meta: finalMeta,
-      content: finalContent,
-    };
-  } catch (error) {
-    console.error("Error fetching game page:", error);
-    throw error;
   }
 }
-
-/**
- * Récupère le contenu pour une langue spécifique
- */
-function getContentForLanguage(
-  gamePage: GamePage,
-  locale: string,
-): GameContent {
-  // Utilise une conversion de type en deux étapes pour éviter les erreurs TypeScript
-  const rawContent = gamePage.content as unknown as Record<string, unknown>;
-  const localeContent = rawContent[locale] || {};
-
-  // Conversion vers le type GameContent
-  return localeContent as unknown as GameContent;
-}
-
-/**
- * Récupère les métadonnées pour une langue spécifique
- */
-function getMetaForLanguage(
-  gamePage: GamePage,
-  locale: string,
-): GamePageData["meta"] {
-  // Utilise une conversion de type en deux étapes pour éviter les erreurs TypeScript
-  const rawMeta = gamePage.meta as unknown as Record<
-    string,
-    Record<string, string>
-  >;
-  const localeMeta = rawMeta[locale] || {};
-
-  return {
-    title: localeMeta.title || "",
-    description: localeMeta.description || "",
-    keywords: localeMeta.keywords || "",
-    og_title: localeMeta.og_title || localeMeta.title || "",
-    og_description: localeMeta.og_description || localeMeta.description || "",
-    og_image: localeMeta.og_image || "",
-  };
-}
-
-export default fetchGamePage;
+const gameService = new GameService();
+export default gameService;

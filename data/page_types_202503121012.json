@@ -1,0 +1,45 @@
+{
+"page_types": [
+	{
+		"id" : 1,
+		"key" : "home",
+		"name" : "Page d'accueil",
+		"created_at" : "2025-03-07T03:14:37.000Z",
+		"updated_at" : "2025-03-07T03:14:37.000Z"
+	},
+	{
+		"id" : 2,
+		"key" : "rules",
+		"name" : "Règles du jeu",
+		"created_at" : "2025-03-07T03:14:37.000Z",
+		"updated_at" : "2025-03-07T03:14:37.000Z"
+	},
+	{
+		"id" : 3,
+		"key" : "leagues",
+		"name" : "Ligues",
+		"created_at" : "2025-03-07T03:14:37.000Z",
+		"updated_at" : "2025-03-07T03:14:37.000Z"
+	},
+	{
+		"id" : 4,
+		"key" : "tournaments",
+		"name" : "Tournois",
+		"created_at" : "2025-03-07T03:14:37.000Z",
+		"updated_at" : "2025-03-07T03:14:37.000Z"
+	},
+	{
+		"id" : 5,
+		"key" : "rankings",
+		"name" : "Classements",
+		"created_at" : "2025-03-07T03:14:37.000Z",
+		"updated_at" : "2025-03-07T03:14:37.000Z"
+	},
+	{
+		"id" : 6,
+		"key" : "game",
+		"name" : "Présentation du jeu",
+		"created_at" : "2025-03-07T03:14:37.000Z",
+		"updated_at" : "2025-03-07T03:14:37.000Z"
+	}
+]}

@@ -1,0 +1,211 @@
+// lib/firestore.ts
+import admin from "firebase-admin";
+import fs from "fs";
+import { Game, GamePage, PageType } from "../app/models/fireStoreModels";
+
+// Types exportables pour l'usage dans les routes API
+export type FirestoreTimestamp = admin.firestore.Timestamp;
+
+// Singleton pattern pour Firebase Admin
+if (!admin.apps.length) {
+  try {
+    const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
+    if (!serviceAccountPath || !fs.existsSync(serviceAccountPath)) {
+      throw new Error(
+        `Le fichier service-account.json n'existe pas à l'emplacement: ${serviceAccountPath}`,
+      );
+    }
+
+    const serviceAccount = JSON.parse(
+      fs.readFileSync(serviceAccountPath, "utf8"),
+    );
+
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+
+    console.log("Firebase Admin initialisé avec succès");
+  } catch (error) {
+    console.error("Erreur d'initialisation Firebase:", error);
+  }
+}
+
+// Client Firestore
+export const db = admin.apps.length ? admin.firestore() : null;
+export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
+
+// Service Firestore complet
+class FirestoreServiceClass {
+  async getAllDocuments<T>(collection: string): Promise<T[]> {
+    if (!db) return [];
+
+    try {
+      const snapshot = await db.collection(collection).get();
+      return snapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          }) as T,
+      );
+    } catch (error) {
+      console.error(`Error fetching documents from ${collection}:`, error);
+      return [];
+    }
+  }
+
+  async getDocument<T extends Game | PageType | GamePage>(
+    collection: string,
+    id: string,
+  ): Promise<T | null> {
+    if (!db) return null;
+
+    try {
+      const doc = await db.collection(collection).doc(id).get();
+      if (!doc.exists) return null;
+
+      return { id: doc.id, ...doc.data() } as T;
+    } catch (error) {
+      console.error(`Error fetching document ${id} from ${collection}:`, error);
+      return null;
+    }
+  }
+  async getDocumentByField<T>(
+    collection: string,
+    field: string,
+    value: string | number | boolean | admin.firestore.Timestamp,
+  ): Promise<T | null> {
+    if (!db) return null;
+
+    try {
+      const snapshot = await db
+        .collection(collection)
+        .where(field, "==", value)
+        .limit(1)
+        .get();
+
+      if (snapshot.empty) return null;
+
+      const doc = snapshot.docs[0];
+      return { id: doc.id, ...doc.data() } as T;
+    } catch (error) {
+      console.error(
+        `Error fetching document by field ${field} from ${collection}:`,
+        error,
+      );
+      return null;
+    }
+  }
+
+  async createDocument<T extends Game | PageType | GamePage>(
+    collection: string,
+    id: string,
+    data: T,
+  ): Promise<T> {
+    if (!db) throw new Error("Firestore n'est pas initialisé");
+
+    try {
+      const docRef = db.collection(collection).doc(id);
+      const timestamp = serverTimestamp();
+
+      await docRef.set({ ...data, createdAt: timestamp, updatedAt: timestamp });
+
+      return { ...data, id, createdAt: timestamp, updatedAt: timestamp };
+    } catch (error) {
+      console.error(`Error creating document in ${collection}:`, error);
+      throw error;
+    }
+  }
+  async updateMultipleDocuments<T extends Game | PageType | GamePage>(
+    collection: string,
+    updates: { id: string; data: Partial<T> }[],
+  ): Promise<boolean> {
+    if (!db) throw new Error("Firestore n'est pas initialisé");
+
+    try {
+      const batch = db.batch();
+
+      updates.forEach(({ id, data }) => {
+        const docRef = db.collection(collection).doc(id);
+        batch.update(docRef, { ...data, updatedAt: serverTimestamp() });
+      });
+
+      await batch.commit();
+      return true;
+    } catch (error) {
+      console.error(
+        `Error updating multiple documents in ${collection}:`,
+        error,
+      );
+      return false;
+    }
+  }
+
+  async updateDocument<T>(
+    collection: string,
+    id: string,
+    data: Record<string, unknown>,
+  ): Promise<T> {
+    if (!db) throw new Error("Firestore n'est pas initialisé");
+
+    try {
+      return await db.runTransaction(async (transaction) => {
+        const docRef = db.collection(collection).doc(id);
+        transaction.update(docRef, { ...data, updatedAt: serverTimestamp() });
+
+        const updatedDoc = await docRef.get();
+        return { id: updatedDoc.id, ...updatedDoc.data() } as T;
+      });
+    } catch (error) {
+      console.error(`Error updating document ${id} in ${collection}:`, error);
+      throw error;
+    }
+  }
+
+  async deleteDocument(collection: string, id: string): Promise<boolean> {
+    if (!db) return false;
+
+    try {
+      await db.collection(collection).doc(id).delete();
+      return true;
+    } catch (error) {
+      console.error(`Error deleting document ${id} from ${collection}:`, error);
+      return false;
+    }
+  }
+
+  convertTimestamps<T>(obj: T): T {
+    if (!obj) return obj;
+
+    if (Array.isArray(obj)) {
+      return obj.map((item) => this.convertTimestamps(item)) as T;
+    }
+
+    if (typeof obj === "object") {
+      const result: Record<string, unknown> = {};
+
+      for (const key in obj) {
+        const value = obj[key];
+
+        if (value instanceof admin.firestore.Timestamp) {
+          result[key] = value.toDate();
+        } else if (typeof value === "object" && value !== null) {
+          result[key] = this.convertTimestamps(value);
+        } else {
+          result[key] = value;
+        }
+      }
+
+      return result as T;
+    }
+
+    return obj;
+  }
+}
+
+// Créer une instance globale du service Firestore
+const FirestoreService = new FirestoreServiceClass();
+
+// Exporter le service comme export par défaut
+export default FirestoreService;
