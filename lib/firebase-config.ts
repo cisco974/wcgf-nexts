@@ -39,7 +39,7 @@ async function initializeFirebase() {
 
     // Nettoyage de la clé privée pour éviter d’éventuels problèmes d'encodage
     serviceAccount.private_key = serviceAccount.private_key.replace(
-      /\\n/g,
+      /\n/g,
       "\n",
     );
 
@@ -59,17 +59,18 @@ async function initializeFirebase() {
   }
 }
 
-// Exécuter l'initialisation
+// Exécuter l'initialisation et attendre qu'elle soit terminée
 await initializeFirebase();
 
+// Vérifier que _db a bien été initialisé avant l'export
 if (!_db) {
   throw new Error(
     "🔥 Firebase Firestore n'a pas été initialisé correctement !",
   );
 }
 
-// Exporter la base de données Firestore et l'horodatage serveur
-export const db = _db;
+// Assurer que db a bien un type correct
+export const db: admin.firestore.Firestore = _db;
 export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
 
 // Fonction utilitaire pour formater les données Firestore (conversion des timestamps, etc.)
