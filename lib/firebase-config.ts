@@ -17,25 +17,42 @@ async function initializeFirebase() {
     const [version] = await client.accessSecretVersion({
       name: "projects/1081763355576/secrets/GOOGLE_APPLICATION_CREDENTIALS/versions/latest",
     });
-    const serviceAccount = JSON.parse(
-      version.payload?.data?.toString() || "{}",
-    );
-    console.log("|||||||||||||");
-    console.log(serviceAccount);
-    console.log("|||||||||||||");
-    // Vérifier si Firebase est déjà initialisé
-    if (admin.apps.length > 0) {
-      console.log("⚠️ Firebase Admin est déjà initialisé.");
-      _db = admin.firestore();
-      return;
+
+    const secretPayload = version.payload?.data?.toString();
+    console.log("📜 Secret brut récupéré :", secretPayload);
+
+    if (!secretPayload) {
+      throw new Error("❌ Impossible de récupérer le secret Firebase");
     }
 
-    console.log("🚀 Initialisation de Firebase Admin...");
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-    console.log("✅ Firebase Admin initialisé avec succès");
+    const serviceAccount = JSON.parse(secretPayload);
 
+    if (
+      !serviceAccount ||
+      !serviceAccount.private_key ||
+      !serviceAccount.client_email
+    ) {
+      throw new Error(
+        "❌ Clé Firebase invalide ou mal formée : une propriété est manquante",
+      );
+    }
+
+    // Nettoyage de la clé privée pour éviter d’éventuels problèmes d'encodage
+    serviceAccount.private_key = serviceAccount.private_key.replace(
+      /\\n/g,
+      "\n",
+    );
+
+    // Initialiser Firebase si ce n'est pas déjà fait
+    if (!admin.apps.length) {
+      console.log("🚀 Initialisation de Firebase Admin...");
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+      });
+      console.log("✅ Firebase Admin initialisé avec succès");
+    } else {
+      console.log("⚠️ Firebase Admin était déjà initialisé");
+    }
     _db = admin.firestore();
   } catch (error) {
     console.error("❌ Erreur d'initialisation Firebase:", error);
