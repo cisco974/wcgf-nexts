@@ -30,24 +30,26 @@ async function initializeFirebase() {
     if (
       !serviceAccount ||
       !serviceAccount.private_key ||
-      !serviceAccount.client_email
+      !serviceAccount.client_email ||
+      !serviceAccount.project_id
     ) {
       throw new Error(
         "❌ Clé Firebase invalide ou mal formée : une propriété est manquante",
       );
     }
 
-    // Nettoyage de la clé privée pour éviter d’éventuels problèmes d'encodage
-    serviceAccount.private_key = serviceAccount.private_key.replace(
-      /\n/g,
-      "\n",
-    );
+    // Conversion au format ServiceAccount attendu par Firebase Admin
+    const servAccount: admin.ServiceAccount = {
+      privateKey: serviceAccount.private_key,
+      clientEmail: serviceAccount.client_email,
+      projectId: serviceAccount.project_id,
+    };
 
     // Initialiser Firebase si ce n'est pas déjà fait
     if (!admin.apps.length) {
       console.log("🚀 Initialisation de Firebase Admin...");
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+        credential: admin.credential.cert(servAccount),
       });
       console.log("✅ Firebase Admin initialisé avec succès");
     } else {

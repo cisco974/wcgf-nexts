@@ -15,7 +15,7 @@ import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
 import Alert from "react-bootstrap/Alert";
 
-import { GameData, PageType } from "../../../models/models";
+import { GameData, PageType } from "@models/models";
 
 // Import types from models.ts
 
