@@ -1,88 +1,122 @@
+// lib/firebase-config.ts
 import admin from "firebase-admin";
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
+import { cert, getApps, initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
-// Type pour faciliter l'utilisation ailleurs
 export type FirestoreTimestamp = admin.firestore.Timestamp;
 export type FirestoreData = Record<string, unknown>;
 
-// Initialisation unique de Firebase Admin
-let _db: admin.firestore.Firestore | null = null;
-const client = new SecretManagerServiceClient();
+// Initialisation de Firebase - Ne s'exécute qu'une seule fois
+let dbInstance: admin.firestore.Firestore | null = null;
 
-console.log("🔄 Début de l'initialisation Firebase...");
-
-try {
-  console.log(
-    "🔐 Récupération du secret Firebase depuis Google Secret Manager...",
-  );
-  const [version] = await client.accessSecretVersion({
-    name: "projects/1081763355576/secrets/GOOGLE_APPLICATION_CREDENTIALS/versions/latest",
-  });
-
-  const secretPayload = version.payload?.data?.toString();
-  if (!secretPayload) {
-    throw new Error(
-      "❌ Impossible de récupérer le secret Firebase : Secret vide",
-    );
+export async function getDb(): Promise<admin.firestore.Firestore> {
+  // Si l'instance existe déjà, la retourner
+  if (dbInstance) {
+    return dbInstance;
   }
 
-  console.log("📜 Secret brut récupéré avec succès");
-  const serviceAccount = JSON.parse(secretPayload);
-
-  if (
-    !serviceAccount ||
-    !serviceAccount.private_key ||
-    !serviceAccount.client_email ||
-    !serviceAccount.project_id
-  ) {
-    throw new Error(
-      "❌ Clé Firebase invalide ou mal formée : une propriété est manquante",
-    );
+  // Éviter les initialisations multiples (côté client)
+  if (typeof window !== "undefined") {
+    throw new Error("Firebase ne doit pas être initialisé côté client");
   }
 
-  // Nettoyage de la clé privée
-  serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
-
-  // Désactiver GOOGLE_APPLICATION_CREDENTIALS pour éviter l'erreur ENOENT
-  process.env.GOOGLE_APPLICATION_CREDENTIALS = "";
+  console.log("🔄 Initialisation de Firebase...");
 
   // Vérifier si Firebase est déjà initialisé
-  if (!admin.apps.length) {
-    console.log("🚀 Initialisation de Firebase Admin...");
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-    console.log("✅ Firebase Admin initialisé avec succès");
-  } else {
-    console.log("⚠️ Firebase Admin était déjà initialisé");
+  if (getApps().length > 0) {
+    console.log("⚠️ Firebase app déjà initialisé, récupération de Firestore");
+    dbInstance = getFirestore();
+    return dbInstance;
   }
 
-  _db = admin.firestore();
-  console.log("🔥 Firestore initialisé");
-} catch (error) {
-  console.error(
-    "❌ Erreur critique lors de l'initialisation de Firebase:",
-    error,
-  );
-  _db = null; // Empêcher l'utilisation d'un Firestore non initialisé
+  try {
+    // Essai d'initialisation via variables d'environnement
+    if (
+      process.env.FIREBASE_PROJECT_ID &&
+      process.env.FIREBASE_CLIENT_EMAIL &&
+      process.env.FIREBASE_PRIVATE_KEY
+    ) {
+      console.log("🔑 Initialisation avec variables d'environnement");
+
+      initializeApp({
+        credential: cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+        }),
+      });
+
+      dbInstance = getFirestore();
+      console.log(
+        "✅ Firebase initialisé avec succès via variables d'environnement",
+      );
+      return dbInstance;
+    }
+
+    // Sinon, essayer via Secret Manager
+    console.log("🔐 Initialisation via Secret Manager");
+    const client = new SecretManagerServiceClient();
+
+    const [version] = await client.accessSecretVersion({
+      name: "projects/1081763355576/secrets/GOOGLE_APPLICATION_CREDENTIALS/versions/latest",
+    });
+
+    const secretPayload = version.payload?.data?.toString();
+    if (!secretPayload) {
+      throw new Error("Secret Manager: payload vide");
+    }
+
+    const serviceAccount = JSON.parse(secretPayload);
+
+    if (
+      !serviceAccount.private_key ||
+      !serviceAccount.client_email ||
+      !serviceAccount.project_id
+    ) {
+      throw new Error("Format de clé de service invalide");
+    }
+
+    // Nettoyage de la clé privée
+    serviceAccount.private_key = serviceAccount.private_key.replace(
+      /\\n/g,
+      "\n",
+    );
+
+    // Initialisation de l'app
+    initializeApp({
+      credential: cert(serviceAccount),
+    });
+
+    dbInstance = getFirestore();
+    console.log("✅ Firebase initialisé avec succès via Secret Manager");
+    return dbInstance;
+  } catch (error) {
+    console.error("❌ Erreur lors de l'initialisation de Firebase:", error);
+
+    // Dernier recours - identifiants implicites
+    try {
+      console.log("🔄 Tentative avec identifiants implicites (ADC)");
+      initializeApp();
+      dbInstance = getFirestore();
+      console.log("✅ Firebase initialisé avec identifiants implicites");
+      return dbInstance;
+    } catch (fallbackError) {
+      console.error(
+        "❌ Échec total de l'initialisation Firebase:",
+        fallbackError,
+      );
+      throw new Error("Firebase Firestore non disponible");
+    }
+  }
 }
 
-// Vérifier que _db a bien été initialisé avant l'export
-if (!_db) {
-  console.error(
-    "🔥 Firebase Firestore n'a pas été initialisé correctement. L'application ne pourra pas interagir avec Firestore.",
-  );
-  throw new Error("🔥 Firebase Firestore non disponible");
-}
-
-// Assurer que db a bien un type correct
-export const db: admin.firestore.Firestore = _db;
 export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
 
-// Fonction utilitaire pour formater les données Firestore (conversion des timestamps, etc.)
+// Fonction utilitaire pour formater les données Firestore
 export function formatFirestoreData<T>(data: unknown): T {
   if (data === null || data === undefined) {
-    return {} as T; // Retourner un objet vide plutôt que null/undefined
+    return {} as T;
   }
 
   if (Array.isArray(data)) {
