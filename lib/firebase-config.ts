@@ -19,12 +19,13 @@ async function initializeFirebase() {
     });
 
     const secretPayload = version.payload?.data?.toString();
-    console.log("📜 Secret brut récupéré :", secretPayload);
-
     if (!secretPayload) {
-      throw new Error("❌ Impossible de récupérer le secret Firebase");
+      throw new Error(
+        "❌ Impossible de récupérer le secret Firebase : Secret vide",
+      );
     }
 
+    console.log("📜 Secret brut récupéré avec succès");
     const serviceAccount = JSON.parse(secretPayload);
 
     if (
@@ -38,11 +39,14 @@ async function initializeFirebase() {
       );
     }
 
-    // Nettoyage de la clé privée pour éviter d’éventuels problèmes d'encodage
+    // Nettoyage de la clé privée
     serviceAccount.private_key = serviceAccount.private_key.replace(
       /\\n/g,
       "\n",
     );
+
+    // Désactiver GOOGLE_APPLICATION_CREDENTIALS pour éviter l'erreur ENOENT
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = "";
 
     // Initialiser Firebase si ce n'est pas déjà fait
     if (!admin.apps.length) {
@@ -60,7 +64,11 @@ async function initializeFirebase() {
     }
     _db = admin.firestore();
   } catch (error) {
-    console.error("❌ Erreur d'initialisation Firebase:", error);
+    console.error(
+      "❌ Erreur critique lors de l'initialisation de Firebase:",
+      error,
+    );
+    _db = null; // Empêcher l'utilisation d'un Firestore non initialisé
   }
 }
 
