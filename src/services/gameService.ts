@@ -1,5 +1,5 @@
 // services/gameService.ts
-import { db, formatFirestoreData } from "../../lib/firebase-config";
+import { db, formatFirestoreData } from "@root/lib/firebase-config";
 import { GamePage } from "@models/fireStoreModels";
 
 class GameService {

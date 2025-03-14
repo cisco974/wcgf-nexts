@@ -1,4 +1,3 @@
-// lib/firebase-config.ts
 import admin from "firebase-admin";
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 
@@ -6,126 +5,132 @@ import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 export type FirestoreTimestamp = admin.firestore.Timestamp;
 export type FirestoreData = Record<string, unknown>;
 
-// Définir un proxy qui sera rempli après initialisation asynchrone
-const dbProxy = new Proxy({} as admin.firestore.Firestore, {
-  get: function (target, prop) {
-    // Si db n'est pas initialisé, lancer une erreur
-    if (Object.keys(target).length === 0) {
-      console.error(
-        "⚠️ Tentative d'accès à Firebase avant initialisation complète",
-      );
-      throw new Error(
-        "🔥 Firebase Firestore non disponible - Firebase n'est pas encore initialisé",
-      );
-    }
-    return target[prop as keyof admin.firestore.Firestore];
-  },
-});
+// Initialisation unique de Firebase Admin
+let _db: admin.firestore.Firestore | null = null;
+const client = new SecretManagerServiceClient();
 
-// Exportation pour compatibilité avec le code existant
-export const db = dbProxy;
-export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
+// Configuration pour le retry
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 1000; // ms
 
-// Fonction pour initialiser Firebase
-async function initializeFirebase() {
-  console.log("🔄 Début de l'initialisation Firebase...");
+// Initialisation immédiate pour la compatibilité avec le code existant
+console.log("🔄 Début de l'initialisation Firebase...");
 
-  try {
-    // Si Firebase est déjà initialisé, ne rien faire
-    if (admin.apps.length > 0) {
-      console.log("⚠️ Firebase Admin était déjà initialisé");
-      const firestoreDb = admin.firestore();
+try {
+  console.log(
+    "🔐 Récupération du secret Firebase depuis Google Secret Manager...",
+  );
+  const [version] = await client.accessSecretVersion({
+    name: "projects/1081763355576/secrets/GOOGLE_APPLICATION_CREDENTIALS/versions/latest",
+  });
 
-      // Copier toutes les propriétés de Firestore dans le proxy
-      Object.setPrototypeOf(dbProxy, Object.getPrototypeOf(firestoreDb));
-      Object.assign(dbProxy, firestoreDb);
-
-      return;
-    }
-
-    console.log(
-      "🔐 Récupération du secret Firebase depuis Google Secret Manager...",
+  const secretPayload = version.payload?.data?.toString();
+  if (!secretPayload) {
+    throw new Error(
+      "❌ Impossible de récupérer le secret Firebase : Secret vide",
     );
-    const client = new SecretManagerServiceClient();
+  }
 
-    const [version] = await client.accessSecretVersion({
-      name: "projects/1081763355576/secrets/GOOGLE_APPLICATION_CREDENTIALS/versions/latest",
-    });
+  console.log("📜 Secret brut récupéré avec succès");
+  const serviceAccount = JSON.parse(secretPayload);
 
-    const secretPayload = version.payload?.data?.toString();
-    if (!secretPayload) {
-      throw new Error(
-        "❌ Impossible de récupérer le secret Firebase : Secret vide",
-      );
-    }
-
-    console.log("📜 Secret brut récupéré avec succès");
-    const serviceAccount = JSON.parse(secretPayload);
-
-    if (
-      !serviceAccount ||
-      !serviceAccount.private_key ||
-      !serviceAccount.client_email ||
-      !serviceAccount.project_id
-    ) {
-      throw new Error(
-        "❌ Clé Firebase invalide ou mal formée : une propriété est manquante",
-      );
-    }
-
-    // Nettoyage de la clé privée
-    serviceAccount.private_key = serviceAccount.private_key.replace(
-      /\\n/g,
-      "\n",
+  if (
+    !serviceAccount ||
+    !serviceAccount.private_key ||
+    !serviceAccount.client_email ||
+    !serviceAccount.project_id
+  ) {
+    throw new Error(
+      "❌ Clé Firebase invalide ou mal formée : une propriété est manquante",
     );
+  }
 
-    // Initialisation de Firebase Admin
+  // Nettoyage de la clé privée
+  serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
+
+  // Désactiver GOOGLE_APPLICATION_CREDENTIALS pour éviter l'erreur ENOENT
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = "";
+
+  // Vérifier si Firebase est déjà initialisé
+  if (!admin.apps.length) {
     console.log("🚀 Initialisation de Firebase Admin...");
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
-
     console.log("✅ Firebase Admin initialisé avec succès");
-    const firestoreDb = admin.firestore();
-
-    // Copier toutes les propriétés de Firestore dans le proxy
-    Object.setPrototypeOf(dbProxy, Object.getPrototypeOf(firestoreDb));
-    Object.assign(dbProxy, firestoreDb);
-
-    console.log("🔥 Firestore initialisé et proxy configuré");
-  } catch (error) {
-    console.error(
-      "❌ Erreur critique lors de l'initialisation de Firebase:",
-      error,
-    );
-
-    // Essayer une dernière solution de secours avec l'ADC
-    try {
-      console.log(
-        "🔄 Tentative de secours avec ADC (Application Default Credentials)",
-      );
-      admin.initializeApp();
-
-      const firestoreDb = admin.firestore();
-
-      // Copier toutes les propriétés de Firestore dans le proxy
-      Object.setPrototypeOf(dbProxy, Object.getPrototypeOf(firestoreDb));
-      Object.assign(dbProxy, firestoreDb);
-
-      console.log(
-        "✅ Firebase initialisé avec les identifiants par défaut de l'application",
-      );
-    } catch (fallbackError) {
-      console.error(
-        "❌ Échec total de l'initialisation Firebase:",
-        fallbackError,
-      );
-      throw new Error("🔥 Firebase Firestore non disponible");
-    }
+  } else {
+    console.log("⚠️ Firebase Admin était déjà initialisé");
   }
+
+  _db = admin.firestore();
+  console.log("🔥 Firestore initialisé");
+} catch (error) {
+  console.error(
+    "❌ Erreur critique lors de l'initialisation de Firebase:",
+    error,
+  );
+  _db = null; // Empêcher l'utilisation d'un Firestore non initialisé
 }
 
-// Fonction utilitaire pour formater les données Firestore
+// Vérifier que _db a bien été initialisé avant l'export
+if (!_db) {
+  console.error(
+    "🔥 Firebase Firestore n'a pas été initialisé correctement. L'application ne pourra pas interagir avec Firestore.",
+  );
+  throw new Error("🔥 Firebase Firestore non disponible");
+}
+
+// Export direct de db pour compatibilité avec le code existant
+export const db: admin.firestore.Firestore = _db;
+
+/**
+ * Mécanisme de retry pour les environnements serverless
+ * À utiliser pour les nouvelles implémentations
+ */
+export async function getFirestoreWithRetry(): Promise<admin.firestore.Firestore> {
+  if (!_db) {
+    throw new Error("Firestore n'est pas initialisé");
+  }
+
+  let attempts = 0;
+  let lastError: Error | null = null;
+
+  while (attempts < MAX_RETRIES) {
+    try {
+      // Tester que la connexion fonctionne
+      await _db.collection("_health").limit(1).get();
+      return _db;
+    } catch (error) {
+      attempts++;
+      lastError = error instanceof Error ? error : new Error(String(error));
+
+      console.error(
+        `❌ Erreur de connexion Firestore tentative ${attempts}/${MAX_RETRIES}:`,
+        error,
+      );
+
+      if (attempts >= MAX_RETRIES) {
+        console.error(
+          "🚨 Nombre maximum de tentatives atteint. Échec de la connexion.",
+        );
+        break;
+      }
+
+      // Attendre avant de réessayer
+      console.log(`⏱️ Attente de ${RETRY_DELAY}ms avant nouvelle tentative...`);
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+    }
+  }
+
+  // Si nous arrivons ici, c'est que toutes les tentatives ont échoué
+  throw new Error(
+    `🔥 Impossible de se connecter à Firestore après ${MAX_RETRIES} tentatives: ${lastError?.message}`,
+  );
+}
+
+export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
+
+// Fonction utilitaire pour formater les données Firestore (conversion des timestamps, etc.)
 export function formatFirestoreData<T>(data: unknown): T {
   if (data === null || data === undefined) {
     return {} as T; // Retourner un objet vide plutôt que null/undefined
@@ -150,22 +155,4 @@ export function formatFirestoreData<T>(data: unknown): T {
   }
 
   return data as T;
-}
-
-// Initialiser Firebase immédiatement (mais de manière asynchrone)
-// Seulement côté serveur
-if (typeof window === "undefined") {
-  console.log(
-    "📋 Exécution côté serveur détectée, initialisation de Firebase...",
-  );
-  initializeFirebase().catch((error) => {
-    console.error(
-      "🔥 Erreur lors de l'initialisation automatique de Firebase:",
-      error,
-    );
-  });
-} else {
-  console.log(
-    "🌐 Exécution côté client détectée, Firebase n'est pas initialisé",
-  );
 }

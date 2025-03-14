@@ -1,4 +1,4 @@
-// app/api/admin/games/[gameId]/pages/[pageTypeId]/route.ts
+// app/api/admin/games/[gameId]/pages/[pageType]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import {
   db,
@@ -9,11 +9,11 @@ import {
 // Type pour les paramètres de route
 type RouteParams = Promise<{
   gameId: string;
-  pageTypeId: string;
+  pageType: string;
 }>;
 
 /**
- * GET /api/admin/games/[gameId]/pages/[pageTypeId]
+ * GET /api/admin/games/[gameId]/pages/[pageType]
  * Récupère une page de jeu spécifique
  */
 export async function GET(
@@ -21,22 +21,36 @@ export async function GET(
   { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageTypeId } = await params;
+    const { gameId, pageType } = await params;
+    console.log(
+      `Récupération de la page pour jeu=${gameId}, pageType=${pageType}`,
+    );
 
     // Vérifier si le jeu existe
     const gameDoc = await db.collection("games").doc(gameId).get();
     if (!gameDoc.exists) {
+      console.log(`Jeu '${gameId}' non trouvé`);
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
-    // Vérifier si le type de page existe
-    const pageTypeDoc = await db.collection("pageTypes").doc(pageTypeId).get();
-    if (!pageTypeDoc.exists) {
+    // Rechercher le type de page par sa clé
+    const pageTypeSnapshot = await db
+      .collection("pageTypes")
+      .where("key", "==", pageType)
+      .limit(1)
+      .get();
+
+    if (pageTypeSnapshot.empty) {
+      console.log(`Type de page '${pageType}' non trouvé`);
       return NextResponse.json(
         { error: "Type de page non trouvé" },
         { status: 404 },
       );
     }
+
+    const pageTypeDoc = pageTypeSnapshot.docs[0];
+    const pageTypeId = pageTypeDoc.id;
+    console.log(`Type de page trouvé: ${pageTypeId}`);
 
     // Récupérer la page
     const pageDoc = await db
@@ -47,6 +61,9 @@ export async function GET(
       .get();
 
     if (!pageDoc.exists) {
+      console.log(
+        `Page non trouvée pour jeu=${gameId}, pageTypeId=${pageTypeId}`,
+      );
       return NextResponse.json({ error: "Page non trouvée" }, { status: 404 });
     }
 
@@ -89,7 +106,7 @@ export async function GET(
 }
 
 /**
- * POST /api/admin/games/[gameId]/pages/[pageTypeId]
+ * POST /api/admin/games/[gameId]/pages/[pageType]
  * Crée une nouvelle page de jeu
  */
 export async function POST(
@@ -97,7 +114,7 @@ export async function POST(
   { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageTypeId } = await params;
+    const { gameId, pageType } = await params;
     const data = await request.json();
 
     // Vérifier si le jeu existe
@@ -106,14 +123,22 @@ export async function POST(
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
-    // Vérifier si le type de page existe
-    const pageTypeDoc = await db.collection("pageTypes").doc(pageTypeId).get();
-    if (!pageTypeDoc.exists) {
+    // Rechercher le type de page par sa clé
+    const pageTypeSnapshot = await db
+      .collection("pageTypes")
+      .where("key", "==", pageType)
+      .limit(1)
+      .get();
+
+    if (pageTypeSnapshot.empty) {
       return NextResponse.json(
         { error: "Type de page non trouvé" },
         { status: 404 },
       );
     }
+
+    const pageTypeDoc = pageTypeSnapshot.docs[0];
+    const pageTypeId = pageTypeDoc.id;
 
     // Vérifier si la page existe déjà
     const pageDoc = await db
@@ -196,7 +221,7 @@ export async function POST(
 }
 
 /**
- * PUT /api/admin/games/[gameId]/pages/[pageTypeId]
+ * PUT /api/admin/games/[gameId]/pages/[pageType]
  * Met à jour une page de jeu existante
  */
 export async function PUT(
@@ -204,7 +229,7 @@ export async function PUT(
   { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageTypeId } = await params;
+    const { gameId, pageType } = await params;
     const data = await request.json();
 
     // Vérifier si le jeu existe
@@ -213,14 +238,22 @@ export async function PUT(
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
-    // Vérifier si le type de page existe
-    const pageTypeDoc = await db.collection("pageTypes").doc(pageTypeId).get();
-    if (!pageTypeDoc.exists) {
+    // Rechercher le type de page par sa clé
+    const pageTypeSnapshot = await db
+      .collection("pageTypes")
+      .where("key", "==", pageType)
+      .limit(1)
+      .get();
+
+    if (pageTypeSnapshot.empty) {
       return NextResponse.json(
         { error: "Type de page non trouvé" },
         { status: 404 },
       );
     }
+
+    const pageTypeDoc = pageTypeSnapshot.docs[0];
+    const pageTypeId = pageTypeDoc.id;
 
     // Vérifier si la page existe
     const pageDoc = await db
@@ -306,7 +339,7 @@ export async function PUT(
 }
 
 /**
- * DELETE /api/admin/games/[gameId]/pages/[pageTypeId]
+ * DELETE /api/admin/games/[gameId]/pages/[pageType]
  * Supprime une page de jeu
  */
 export async function DELETE(
@@ -314,13 +347,30 @@ export async function DELETE(
   { params }: { params: RouteParams },
 ) {
   try {
-    const { gameId, pageTypeId } = await params;
+    const { gameId, pageType } = await params;
 
     // Vérifier si le jeu existe
     const gameDoc = await db.collection("games").doc(gameId).get();
     if (!gameDoc.exists) {
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
+
+    // Rechercher le type de page par sa clé
+    const pageTypeSnapshot = await db
+      .collection("pageTypes")
+      .where("key", "==", pageType)
+      .limit(1)
+      .get();
+
+    if (pageTypeSnapshot.empty) {
+      return NextResponse.json(
+        { error: "Type de page non trouvé" },
+        { status: 404 },
+      );
+    }
+
+    const pageTypeDoc = pageTypeSnapshot.docs[0];
+    const pageTypeId = pageTypeDoc.id;
 
     // Vérifier si la page existe
     const pageDoc = await db

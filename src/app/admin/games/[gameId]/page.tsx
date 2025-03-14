@@ -22,7 +22,7 @@ import { GameData, PageType } from "@models/models";
 // Types
 type AdminGamePageData = {
   id: number;
-  gameId: number;
+  gameId: string;
   pageTypeId: number;
   content: Record<string, unknown>;
   meta: Record<string, Record<string, string>>;
@@ -45,8 +45,12 @@ const SUPPORTED_LANGUAGES = [
 
 export default function GameAdminPage() {
   const params = useParams();
+  // Modification au début de votre composant pour déboguer ce qui se passe avec useParams
+
+  console.log("Valeur brute de params:", params);
+
   const router = useRouter();
-  const gameId = Number(params.gameId);
+  const gameId = params.gameId ? String(params.gameId) : "";
 
   // States
   const [isLoading, setIsLoading] = useState(true);
@@ -62,48 +66,65 @@ export default function GameAdminPage() {
   // Fetch initial data
   useEffect(() => {
     const fetchData = async () => {
+      console.log("Début du fetchData");
       try {
         setIsLoading(true);
         setError(null);
 
+        console.log("Paramètres:", params);
         // Résoudre les paramètres si c'est une promesse
         const resolvedParams = await Promise.resolve(params);
-        const gameId = Number(resolvedParams.gameId);
+        console.log("Paramètres résolus:", resolvedParams);
+        const gameId = resolvedParams.gameId;
+        console.log("gameId extrait:", gameId);
 
         // Fetch game data
+        console.log("Début de la requête pour les données du jeu");
         const gameResponse = await fetch(`/api/admin/games/${gameId}`);
+        console.log("Réponse de l'API game:", gameResponse.status);
         if (!gameResponse.ok) throw new Error("Failed to load game data");
         const gameData = await gameResponse.json();
+        console.log("Données du jeu reçues:", gameData);
         setGame(gameData);
-
-        // Fetch page types
+        console.log("Début de la requête pour les page types");
         const pageTypesResponse = await fetch("/api/admin/page-types");
+        console.log(
+          "Statut de la réponse page types:",
+          pageTypesResponse.status,
+        );
         if (!pageTypesResponse.ok) throw new Error("Failed to load page types");
         const pageTypesData = await pageTypesResponse.json();
+        console.log("Données page types reçues:", pageTypesData);
         setPageTypes(pageTypesData);
 
-        // Set default page type if available
-        if (pageTypesData.length > 0) {
+        // Si des page types sont reçus, sélectionnez le premier par défaut
+        if (pageTypesData && pageTypesData.length > 0) {
           setSelectedPageType(pageTypesData[0].key);
         }
+        // ... autres requêtes avec les mêmes logs
       } catch (err) {
+        console.error("Erreur détaillée:", err);
         setError(
           err instanceof Error ? err.message : "An unknown error occurred",
         );
-        console.error(err);
       } finally {
+        console.log("Finally block exécuté");
         setIsLoading(false);
       }
     };
 
     if (gameId) {
+      console.log("gameId existe, lancement de fetchData");
       fetchData();
+    } else {
+      console.log("gameId n'existe pas");
     }
   }, [params, gameId]);
 
   // Fetch game page when page type changes
   useEffect(() => {
     const fetchGamePage = async () => {
+      console.log("|||||||||||||||||||||" + selectedPageType);
       if (!selectedPageType) return;
 
       try {
@@ -112,8 +133,11 @@ export default function GameAdminPage() {
 
         // Résoudre les paramètres si c'est une promesse
         const resolvedParams = await Promise.resolve(params);
-        const gameId = Number(resolvedParams.gameId);
-
+        const gameId = resolvedParams.gameId
+          ? String(resolvedParams.gameId)
+          : "";
+        console.log("|||||||||||||||||||||");
+        console.log(gameId);
         const response = await fetch(
           `/api/admin/games/${gameId}/pages/${selectedPageType}`,
         );
@@ -377,7 +401,7 @@ export default function GameAdminPage() {
 
       // Résoudre les paramètres si c'est une promesse
       const resolvedParams = await Promise.resolve(params);
-      const gameId = Number(resolvedParams.gameId);
+      const gameId = resolvedParams.gameId;
 
       const response = await fetch(
         `/api/admin/games/${gameId}/pages/${selectedPageType}`,
