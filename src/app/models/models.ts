@@ -3,7 +3,7 @@
 // Modèle des joueurs
 
 import { GameMeta } from "./fireStoreModels";
-import { FirestoreTimestamp } from "@root/lib/firebase-config";
+import { FirestoreTimestamp } from "@lib/firebase-config";
 
 export type Player = {
   rank: number;

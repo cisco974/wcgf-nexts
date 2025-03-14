@@ -1,10 +1,11 @@
 // app/api/admin/page-types/[key]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import {
-  db,
   formatFirestoreData,
+  getAdminDb,
   serverTimestamp,
-} from "@root/lib/firebase-config";
+} from "@lib/firebase-config";
+import { Firestore } from "firebase-admin/firestore";
 
 type keyParams = Promise<{
   key: string;
@@ -21,7 +22,7 @@ export async function GET(
     const { key } = await params;
 
     // Récupérer le type de page par sa clé
-    const snapshot = await db
+    const snapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", key)
       .limit(1)
@@ -66,7 +67,7 @@ export async function PUT(
     const data = await request.json();
 
     // Récupérer le type de page par sa clé
-    const snapshot = await db
+    const snapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", key)
       .limit(1)
@@ -85,7 +86,7 @@ export async function PUT(
 
     // Si la clé est modifiée, vérifier qu'elle n'existe pas déjà
     if (data.key && data.key !== key) {
-      const existingSnapshot = await db
+      const existingSnapshot = await adminDb
         .collection("pageTypes")
         .where("key", "==", data.key)
         .limit(1)
@@ -110,10 +111,13 @@ export async function PUT(
     };
 
     // Mettre à jour le document
-    await db.collection("pageTypes").doc(pageTypeId).update(updateData);
+    await adminDb.collection("pageTypes").doc(pageTypeId).update(updateData);
 
     // Récupérer le document mis à jour
-    const updatedDoc = await db.collection("pageTypes").doc(pageTypeId).get();
+    const updatedDoc = await adminDb
+      .collection("pageTypes")
+      .doc(pageTypeId)
+      .get();
     const formattedDoc = formatFirestoreData<Record<string, unknown>>(
       updatedDoc.data(),
     );
@@ -132,7 +136,23 @@ export async function PUT(
     );
   }
 }
+// Promesse d'initialisation de adminDb
+const adminDbPromise = getAdminDb();
 
+// Définir une variable pour le handler avec un type adapté
+let adminDb: Firestore;
+
+// Auto-invoking async function pour initialiser adminDb
+(async () => {
+  try {
+    adminDb = await adminDbPromise;
+    console.log(
+      "✅ Firebase Admin initialisé avec succès dans /api/admin/games",
+    );
+  } catch (error) {
+    console.error("❌ Erreur d'initialisation de Firebase Admin:", error);
+  }
+})();
 /**
  * DELETE /api/admin/page-types/[key]
  * Supprime un type de page
@@ -145,7 +165,7 @@ export async function DELETE(
     const { key } = await params;
 
     // Récupérer le type de page par sa clé
-    const snapshot = await db
+    const snapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", key)
       .limit(1)
@@ -166,7 +186,7 @@ export async function DELETE(
     // Une alternative serait d'utiliser des compteurs ou une collection spéciale
 
     // Supprimer le type de page
-    await db.collection("pageTypes").doc(pageTypeId).delete();
+    await adminDb.collection("pageTypes").doc(pageTypeId).delete();
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -1,5 +1,5 @@
 // app/models/fireStoreModels.ts
-import { FirestoreTimestamp } from "../../../lib/firebase-config";
+import { FirestoreTimestamp } from "@lib/firebase-config";
 
 // Types pour les jeux
 export interface Game {

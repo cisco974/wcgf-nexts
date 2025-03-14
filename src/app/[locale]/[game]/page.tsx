@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import GameService from "../../../services/gameService";
+import PageHeader from "@app/components/PageHeader";
 
 // Types pour les paramètres de la page
 type PageParams = Promise<{
@@ -100,27 +101,14 @@ export default async function GamePage(props: { params: PageParams }) {
     // Rendu de la page
     return (
       <>
-        <header
-          className="game-header py-5 mb-5"
-          style={{
-            backgroundImage: `url(/img/header/header-${game}.jpg)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="container text-center text-white">
-            <Image
-              src={`/img/${game}/logo.png`}
-              alt={game}
-              width={150}
-              height={150}
-              className="mb-4"
-            />
-            <h1 className="display-4 fw-bold">
-              {content.page_header?.title ?? game.toUpperCase()}
-            </h1>
-          </div>
-        </header>
+        <PageHeader
+          type="game"
+          background={`/img/header/header-${game}.jpg`}
+          title={content.page_header?.title ?? game.toUpperCase()}
+          logo={`/img/${game}/logo.png`}
+          activeTab="game"
+          gamePath={`/${locale}/${game}`}
+        />
 
         {/* Le reste du code reste inchangé */}
         <div className="container my-5 lead">
@@ -206,9 +194,6 @@ export default async function GamePage(props: { params: PageParams }) {
               <p className="mb-4">{content.learn_more.introduction ?? ""}</p>
             </div>
           )}
-
-          {/* Sections additionnelles */}
-          {/* ... autres sections comme dans le code précédent ... */}
         </div>
       </>
     );

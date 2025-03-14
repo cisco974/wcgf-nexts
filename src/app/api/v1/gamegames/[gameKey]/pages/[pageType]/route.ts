@@ -1,8 +1,25 @@
 // app/api/v1/games/[gameKey]/pages/[pageType]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { db, formatFirestoreData } from "@root/lib/firebase-config";
+import { formatFirestoreData, getAdminDb } from "@lib/firebase-config";
 import { GamePage } from "@models/fireStoreModels";
+import { Firestore } from "firebase-admin/firestore";
+// Promesse d'initialisation de adminDb
+const adminDbPromise = getAdminDb();
 
+// Définir une variable pour le handler avec un type adapté
+let adminDb: Firestore;
+
+// Auto-invoking async function pour initialiser adminDb
+(async () => {
+  try {
+    adminDb = await adminDbPromise;
+    console.log(
+      "✅ Firebase Admin initialisé avec succès dans /api/admin/games",
+    );
+  } catch (error) {
+    console.error("❌ Erreur d'initialisation de Firebase Admin:", error);
+  }
+})();
 // Type pour les paramètres de route
 type RouteParams = Promise<{
   gameKey: string;
@@ -26,7 +43,7 @@ export async function GET(
     const fallbackLang = "en";
 
     // 1. Récupérer le jeu par sa clé
-    const gamesSnapshot = await db
+    const gamesSnapshot = await adminDb
       .collection("games")
       .where("key", "==", gameKey)
       .limit(1)
@@ -41,7 +58,7 @@ export async function GET(
     const gameId = gameDoc.id;
 
     // 2. Récupérer le type de page par sa clé
-    const pageTypesSnapshot = await db
+    const pageTypesSnapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", pageType)
       .limit(1)
@@ -59,7 +76,7 @@ export async function GET(
     const pageTypeId = pageTypeDoc.id;
 
     // 3. Récupérer la page
-    const pageDoc = await db
+    const pageDoc = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")

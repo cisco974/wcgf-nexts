@@ -1,5 +1,5 @@
 // services/gameService.ts
-import { db, formatFirestoreData } from "@root/lib/firebase-config";
+import { formatFirestoreData, getAdminDb } from "@lib/firebase-config";
 import { GamePage } from "@models/fireStoreModels";
 
 class GameService {
@@ -16,6 +16,9 @@ class GameService {
     locale: "en" | "fr" | "es",
   ): Promise<GamePage | null> {
     try {
+      // Obtenir l'instance Firebase Admin
+      const db = await getAdminDb();
+
       console.log(
         `Récupération de la page ${pageType} pour le jeu ${gameKey} en ${locale}`,
       );
@@ -114,5 +117,6 @@ class GameService {
     }
   }
 }
+
 const gameService = new GameService();
 export default gameService;

@@ -1,11 +1,28 @@
 // app/api/admin/page-types/route.ts
 import { NextResponse } from "next/server";
 import {
-  db,
   formatFirestoreData,
+  getAdminDb,
   serverTimestamp,
-} from "@root/lib/firebase-config";
+} from "@lib/firebase-config";
+import { Firestore } from "firebase-admin/firestore";
+// Promesse d'initialisation de adminDb
+const adminDbPromise = getAdminDb();
 
+// Définir une variable pour le handler avec un type adapté
+let adminDb: Firestore;
+
+// Auto-invoking async function pour initialiser adminDb
+(async () => {
+  try {
+    adminDb = await adminDbPromise;
+    console.log(
+      "✅ Firebase Admin initialisé avec succès dans /api/admin/games",
+    );
+  } catch (error) {
+    console.error("❌ Erreur d'initialisation de Firebase Admin:", error);
+  }
+})();
 /**
  * GET /api/admin/page-types
  * Récupère tous les types de pages
@@ -13,7 +30,7 @@ import {
 export async function GET() {
   try {
     // Récupérer tous les types de pages, triés par nom
-    const snapshot = await db
+    const snapshot = await adminDb
       .collection("pageTypes")
       .orderBy("name", "asc")
       .get();
@@ -55,7 +72,7 @@ export async function POST(request: Request) {
     }
 
     // Vérifier si un type de page avec cette clé existe déjà
-    const existingSnapshot = await db
+    const existingSnapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", data.key)
       .limit(1)
@@ -77,7 +94,7 @@ export async function POST(request: Request) {
     };
 
     // Ajouter le document à Firestore
-    const docRef = await db.collection("pageTypes").add(pageTypeData);
+    const docRef = await adminDb.collection("pageTypes").add(pageTypeData);
 
     // Récupérer le document créé
     const pageTypeDoc = await docRef.get();

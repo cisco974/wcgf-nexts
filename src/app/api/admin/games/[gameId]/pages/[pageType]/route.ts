@@ -1,11 +1,28 @@
 // app/api/admin/games/[gameId]/pages/[pageType]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import {
-  db,
   formatFirestoreData,
+  getAdminDb,
   serverTimestamp,
-} from "@root/lib/firebase-config";
+} from "@lib/firebase-config";
+import { Firestore } from "firebase-admin/firestore";
+// Promesse d'initialisation de adminDb
+const adminDbPromise = getAdminDb();
 
+// Définir une variable pour le handler avec un type adapté
+let adminDb: Firestore;
+
+// Auto-invoking async function pour initialiser adminDb
+(async () => {
+  try {
+    adminDb = await adminDbPromise;
+    console.log(
+      "✅ Firebase Admin initialisé avec succès dans /api/admin/games",
+    );
+  } catch (error) {
+    console.error("❌ Erreur d'initialisation de Firebase Admin:", error);
+  }
+})();
 // Type pour les paramètres de route
 type RouteParams = Promise<{
   gameId: string;
@@ -27,14 +44,14 @@ export async function GET(
     );
 
     // Vérifier si le jeu existe
-    const gameDoc = await db.collection("games").doc(gameId).get();
+    const gameDoc = await adminDb.collection("games").doc(gameId).get();
     if (!gameDoc.exists) {
       console.log(`Jeu '${gameId}' non trouvé`);
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
     // Rechercher le type de page par sa clé
-    const pageTypeSnapshot = await db
+    const pageTypeSnapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", pageType)
       .limit(1)
@@ -53,7 +70,7 @@ export async function GET(
     console.log(`Type de page trouvé: ${pageTypeId}`);
 
     // Récupérer la page
-    const pageDoc = await db
+    const pageDoc = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -118,13 +135,13 @@ export async function POST(
     const data = await request.json();
 
     // Vérifier si le jeu existe
-    const gameDoc = await db.collection("games").doc(gameId).get();
+    const gameDoc = await adminDb.collection("games").doc(gameId).get();
     if (!gameDoc.exists) {
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
     // Rechercher le type de page par sa clé
-    const pageTypeSnapshot = await db
+    const pageTypeSnapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", pageType)
       .limit(1)
@@ -141,7 +158,7 @@ export async function POST(
     const pageTypeId = pageTypeDoc.id;
 
     // Vérifier si la page existe déjà
-    const pageDoc = await db
+    const pageDoc = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -167,7 +184,7 @@ export async function POST(
     };
 
     // Créer la page
-    await db
+    await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -175,7 +192,7 @@ export async function POST(
       .set(pageData);
 
     // Récupérer la page créée
-    const newPageDoc = await db
+    const newPageDoc = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -233,13 +250,13 @@ export async function PUT(
     const data = await request.json();
 
     // Vérifier si le jeu existe
-    const gameDoc = await db.collection("games").doc(gameId).get();
+    const gameDoc = await adminDb.collection("games").doc(gameId).get();
     if (!gameDoc.exists) {
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
     // Rechercher le type de page par sa clé
-    const pageTypeSnapshot = await db
+    const pageTypeSnapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", pageType)
       .limit(1)
@@ -256,7 +273,7 @@ export async function PUT(
     const pageTypeId = pageTypeDoc.id;
 
     // Vérifier si la page existe
-    const pageDoc = await db
+    const pageDoc = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -285,7 +302,7 @@ export async function PUT(
     };
 
     // Mettre à jour la page
-    await db
+    await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -293,7 +310,7 @@ export async function PUT(
       .update(updateData);
 
     // Récupérer la page mise à jour
-    const updatedPageDoc = await db
+    const updatedPageDoc = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -350,13 +367,13 @@ export async function DELETE(
     const { gameId, pageType } = await params;
 
     // Vérifier si le jeu existe
-    const gameDoc = await db.collection("games").doc(gameId).get();
+    const gameDoc = await adminDb.collection("games").doc(gameId).get();
     if (!gameDoc.exists) {
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
     // Rechercher le type de page par sa clé
-    const pageTypeSnapshot = await db
+    const pageTypeSnapshot = await adminDb
       .collection("pageTypes")
       .where("key", "==", pageType)
       .limit(1)
@@ -373,7 +390,7 @@ export async function DELETE(
     const pageTypeId = pageTypeDoc.id;
 
     // Vérifier si la page existe
-    const pageDoc = await db
+    const pageDoc = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
@@ -385,7 +402,7 @@ export async function DELETE(
     }
 
     // Supprimer la page
-    await db
+    await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")

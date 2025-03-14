@@ -1,11 +1,28 @@
 // app/api/admin/games/[gameId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import {
-  db,
   formatFirestoreData,
+  getAdminDb,
   serverTimestamp,
-} from "@root/lib/firebase-config";
+} from "@lib/firebase-config";
+import { Firestore } from "firebase-admin/firestore";
+// Promesse d'initialisation de adminDb
+const adminDbPromise = getAdminDb();
 
+// Définir une variable pour le handler avec un type adapté
+let adminDb: Firestore;
+
+// Auto-invoking async function pour initialiser adminDb
+(async () => {
+  try {
+    adminDb = await adminDbPromise;
+    console.log(
+      "✅ Firebase Admin initialisé avec succès dans /api/admin/games",
+    );
+  } catch (error) {
+    console.error("❌ Erreur d'initialisation de Firebase Admin:", error);
+  }
+})();
 type gameParam = Promise<{ gameId: string }>;
 
 /**
@@ -20,7 +37,7 @@ export async function GET(
     const { gameId } = await params;
 
     // Récupérer le document du jeu
-    const gameDoc = await db.collection("games").doc(gameId).get();
+    const gameDoc = await adminDb.collection("games").doc(gameId).get();
 
     if (!gameDoc.exists) {
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
@@ -57,7 +74,7 @@ export async function PUT(
     const data = await request.json();
 
     // Vérifier si le jeu existe
-    const gameDoc = await db.collection("games").doc(gameId).get();
+    const gameDoc = await adminDb.collection("games").doc(gameId).get();
 
     if (!gameDoc.exists) {
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
@@ -67,7 +84,7 @@ export async function PUT(
 
     // Si la clé est modifiée, vérifier qu'elle n'existe pas déjà
     if (data.key && data.key !== currentData?.key) {
-      const existingSnapshot = await db
+      const existingSnapshot = await adminDb
         .collection("games")
         .where("key", "==", data.key)
         .limit(1)
@@ -91,10 +108,10 @@ export async function PUT(
     };
 
     // Mettre à jour le document
-    await db.collection("games").doc(gameId).update(updateData);
+    await adminDb.collection("games").doc(gameId).update(updateData);
 
     // Récupérer le document mis à jour
-    const updatedDoc = await db.collection("games").doc(gameId).get();
+    const updatedDoc = await adminDb.collection("games").doc(gameId).get();
 
     const updatedDocFormated =
       formatFirestoreData<Record<string, unknown>>(updatedDoc);
@@ -125,28 +142,28 @@ export async function DELETE(
     const { gameId } = await params;
 
     // Vérifier si le jeu existe
-    const gameDoc = await db.collection("games").doc(gameId).get();
+    const gameDoc = await adminDb.collection("games").doc(gameId).get();
 
     if (!gameDoc.exists) {
       return NextResponse.json({ error: "Jeu non trouvé" }, { status: 404 });
     }
 
     // Supprimer d'abord toutes les pages associées au jeu
-    const pagesSnapshot = await db
+    const pagesSnapshot = await adminDb
       .collection("games")
       .doc(gameId)
       .collection("pages")
       .get();
 
     // Utiliser une transaction pour supprimer toutes les pages et le jeu
-    await db.runTransaction(async (transaction) => {
+    await adminDb.runTransaction(async (transaction) => {
       // Supprimer toutes les pages
       pagesSnapshot.docs.forEach((doc) => {
         transaction.delete(doc.ref);
       });
 
       // Supprimer le jeu
-      transaction.delete(db.collection("games").doc(gameId));
+      transaction.delete(adminDb.collection("games").doc(gameId));
     });
 
     return NextResponse.json({ success: true });
