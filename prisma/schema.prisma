@@ -61,5 +61,6 @@ model GamePage {
   game     Game     @relation(fields: [gameId], references: [id])
   pageType PageType @relation(fields: [pageTypeId], references: [id])
 
+  @@unique([gameId, pageTypeId])
   @@map("game_pages")
 }

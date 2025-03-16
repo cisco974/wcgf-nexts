@@ -1,116 +1,54 @@
-"use client";
+// app/admin/games/page.tsx
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import Container from "react-bootstrap/Container";
-import Table from "react-bootstrap/Table";
-import Spinner from "react-bootstrap/Spinner";
-import Alert from "react-bootstrap/Alert";
+import AddGameForm from "./add-game-form";
+import gameService from "@services/gameService";
 
-type Game = {
-  id: number;
-  key: string;
-  title: string;
-  subtitle: string | null;
-};
-
-export default function GamesListPage() {
-  const [games, setGames] = useState<Game[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const response = await fetch("/api/admin/games");
-        if (!response.ok) throw new Error("Failed to fetch games");
-
-        const data = await response.json();
-        setGames(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred",
-        );
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchGames();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <Spinner animation="border" variant="primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container className="py-5">
-        <Alert variant="danger">
-          <Alert.Heading>Error</Alert.Heading>
-          <p>{error}</p>
-        </Alert>
-      </Container>
-    );
-  }
+export default async function GamesAdminPage() {
+  const games = await gameService.getGames();
 
   return (
-    <Container className="py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="h2 fw-bold mb-0">Games Administration</h1>
-        <Link href="/admin" className="btn btn-primary">
-          Back to Dashboard
-        </Link>
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-4">Games Administration</h1>
+
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">Add New Game</h2>
+        <AddGameForm />
       </div>
 
-      <div className="card">
-        <Table responsive>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Key</th>
-              <th>Title</th>
-              <th>Subtitle</th>
-              <th className="text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {games.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center">
-                  No games found
-                </td>
-              </tr>
-            ) : (
-              games.map((game) => (
-                <tr key={game.id}>
-                  <td>{game.id}</td>
-                  <td>{game.key}</td>
-                  <td>{game.title}</td>
-                  <td>{game.subtitle}</td>
-                  <td className="text-end">
-                    <Link
-                      className="btn btn-outline-primary"
-                      href={`/admin/games/${game.id}`}
-                    >
-                      <i className="bi bi-pencil me-1"></i>
-                      Edit
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </Table>
+      <div>
+        <h2 className="text-xl font-semibold mb-4">All Games</h2>
+
+        {games.length === 0 ? (
+          <p>No games found</p>
+        ) : (
+          <div className="grid gap-4">
+            {games.map((game) => (
+              <div
+                key={game.id}
+                className="border p-4 rounded shadow-sm flex justify-between items-center"
+              >
+                <div>
+                  <h3 className="text-lg font-medium">{game.title}</h3>
+                  <p className="text-gray-500">Key: {game.key}</p>
+                  {game.subtitle && (
+                    <p className="text-gray-500">{game.subtitle}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Link
+                    href={`/admin/games/${game.id}`}
+                    className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                  >
+                    Edit
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </Container>
+    </div>
   );
 }

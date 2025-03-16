@@ -5,10 +5,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import GameService from "../../../services/gameService";
 import PageHeader from "@app/components/PageHeader";
+import { SupportedLocale } from "@/app/types";
 
 // Types pour les paramètres de la page
 type PageParams = Promise<{
-  locale: "en" | "fr" | "es";
+  locale: SupportedLocale;
   game: string;
 }>;
 
@@ -32,15 +33,15 @@ export async function generateMetadata(props: {
     );
 
     // Si la page n'existe pas, retourner des métadonnées par défaut
-    if (!pageData || !pageData.meta || !pageData.meta[locale]) {
+    if (!pageData || !pageData.meta) {
       return {
         title: "Page not found",
         description: "The requested page could not be found.",
       };
     }
 
-    // Extraire les métadonnées pour la langue actuelle
-    const meta = pageData.meta[locale];
+    // Les métadonnées sont déjà dans la langue actuelle ou avec fallback
+    const meta = pageData.meta;
 
     // Retourner les métadonnées formatées
     return {
@@ -83,7 +84,7 @@ export default async function GamePage(props: { params: PageParams }) {
     );
 
     // Si la page n'existe pas, afficher une page 404 personnalisée
-    if (!pageData || !pageData.content || !pageData.content[locale]) {
+    if (!pageData || !pageData.content) {
       return (
         <div className="container my-5 text-center">
           <h1 className="text-danger">Page not found</h1>
@@ -95,8 +96,8 @@ export default async function GamePage(props: { params: PageParams }) {
       );
     }
 
-    // Extraire le contenu pour la langue actuelle
-    const content = pageData.content[locale];
+    // Le contenu est déjà dans la langue actuelle ou avec fallback
+    const content = pageData.content;
 
     // Rendu de la page
     return (
@@ -110,7 +111,6 @@ export default async function GamePage(props: { params: PageParams }) {
           gamePath={`/${locale}/${game}`}
         />
 
-        {/* Le reste du code reste inchangé */}
         <div className="container my-5 lead">
           {/* Section Introduction */}
           {content.introduction && (
