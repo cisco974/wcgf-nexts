@@ -1,14 +1,13 @@
 "use client";
-
+import { Game, SupportedLocale } from "@/app/types";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "react-bootstrap";
 import styles from "../styles/MoreGamesSlider.module.scss";
-import { getAdminDb } from "@lib/firebase-config"; // Ajustez le chemin selon votre structure
 
 // Types
 interface GameDetails {
-  id: string;
+  id: number;
   key: string;
   title: string;
   description: string;
@@ -17,7 +16,7 @@ interface GameDetails {
 
 // Props interface
 interface MoreGamesSliderProps {
-  locale: "en" | "fr" | "es";
+  locale: SupportedLocale;
   currentGame: string;
 }
 
@@ -36,33 +35,27 @@ const MoreGamesSlider: React.FC<MoreGamesSliderProps> = ({
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const db = await getAdminDb();
-        // Récupérer tous les jeux depuis la collection games
-        const gamesSnapshot = await db.collection("games").get();
+        // Utiliser l'API Next.js au lieu de Firebase directement
+        const response = await fetch("/api/games");
 
-        const gamesData: GameDetails[] = [];
+        if (!response.ok) {
+          throw new Error("Failed to fetch games");
+        }
 
-        // Traiter chaque document
-        gamesSnapshot.forEach((doc) => {
-          const data = doc.data();
+        const gamesData = await response.json();
 
-          // Ne pas inclure le jeu actuel
-          if (data.key !== currentGame) {
-            gamesData.push({
-              id: doc.id,
-              key: data.key,
-              title:
-                data.title?.[locale] ||
-                data.title?.en ||
-                data.key.toUpperCase(),
-              description:
-                data.description?.[locale] || data.description?.en || "",
-              logo: data.logo || `/img/store/icon-${data.key}.webp`,
-            });
-          }
-        });
+        // Filtrer les jeux pour exclure le jeu actuel
+        const filteredGames = gamesData
+          .filter((game: Game) => game.key !== currentGame)
+          .map((game: Game) => ({
+            id: game.id,
+            key: game.key,
+            title: game.title,
+            description: game.subtitle || "",
+            logo: game.key || `/img/store/icon-${game.key}.webp`,
+          }));
 
-        setGames(gamesData);
+        setGames(filteredGames);
       } catch (error) {
         console.error("Erreur lors du chargement des jeux:", error);
       } finally {

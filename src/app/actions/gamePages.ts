@@ -1,77 +1,7 @@
 // gamePages.ts
-import { Game } from "./games";
+
 import { PageType } from "./pageTypes";
-
-// Type pour la structure de contenu d'une langue
-export type LocalizedContent = {
-  page_header?: {
-    title?: string;
-  };
-  introduction?: {
-    title?: string;
-    text?: string;
-  };
-  main_sections?: Array<{
-    title: string;
-    text: string;
-    cta?: {
-      link: string;
-      text: string;
-    };
-  }>;
-  sidebar?: {
-    cta_title?: string;
-    cta_subtitle?: string;
-    buttons?: string[];
-    partner_text?: string;
-  };
-  learn_more?: {
-    title?: string;
-    introduction?: string;
-  };
-  history?: {
-    title?: string;
-    sections: Array<{
-      title: string;
-      text: string;
-    }>;
-  };
-  glossary?: {
-    title?: string;
-    terms: Array<{
-      term: string;
-      definition: string;
-    }>;
-  };
-  play_free?: {
-    title?: string;
-    text?: string;
-  };
-};
-
-// Type pour les métadonnées d'une langue
-export type LocalizedMeta = {
-  title: string;
-  description: string;
-  keywords: string;
-  og_title: string;
-  og_description: string;
-  og_image: string;
-};
-
-// Type pour le contenu complet avec toutes les langues
-export type GamePageContent = {
-  en?: LocalizedContent;
-  fr?: LocalizedContent;
-  es?: LocalizedContent;
-};
-
-// Type pour les métadonnées complètes avec toutes les langues
-export type GamePageMeta = {
-  en?: LocalizedMeta;
-  fr?: LocalizedMeta;
-  es?: LocalizedMeta;
-};
+import { Game, GamePageContent, GamePageMeta } from "@app/types";
 
 // Type pour les langues supportées
 export type SupportedLocale = "en" | "fr" | "es";
