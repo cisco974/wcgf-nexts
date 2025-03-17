@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Spinner from "react-bootstrap/Spinner";
 import Tab from "react-bootstrap/Tab";
@@ -13,19 +13,33 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
 import Alert from "react-bootstrap/Alert";
-import { GameData, PageType } from "../../../../../models/models";
+import { Game, GamePageContent, GamePageMeta, LocalizedMeta } from "@app/types";
+import { loadInitialData, saveGamePage } from "@app/actions/server-actions";
 
-// Extending from game models
-type AdminGamePageData = {
+// Type pour les langues supportées
+export type SupportedLocale = "en" | "fr" | "es";
+
+// Type pour les données de page de jeu dans l'admin
+interface AdminGamePageData {
   id: number;
   gameId: number;
   pageTypeId: number;
-  content: Record<string, unknown>; // Will contain GameContent for each language
-  meta: Record<string, Record<string, string>>;
+  content: GamePageContent;
+  meta: GamePageMeta;
   isPublished: boolean;
   pageType: PageType;
-};
+}
 
+// Type pour le type de page
+interface PageType {
+  id: number;
+  key: string;
+  name: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// Type pour les valeurs des champs de formulaire
 type FormFieldValue =
   | string
   | number
@@ -33,81 +47,73 @@ type FormFieldValue =
   | Record<string, unknown>
   | Array<unknown>;
 
-const SUPPORTED_LANGUAGES = [
+// Type pour les options de langue
+interface LanguageOption {
+  code: SupportedLocale;
+  name: string;
+}
+
+// Type pour les champs de métadonnées
+interface MetaField {
+  key: string;
+  label: string;
+}
+
+// Constantes
+const SUPPORTED_LANGUAGES: LanguageOption[] = [
   { code: "en", name: "English" },
   { code: "fr", name: "Français" },
   { code: "es", name: "Español" },
 ];
 
-export default function GamePageAdminPage() {
+const META_FIELDS: MetaField[] = [
+  { key: "title", label: "Page Title" },
+  { key: "description", label: "Description" },
+  { key: "keywords", label: "Keywords" },
+  { key: "og_title", label: "OG Title" },
+  { key: "og_description", label: "OG Description" },
+  { key: "og_image", label: "OG Image URL" },
+];
+
+export default function GamePageAdminPage(): JSX.Element {
   const params = useParams();
   const router = useRouter();
   const gameId = Number(params.gameId);
   const pageTypeKey = String(params.pageType);
 
   // States
-  const [isLoading, setIsLoading] = useState(true);
-  const [game, setGame] = useState<GameData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [game, setGame] = useState<Game | null>(null);
   const [pageType, setPageType] = useState<PageType | null>(null);
   const [gamePage, setGamePage] = useState<AdminGamePageData | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState<string>("en");
-  const [isDirty, setIsDirty] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLocale>("en");
+  const [isDirty, setIsDirty] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Fetch initial data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         setIsLoading(true);
-        setError(null);
+        setErrorMessage(null);
 
         // Résoudre les paramètres si c'est une promesse
         const resolvedParams = await Promise.resolve(params);
         const gameId = Number(resolvedParams.gameId);
         const pageTypeKey = String(resolvedParams.pageType);
 
-        // Fetch game data
-        const gameResponse = await fetch(`/api/admin/games/${gameId}`);
-        if (!gameResponse.ok) throw new Error("Failed to load game data");
-        const gameData = await gameResponse.json();
-        setGame(gameData);
+        // Appeler le server action pour charger les données initiales
+        const data = await loadInitialData(gameId, pageTypeKey);
 
-        // Fetch page type
-        const pageTypeResponse = await fetch(
-          `/api/admin/page-types/${pageTypeKey}`,
+        setGame(data.game);
+        setPageType(data.pageType);
+        setGamePage(data.gamePage);
+      } catch (error: unknown) {
+        setErrorMessage(
+          error instanceof Error ? error.message : "An unknown error occurred",
         );
-        if (!pageTypeResponse.ok) throw new Error("Failed to load page type");
-        const pageTypeData = await pageTypeResponse.json();
-        setPageType(pageTypeData);
-
-        // Fetch game page
-        const gamePageResponse = await fetch(
-          `/api/admin/games/${gameId}/pages/${pageTypeKey}`,
-        );
-
-        if (gamePageResponse.status === 404) {
-          // Page doesn't exist yet, create a new empty one
-          setGamePage({
-            id: 0,
-            gameId,
-            pageTypeId: pageTypeData.id,
-            content: {}, // Will be populated with GameContent per language
-            meta: {},
-            isPublished: false,
-            pageType: pageTypeData,
-          });
-        } else if (!gamePageResponse.ok) {
-          throw new Error("Failed to load game page");
-        } else {
-          const gamePageData = await gamePageResponse.json();
-          setGamePage(gamePageData);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred",
-        );
-        console.error(err);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -122,7 +128,7 @@ export default function GamePageAdminPage() {
    * Handles changes to content fields
    * Updates the appropriate field in the GameContent structure for the current language
    */
-  const handleContentChange = (path: string, value: FormFieldValue) => {
+  const handleContentChange = (path: string, value: FormFieldValue): void => {
     if (!gamePage) return;
 
     setIsDirty(true);
@@ -150,6 +156,7 @@ export default function GamePageAdminPage() {
         const arrayName = part.substring(0, part.indexOf("["));
         const index = parseInt(
           part.substring(part.indexOf("[") + 1, part.indexOf("]")),
+          10,
         );
 
         if (!current[arrayName]) {
@@ -180,7 +187,7 @@ export default function GamePageAdminPage() {
   };
 
   // Handle meta changes
-  const handleMetaChange = (field: string, value: string) => {
+  const handleMetaChange = (field: string, value: string): void => {
     if (!gamePage) return;
 
     setIsDirty(true);
@@ -203,7 +210,7 @@ export default function GamePageAdminPage() {
   const handleAddArrayItem = (
     path: string,
     template: Record<string, unknown> = {},
-  ) => {
+  ): void => {
     if (!gamePage) return;
 
     setIsDirty(true);
@@ -242,7 +249,7 @@ export default function GamePageAdminPage() {
   };
 
   // Remove array item
-  const handleRemoveArrayItem = (path: string, index: number) => {
+  const handleRemoveArrayItem = (path: string, index: number): void => {
     if (!gamePage) return;
 
     setIsDirty(true);
@@ -281,7 +288,7 @@ export default function GamePageAdminPage() {
   };
 
   // Copy content from another language
-  const handleCopyFromLanguage = (sourceLanguage: string) => {
+  const handleCopyFromLanguage = (sourceLanguage: SupportedLocale): void => {
     if (!gamePage || sourceLanguage === currentLanguage) return;
 
     setIsDirty(true);
@@ -308,7 +315,7 @@ export default function GamePageAdminPage() {
   };
 
   // Toggle publish status
-  const handleTogglePublish = () => {
+  const handleTogglePublish = (): void => {
     if (!gamePage) return;
 
     setIsDirty(true);
@@ -319,45 +326,45 @@ export default function GamePageAdminPage() {
   };
 
   // Save changes
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     if (!gamePage) return;
 
     try {
       setIsSaving(true);
-      setError(null);
+      setErrorMessage(null);
 
-      // Résoudre les paramètres si c'est une promesse
-      const resolvedParams = await Promise.resolve(params);
-      const gameId = Number(resolvedParams.gameId);
-      const pageTypeKey = String(resolvedParams.pageType);
-
-      const response = await fetch(
-        `/api/admin/games/${gameId}/pages/${pageTypeKey}`,
+      // ✅ Utilise la Server Action
+      const updatedGamePage = await saveGamePage(
+        gamePage.gameId,
+        gamePage.pageTypeId,
         {
-          method: gamePage.id ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: gamePage.content,
-            meta: gamePage.meta,
-            isPublished: gamePage.isPublished,
-          }),
+          content: gamePage.content,
+          meta: gamePage.meta,
+          isPublished: gamePage.isPublished,
         },
+        gamePage.id,
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to save game page");
-      }
+      // ✅ Corrige les types pour éviter l'erreur JSON
+      setGamePage({
+        ...updatedGamePage,
+        content:
+          typeof updatedGamePage.content === "string"
+            ? JSON.parse(updatedGamePage.content)
+            : updatedGamePage.content,
+        meta:
+          typeof updatedGamePage.meta === "string"
+            ? JSON.parse(updatedGamePage.meta)
+            : updatedGamePage.meta,
+        pageType: gamePage.pageType,
+      });
 
-      const updatedGamePage = await response.json();
-      setGamePage(updatedGamePage);
       setIsDirty(false);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred",
+    } catch (error: unknown) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "An unknown error occurred",
       );
-      console.error(err);
+      console.error(error);
     } finally {
       setIsSaving(false);
     }
@@ -369,7 +376,7 @@ export default function GamePageAdminPage() {
     key: string,
     value: FormFieldValue,
     level = 0,
-  ) => {
+  ): JSX.Element | null => {
     // Skip rendering arrays - they'll be handled separately
     if (Array.isArray(value)) {
       return null;
@@ -433,7 +440,7 @@ export default function GamePageAdminPage() {
     key: string,
     items: Array<unknown>,
     level = 0,
-  ) => {
+  ): JSX.Element => {
     if (!items || items.length === 0) {
       // Empty array
       return (
@@ -519,7 +526,7 @@ export default function GamePageAdminPage() {
   };
 
   // Render content editor based on content structure
-  const renderContentEditor = () => {
+  const renderContentEditor = (): JSX.Element | null => {
     if (!gamePage) return null;
 
     const content =
@@ -548,22 +555,12 @@ export default function GamePageAdminPage() {
   };
 
   // Render meta editor
-  const renderMetaEditor = () => {
+  const renderMetaEditor = (): JSX.Element | null => {
     if (!gamePage) return null;
-
-    const meta = gamePage.meta[currentLanguage] || {};
-    const metaFields = [
-      { key: "title", label: "Page Title" },
-      { key: "description", label: "Description" },
-      { key: "keywords", label: "Keywords" },
-      { key: "og_title", label: "OG Title" },
-      { key: "og_description", label: "OG Description" },
-      { key: "og_image", label: "OG Image URL" },
-    ];
 
     return (
       <div>
-        {metaFields.map((field) => (
+        {META_FIELDS.map((field) => (
           <Form.Group key={field.key} className="mb-3">
             <Form.Label>{field.label}</Form.Label>
             {field.key === "description" || field.key === "og_description" ? (
@@ -571,14 +568,22 @@ export default function GamePageAdminPage() {
                 as="textarea"
                 rows={3}
                 id={field.key}
-                value={meta[field.key] || ""}
+                value={
+                  gamePage.meta[currentLanguage]?.[
+                    field.key as keyof LocalizedMeta
+                  ] || ""
+                }
                 onChange={(e) => handleMetaChange(field.key, e.target.value)}
               />
             ) : (
               <Form.Control
                 type="text"
                 id={field.key}
-                value={meta[field.key] || ""}
+                value={
+                  gamePage.meta[currentLanguage]?.[
+                    field.key as keyof LocalizedMeta
+                  ] || ""
+                }
                 onChange={(e) => handleMetaChange(field.key, e.target.value)}
               />
             )}
@@ -596,12 +601,12 @@ export default function GamePageAdminPage() {
     );
   }
 
-  if (error) {
+  if (errorMessage) {
     return (
       <Container className="py-5">
         <Alert variant="danger">
           <Alert.Heading>Error</Alert.Heading>
-          <p>{error}</p>
+          <p>{errorMessage}</p>
           <hr />
           <div className="d-flex justify-content-end">
             <Button
@@ -669,7 +674,9 @@ export default function GamePageAdminPage() {
             <Form.Label>Language</Form.Label>
             <Form.Select
               value={currentLanguage}
-              onChange={(e) => setCurrentLanguage(e.target.value)}
+              onChange={(e) =>
+                setCurrentLanguage(e.target.value as SupportedLocale)
+              }
             >
               {SUPPORTED_LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>

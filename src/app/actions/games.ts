@@ -54,7 +54,7 @@ export async function updateGame(id: number, formData: FormData) {
     throw new Error("Key and title are required");
   }
 
-  await gameService.updateGame(id, {
+  const game = await gameService.updateGame(id, {
     key,
     title,
     subtitle,
@@ -63,6 +63,7 @@ export async function updateGame(id: number, formData: FormData) {
   revalidatePath(`/admin/games/${id}`);
   revalidatePath("/admin/games");
   revalidatePath("/");
+  return game;
 }
 
 /**

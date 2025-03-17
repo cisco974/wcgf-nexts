@@ -636,6 +636,45 @@ class GameService {
     }
   }
 
+  async getGamePagesByGameId(gameId: number): Promise<GamePage[]> {
+    try {
+      // Vérifier si le jeu existe
+      const game = await prisma.game.findUnique({
+        where: { id: gameId },
+      });
+
+      if (!game) {
+        throw new Error(`Game with ID ${gameId} not found`);
+      }
+
+      // Récupérer toutes les pages du jeu avec les informations du type de page
+      const pages = await prisma.gamePage.findMany({
+        where: { gameId },
+        include: {
+          pageType: true,
+        },
+        orderBy: {
+          pageType: {
+            name: "asc",
+          },
+        },
+      });
+
+      // Transformer les données JSON en objets
+      return pages.map((page) => ({
+        ...page,
+        content:
+          typeof page.content === "string"
+            ? JSON.parse(page.content)
+            : page.content,
+        meta: typeof page.meta === "string" ? JSON.parse(page.meta) : page.meta,
+      }));
+    } catch (error) {
+      console.error(`Error fetching game pages for gameId ${gameId}:`, error);
+      throw error;
+    }
+  }
+
   /**
    * Fonction utilitaire pour normaliser les données JSON
    * Gère à la fois les chaînes JSON et les objets déjà parsés
