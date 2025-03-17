@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Container from "react-bootstrap/Container";
@@ -16,8 +16,14 @@ import Badge from "react-bootstrap/Badge";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
-import { Game, GamePage, PageType } from "@app/types";
-import { fetchGameById, getGameDetails } from "@app/actions/server-actions";
+import {
+  Game,
+  GamePage,
+  GamePageContent,
+  GamePageMeta,
+  PageType,
+} from "@app/types";
+import { getGameDetails } from "@app/actions/server-actions";
 import { updateGame } from "@app/actions/games";
 
 export default function GameDetailPage() {
@@ -26,8 +32,8 @@ export default function GameDetailPage() {
   const gameId = Number(params.gameId);
 
   const [game, setGame] = useState<Game | null>(null);
-  const [pageTypes] = useState<PageType[]>([]);
-  const [gamePages] = useState<GamePage[]>([]);
+  const [pageTypes, setPageTypes] = useState<PageType[]>([]);
+  const [gamePages, setGamePages] = useState<GamePage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,8 +44,18 @@ export default function GameDetailPage() {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await getGameDetails(gameId); // ✅ Correct : on appelle la Server Action ici
+        const data = await getGameDetails(gameId);
+
+        // ✅ Met à jour tous les états avec les données récupérées
         setGame(data.game);
+        setPageTypes(data.pageTypes);
+        const parsedGamePages: GamePage[] = data.gamePages.map((page) => ({
+          ...page,
+          content: page.content as GamePageContent,
+          meta: page.meta as GamePageMeta,
+        }));
+
+        setGamePages(parsedGamePages);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "An unknown error occurred",
@@ -54,26 +70,6 @@ export default function GameDetailPage() {
       fetchGameDetails();
     }
   }, [gameId]);
-  // Fetch game details on component mount
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await fetchGameById(gameId); // ✅ Correct : récupère un seul jeu
-        setGame(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred",
-        );
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchGames();
-  }, []);
 
   // Handle updating the game
   const handleUpdateGame = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -337,7 +333,7 @@ export default function GameDetailPage() {
                         </td>
                         <td className="text-end">
                           <Link
-                            href={`/admin/games/${gameId}/${pageType.key}`}
+                            href={`/admin/games/${gameId}/pages/${pageType.key}`}
                             className="btn btn-primary btn-sm"
                           >
                             {gamePage ? "Edit Page" : "Create Page"}

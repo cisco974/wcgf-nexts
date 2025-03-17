@@ -348,11 +348,10 @@ export async function getGameDetails(gameId: number) {
 }
 
 // Récupère tous les types de pages
+// Récupérer tous les types de pages
 export async function getPageTypes(): Promise<PageType[]> {
   try {
-    return await prisma.pageType.findMany({
-      orderBy: { name: "asc" },
-    });
+    return await prisma.pageType.findMany();
   } catch (error) {
     console.error("Error fetching page types:", error);
     throw new Error("Error fetching page types");
@@ -378,7 +377,6 @@ export async function createPageType(formData: FormData): Promise<PageType> {
   }
 }
 
-// Supprime un type de page
 export async function deletePageType(id: number): Promise<void> {
   try {
     await prisma.pageType.delete({ where: { id } });
@@ -387,13 +385,10 @@ export async function deletePageType(id: number): Promise<void> {
     throw new Error("Error deleting page type");
   }
 }
-
-// Vérifie si un type de page est utilisé
+// Vérifier l'utilisation d'un type de page
 export async function checkPageTypeUsage(id: number): Promise<number> {
   try {
-    return await prisma.gamePage.count({
-      where: { pageTypeId: id },
-    });
+    return await prisma.gamePage.count({ where: { pageTypeId: id } });
   } catch (error) {
     console.error("Error checking page type usage:", error);
     throw new Error("Error checking page type usage");
