@@ -116,10 +116,10 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({
           <div className="ps_header-container position-relative mb-5">
             <div className="ps_header-bg-container rounded-4">
               <Image
-                src="/img/bg-table.jpg"
+                src="/img/bg-table.webp"
                 alt="Background"
-                width={600}
-                height={120}
+                width={462}
+                height={130}
                 className="ps_header-bg w-100 h-100 rounded-4"
               />
             </div>
