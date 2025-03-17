@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
   sassOptions: {
     additionalData: `@import "./src/app/styles/_variables.scss";`,
   },
-  output: "standalone",
 };
 
 export default nextConfig;
