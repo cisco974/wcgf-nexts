@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import GameService from "../../../services/gameService";
 import PageHeader from "@app/components/PageHeader";
 import { SupportedLocale } from "@/app/types";
+import MoreGamesSlider from "@app/components/MoreGamesSlider";
 
 // Types pour les paramètres de la page
 type PageParams = Promise<{
@@ -133,11 +134,7 @@ export default async function GamePage(props: { params: PageParams }) {
                   <p className="mb-4">{section.text}</p>
                   {section.cta && (
                     <Link
-                      href={
-                        section.cta.link.startsWith("/")
-                          ? `/${locale}/${game}${section.cta.link}`
-                          : section.cta.link
-                      }
+                      href={`/${locale}/${game}${section.cta.link}`}
                       className="btn btn-primary text-white fw-bold"
                       target={
                         section.cta.link.startsWith("http")
@@ -159,6 +156,13 @@ export default async function GamePage(props: { params: PageParams }) {
 
             {/* Barre latérale */}
             <div className="col-md-3 px-4">
+              {/* Advertisement */}
+              <div className="gh_ad_container mb-4 w-100 rounded-4 overflow-hidden">
+                <video autoPlay loop muted className="w-100">
+                  <source src="/videos/rummy/ad1.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
               {content.sidebar && (
                 <div className="gh_cta_box rounded-4 p-4 text-white text-center w-100">
                   <Image
@@ -195,6 +199,7 @@ export default async function GamePage(props: { params: PageParams }) {
             </div>
           )}
         </div>
+        <MoreGamesSlider locale={locale} currentGame={game}></MoreGamesSlider>
       </>
     );
   } catch (error) {

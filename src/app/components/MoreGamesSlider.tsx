@@ -4,15 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "react-bootstrap";
 import styles from "../styles/MoreGamesSlider.module.scss";
-
-// Types
-interface GameDetails {
-  id: number;
-  key: string;
-  title: string;
-  description: string;
-  logo: string;
-}
+import { getGames } from "@app/actions/games";
 
 // Props interface
 interface MoreGamesSliderProps {
@@ -25,7 +17,7 @@ const MoreGamesSlider: React.FC<MoreGamesSliderProps> = ({
   currentGame,
 }) => {
   // État pour les jeux récupérés
-  const [games, setGames] = useState<GameDetails[]>([]);
+  const [games, setGames] = useState<Game[]>([]);
   // État pour l'index du slide actif
   const [activeSlide, setActiveSlide] = useState(0);
   // État de chargement
@@ -36,26 +28,9 @@ const MoreGamesSlider: React.FC<MoreGamesSliderProps> = ({
     const fetchGames = async () => {
       try {
         // Utiliser l'API Next.js au lieu de Firebase directement
-        const response = await fetch("/api/games");
+        const games = await getGames();
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch games");
-        }
-
-        const gamesData = await response.json();
-
-        // Filtrer les jeux pour exclure le jeu actuel
-        const filteredGames = gamesData
-          .filter((game: Game) => game.key !== currentGame)
-          .map((game: Game) => ({
-            id: game.id,
-            key: game.key,
-            title: game.title,
-            description: game.subtitle || "",
-            logo: game.key || `/img/store/icon-${game.key}.webp`,
-          }));
-
-        setGames(filteredGames);
+        setGames(games);
       } catch (error) {
         console.error("Erreur lors du chargement des jeux:", error);
       } finally {
@@ -141,14 +116,14 @@ const MoreGamesSlider: React.FC<MoreGamesSliderProps> = ({
             >
               <div className="bg-white rounded-4 shadow-sm p-4 text-center h-100">
                 <Image
-                  src={game.logo}
+                  src={`/img/store/icon-${game.key}.webp`}
                   alt={game.title}
                   width={120}
                   height={120}
                   className="rounded mb-3"
                 />
                 <h3 className="text-danger fs-4 fw-bold mb-2">{game.title}</h3>
-                <p className="text-muted mb-4">{game.description}</p>
+                <p className="text-muted mb-4">{game.subtitle}</p>
                 <div className="d-flex flex-wrap justify-content-center gap-2">
                   <Button
                     size="sm"

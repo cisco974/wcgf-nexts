@@ -16,7 +16,7 @@ export type LocalizedContent = {
     text: string;
     cta?: {
       link: string;
-      text: string;
+      text: HtmlString;
     };
   }>;
   sidebar?: {
@@ -107,3 +107,5 @@ export interface UpdateGamePageInput {
   meta?: GamePageMeta;
   isPublished?: boolean;
 }
+// Type pour marquer les champs contenant du HTML
+export type HtmlString = string & { __htmlString: never };
