@@ -1,0 +1,95 @@
+
+.tr_content {
+  section {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+  }
+}
+
+// CTA Box styles
+.tr_cta_box {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  .tr_cta_logo {
+    max-width: 120px;
+    margin: 0 auto;
+  }
+
+  .tr_cta_buttons {
+    .btn {
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+// Advertisement box
+.tr_ad {
+  overflow: hidden;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  video {
+    display: block;
+  }
+}
+
+// Section styling
+.tr_section {
+  .tr_section_title {
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background-color: $danger;
+    }
+  }
+
+  .tr_section_text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+// Media queries for responsive design
+@media (max-width: 991.98px) {
+  .tr_content section {
+    padding: 1.5rem;
+  }
+
+  .tr_cta_box {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .tr_content section {
+    padding: 1.25rem;
+  }
+
+  .tr_section_title {
+    font-size: 1.25rem;
+  }
+}

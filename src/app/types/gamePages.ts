@@ -19,12 +19,7 @@ export type LocalizedContent = {
       text: HtmlString;
     };
   }>;
-  sidebar?: {
-    cta_title?: string;
-    cta_subtitle?: string;
-    buttons?: string[];
-    partner_text?: string;
-  };
+  sidebar?: SidebarContent;
   learn_more?: {
     title?: string;
     introduction?: string;
@@ -48,7 +43,12 @@ export type LocalizedContent = {
     text?: string;
   };
 };
-
+export interface SidebarContent {
+  cta_title?: string;
+  cta_subtitle?: string;
+  buttons?: string[];
+  partner_text?: string;
+}
 // Type pour les métadonnées d'une langue
 export type LocalizedMeta = {
   title: string;
@@ -106,6 +106,18 @@ export interface UpdateGamePageInput {
   content?: GamePageContent;
   meta?: GamePageMeta;
   isPublished?: boolean;
+}
+export interface LeagueContentLeagues extends LocalizedContent {
+  league_info?: {
+    promotion_zone_title?: string;
+    maintenance_zone_title?: string;
+    relegation_zone_title?: string;
+    footer_text?: string;
+  };
+  highlight_sections?: Array<{
+    title: string;
+    text: string;
+  }>;
 }
 // Type pour marquer les champs contenant du HTML
 export type HtmlString = string & { __htmlString: never };

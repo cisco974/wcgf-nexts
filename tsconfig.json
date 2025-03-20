@@ -29,7 +29,7 @@
       "@models/*": ["./src/app/models/*"],
       "@components/*": ["./src/components/*"],
       "@app/*": ["./src/app/*"],
-      "@styles/*": ["./src/styles/*"],
+      "@styles/*": ["./src/app/styles/*"],
       "@utils/*": ["./src/utils/*"],
       "@root/*": ["./*"]
     }

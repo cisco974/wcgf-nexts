@@ -34,3 +34,14 @@ export type GameFilters = {
   title?: string;
   search?: string;
 };
+
+export interface Player {
+  rank: number;
+  name: string;
+  avatar: string;
+  wins: number;
+  losses: number;
+  level: number;
+  points: number;
+  pts: number;
+}

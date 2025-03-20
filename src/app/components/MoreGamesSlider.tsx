@@ -3,7 +3,7 @@ import { Game, SupportedLocale } from "@/app/types";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "react-bootstrap";
-import styles from "../styles/MoreGamesSlider.module.scss";
+import styles from "@styles/MoreGamesSlider.module.scss";
 import { getGames } from "@app/actions/games";
 
 // Props interface

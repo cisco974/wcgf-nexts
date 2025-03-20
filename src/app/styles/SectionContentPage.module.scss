@@ -1,0 +1,62 @@
+
+
+.section {
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  &.bordered {
+    border-radius: 0.5rem;
+    border-left: 4px solid $primary;
+    padding-left: 1rem;
+    background-color: rgba($light, 0.05);
+  }
+}
+
+// Heading styles for different colors
+.section h2,
+.section h3,
+.section h4,
+.section h5 {
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-color: currentColor;
+  }
+}
+
+// Add a bit more spacing for the CTA button
+.section a.btn {
+  margin-top: 0.5rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Media queries for responsive design
+@media (max-width: 991.98px) {
+  .section {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .section {
+    margin-bottom: 1.5rem;
+
+    &.bordered {
+      padding-left: 0.75rem;
+    }
+  }
+}

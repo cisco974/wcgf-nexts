@@ -1,12 +1,15 @@
 // app/[locale]/[game]/page.tsx
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import GameService from "../../../services/gameService";
 import PageHeader from "@app/components/PageHeader";
 import { SupportedLocale } from "@/app/types";
 import MoreGamesSlider from "@app/components/MoreGamesSlider";
+import SectionHeader from "@app/components/SectionHeader";
+import CtaBox from "@app/components/CtaBox";
+import SectionContent from "@app/components/SectionContentPage";
+import React from "react";
 
 // Types pour les paramètres de la page
 type PageParams = Promise<{
@@ -29,7 +32,7 @@ export async function generateMetadata(props: {
     // Récupérer les données de la page
     const pageData = await GameService.getGamePageByLocale(
       game,
-      "game",
+      "home",
       locale,
     );
 
@@ -80,7 +83,7 @@ export default async function GamePage(props: { params: PageParams }) {
     // Récupérer les données de la page
     const pageData = await GameService.getGamePageByLocale(
       game,
-      "game",
+      "home",
       locale,
     );
 
@@ -115,78 +118,38 @@ export default async function GamePage(props: { params: PageParams }) {
         <div className="container my-5 lead">
           {/* Section Introduction */}
           {content.introduction && (
-            <div className="mb-5">
-              <h2 className="text-primary fw-bold mb-4">
-                {content.introduction.title ?? "Introduction"}
-              </h2>
-              <p>{content.introduction.text ?? ""}</p>
-            </div>
+            <SectionHeader
+              title={content.introduction?.title}
+              subtitle={content.introduction?.text}
+            />
           )}
 
           <div className="row g-4">
             {/* Contenu Principal */}
             <div className="col-md-9">
-              {content.main_sections?.map((section, index) => (
-                <section className="mb-5" key={index}>
-                  <h3 className="text-danger fw-bold text-uppercase mb-3">
-                    {section.title}
-                  </h3>
-                  <p className="mb-4">{section.text}</p>
-                  {section.cta && (
-                    <Link
-                      href={`/${locale}/${game}${section.cta.link}`}
-                      className="btn btn-primary text-white fw-bold"
-                      target={
-                        section.cta.link.startsWith("http")
-                          ? "_blank"
-                          : undefined
-                      }
-                      rel={
-                        section.cta.link.startsWith("http")
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
-                    >
-                      {section.cta.text}
-                    </Link>
-                  )}
-                </section>
+              {content.main_sections?.map((section, i) => (
+                <SectionContent
+                  key={`section-${i}`}
+                  section={section}
+                  locale={locale}
+                  game={game}
+                  headingTag={"h3"}
+                  className="mb-5"
+                />
               ))}
             </div>
 
             {/* Barre latérale */}
             <div className="col-md-3 px-4">
               {/* Advertisement */}
-              <div className="gh_ad_container mb-4 w-100 rounded-4 overflow-hidden">
+              <div className="rounded-4 overflow-hidden shadow-sm mb-4 transition">
                 <video autoPlay loop muted className="w-100">
-                  <source src="/videos/rummy/ad1.mp4" type="video/mp4" />
+                  <source src={`/videos/${game}/ad1.mp4`} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
               {content.sidebar && (
-                <div className="gh_cta_box rounded-4 p-4 text-white text-center w-100">
-                  <Image
-                    src={`/img/store/icon-${game}.webp`}
-                    alt={`${game} Logo`}
-                    width={100}
-                    height={100}
-                    className="rounded-4 border border-4 border-white mb-3"
-                  />
-                  <p className="fs-4 fw-bold">
-                    {content.sidebar.cta_title ?? ""}
-                  </p>
-                  <p className="fs-5 mb-4">
-                    {content.sidebar.cta_subtitle ?? ""}
-                  </p>
-
-                  <div className="d-flex flex-column gap-3 mb-4">
-                    {content.sidebar.buttons?.map((buttonText, index) => (
-                      <button key={index} className="play-game-button">
-                        {buttonText}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <CtaBox game={game} sidebarContent={content.sidebar}></CtaBox>
               )}
             </div>
           </div>
@@ -198,8 +161,8 @@ export default async function GamePage(props: { params: PageParams }) {
               <p className="mb-4">{content.learn_more.introduction ?? ""}</p>
             </div>
           )}
+          <MoreGamesSlider locale={locale} currentGame={game}></MoreGamesSlider>
         </div>
-        <MoreGamesSlider locale={locale} currentGame={game}></MoreGamesSlider>
       </>
     );
   } catch (error) {

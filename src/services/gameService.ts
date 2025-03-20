@@ -10,9 +10,11 @@ import {
   GamePage,
   GamePageContent,
   GamePageMeta,
+  LeagueContentLeagues,
   LocalizedContent,
   LocalizedMeta,
   PageType,
+  Player,
   SupportedLocale,
   UpdateGameInput,
   UpdateGamePageInput,
@@ -20,6 +22,74 @@ import {
 } from "@app/types";
 
 class GameService {
+  /**
+   * Récupère les données de classement pour un jeu spécifique
+   * @param game Le jeu concerné
+   * @returns Les données de classement ou null si non trouvé
+   */
+  async getLeagueRankings(game: string): Promise<Player[] | null> {
+    try {
+      // Dans une vraie application, vous feriez un appel API ici
+      // Pour l'exemple, nous simulons un délai et retournons des données statiques
+      await new Promise((resolve) => setTimeout(resolve, 200)); // Simulation de latence
+
+      // Génération de données de joueurs
+      return Array.from({ length: 30 }, (_, i) => {
+        const rank = i + 1;
+        // Calculer les statistiques en fonction du rang
+        const wins = Math.max(20 - Math.floor(i / 3) * 2, 0);
+        const losses = 20 - wins;
+        const level = Math.max(10 - Math.floor(i / 3), 1);
+        const points = Math.max(1500 - i * 50, 0);
+
+        return {
+          rank,
+          name: [
+            "ProGamerX",
+            "Legend247",
+            "CardMaster",
+            "QuickDraw",
+            "KingSlayer",
+            "AceHunter",
+            "DeckWizard",
+            "TopDeck",
+            "SharpMind",
+            "GameChanger",
+            "PlayerOne",
+            "RandomHero",
+            "RiskTaker",
+            "CardShark",
+            "LuckyDraw",
+            "AllIn",
+            "CardHunter",
+            "Bluffing",
+            "DeckBuilder",
+            "MindReader",
+            "SlowPlay",
+            "LastStand",
+            "OutOfLuck",
+            "LowCard",
+            "BottomDeck",
+            "DesperateMove",
+            "NoDraw",
+            "LastChance",
+            "DiscardKing",
+            "DeadHand",
+          ][i],
+          avatar: `/img/avatars/avatar${(i % 5) + 1}.png`,
+          wins,
+          losses,
+          level,
+          points,
+          pts: points,
+        };
+      });
+    } catch (error) {
+      console.error(`Error fetching league rankings for ${game}:`, error);
+      return null;
+    }
+  }
+
   /**
    * Récupère tous les jeux avec filtrage optionnel
    */
@@ -636,6 +706,101 @@ class GameService {
     }
   }
 
+  async getGamePageLeaguesByLocale(
+    gameKey: string,
+    pageTypeKey: string,
+    locale: SupportedLocale = "en",
+  ): Promise<{ content: LeagueContentLeagues; meta: LocalizedMeta } | null> {
+    try {
+      // Rechercher le jeu dans la base de données
+      const gameData = await prisma.game.findUnique({
+        where: { key: gameKey },
+      });
+
+      if (!gameData) {
+        return null;
+      }
+
+      // Rechercher le type de page "leagues"
+      const pageType = await prisma.pageType.findUnique({
+        where: { key: pageTypeKey },
+      });
+
+      if (!pageType) {
+        return null;
+      }
+
+      // Rechercher la page de classement de ligue pour ce jeu
+      const gamePage = await prisma.gamePage.findFirst({
+        where: {
+          gameId: gameData.id,
+          pageTypeId: pageType.id,
+          isPublished: true,
+        },
+      });
+
+      if (!gamePage) {
+        return null;
+      }
+
+      // Convertir le contenu et les métadonnées de JSON en objets
+      const content =
+        typeof gamePage.content === "string"
+          ? JSON.parse(gamePage.content)
+          : gamePage.content;
+
+      const meta =
+        typeof gamePage.meta === "string"
+          ? JSON.parse(gamePage.meta)
+          : gamePage.meta;
+
+      // Récupérer le contenu pour la langue demandée, avec fallback sur l'anglais
+      const localizedContent = content[locale] || content["en"] || {};
+      const localizedMeta = meta[locale] ||
+        meta["en"] || {
+          title: "",
+          description: "",
+          keywords: "",
+          og_title: "",
+          og_description: "",
+          og_image: "",
+        };
+
+      // Obtenir les valeurs par défaut basées sur la locale
+      const defaultValues = this.getDefaultLeagueValues(locale, gameData.title);
+
+      // Étendre le contenu localisé avec les propriétés spécifiques aux classements de ligue
+      const leagueContent: LeagueContentLeagues = {
+        ...localizedContent,
+        // S'assurer que ces propriétés existent, même si elles sont vides
+        league_info: {
+          promotion_zone_title:
+            localizedContent.league_info?.promotion_zone_title ||
+            defaultValues.promotion_zone_title,
+          maintenance_zone_title:
+            localizedContent.league_info?.maintenance_zone_title ||
+            defaultValues.maintenance_zone_title,
+          relegation_zone_title:
+            localizedContent.league_info?.relegation_zone_title ||
+            defaultValues.relegation_zone_title,
+          footer_text:
+            localizedContent.league_info?.footer_text ||
+            defaultValues.footer_text,
+        },
+        highlight_sections: localizedContent.highlight_sections || [],
+      };
+
+      // Retourner le contenu et les métadonnées
+      return {
+        content: leagueContent,
+        meta: localizedMeta,
+      };
+    } catch (error) {
+      console.error(`Error fetching leagues page for ${gameKey}:`, error);
+      return null;
+    }
+  }
+
   async getGamePagesByGameId(gameId: number): Promise<GamePage[]> {
     try {
       // Vérifier si le jeu existe
@@ -672,6 +837,35 @@ class GameService {
     } catch (error) {
       console.error(`Error fetching game pages for gameId ${gameId}:`, error);
       throw error;
+    }
+  }
+
+  /**
+   * Obtient les valeurs par défaut pour les zones de classement en fonction de la locale
+   */
+  private getDefaultLeagueValues(locale: SupportedLocale, gameTitle: string) {
+    switch (locale) {
+      case "fr":
+        return {
+          promotion_zone_title: "ZONE DE PROMOTION",
+          maintenance_zone_title: "ZONE DE MAINTIEN",
+          relegation_zone_title: "ZONE DE RELÉGATION",
+          footer_text: `Classement officiel de la Ligue Super ${gameTitle} FMJC.`,
+        };
+      case "es":
+        return {
+          promotion_zone_title: "ZONA DE PROMOCIÓN",
+          maintenance_zone_title: "ZONA DE MANTENIMIENTO",
+          relegation_zone_title: "ZONA DE RELEGACIÓN",
+          footer_text: `Clasificación oficial de la Liga Super ${gameTitle} FMJC.`,
+        };
+      default: // 'en'
+        return {
+          promotion_zone_title: "PROMOTION ZONE",
+          maintenance_zone_title: "MAINTENANCE ZONE",
+          relegation_zone_title: "RELEGATION ZONE",
+          footer_text: `Official ranking of the WCGF Super ${gameTitle} League.`,
+        };
     }
   }
 

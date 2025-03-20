@@ -1,6 +1,0 @@
-<div class="intro-text">
-    <h2>Rules of Tarot</h2>
-    <p>Tarot is a captivating and strategic card game originating from France. Known for its unique rules and dynamic gameplay, it is appreciated by players of all levels. This comprehensive guide will walk you through the basics, variants, and nuances of Tarot to help you master this fascinating game.</p>
-	<p>At its core, Tarot combines elements of chance and strategy, challenging players to make calculated decisions with every card they play. The game is played with a 78-card deck, including 21 trumps and the Fool, a unique card that can turn the tide of any round. Whether you’re a beginner learning the ropes or an experienced player honing your tactics, Tarot offers a rich and rewarding gaming experience that continues to captivate generations.</p>
-	<button class="blue-button">General rules</button> <button class="blue-button">Rules Tarot 4 players</button> <button class="blue-button">Rules Tarot 5 players</button> <button class="blue-button">Learn more</button>
-</div>

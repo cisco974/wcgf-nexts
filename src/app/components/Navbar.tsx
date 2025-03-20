@@ -160,7 +160,7 @@ const Navbar = () => {
           " navbar navbar-expand-lg navbar-dark bg-dark sticky-top px-3 z-3"
         }
       >
-        <Link className="navbar-brand" href={`/${currentLocale}`}>
+        <Link className="navbar-brand" href={`/`}>
           <Image
             src="/img/wcgf-small.webp"
             alt="WCGF Logo"
