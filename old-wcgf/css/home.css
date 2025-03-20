@@ -1,0 +1,344 @@
+.games-section {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    gap: 20px;
+}
+
+.home-block {
+    flex: 1;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+	padding:20px;
+}
+
+.game-content {
+    position: relative;
+}
+
+.game-content h3 {
+    text-align: center;
+}
+
+.game-image {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+	border-radius: 10px;
+}
+
+.game-image-players {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+	border-radius: 10px;
+}
+
+.game-icon {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #45bfe6;
+    border: 4px solid #fff;
+}
+
+.game-icon-players {
+    height: 100px;
+	top: 100px;
+
+}
+
+.game-icon-presentation {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 65px;
+    height: 80px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #45bfe6;
+    border: 4px solid #fff;
+}
+
+.game-icon-players-presentation {
+    height: 100px;
+	top: 65px;
+	left:50px;
+
+}
+
+.game-icon img,
+.game-icon-players-presentation img,
+.game-icon-tarot img,
+.game-icon-players img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-icon-tarot {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 0;
+	border: 4px solid #fff;
+}
+
+.game-icon-tarot-presentation {
+    width: 82px;
+    height: 82px;
+}
+
+
+.game-buttons {
+    justify-content: center; /* Centre les boutons horizontalement */
+    gap: 10px; /* Ajoute de l'espace entre les boutons */
+    margin-top: 15px; /* Espacement au-dessus des boutons */
+}
+
+.game-buttons .blue-button {
+    display: inline-block; /* S'assure que les boutons s'alignent correctement */
+    flex: none; /* Désactive tout redimensionnement automatique */
+    text-align: center; /* Centre le texte dans chaque bouton */
+}
+
+.game-buttons i {
+    margin-right: 5px; /* Ajoute un espace entre l'icône et le texte */
+    font-size: 16px; /* Ajuste la taille de l'icône */
+    vertical-align: middle; /* Aligne verticalement avec le texte */
+}
+
+.more-games {
+    text-align: center;
+    margin: 40px;
+}
+
+.leagues-section {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px; /* Espace entre les tableaux */
+    flex-wrap: wrap; /* Responsive : s'empile si l'espace est insuffisant */
+}
+
+.leagues-section-presentation {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px; /* Espace entre les tableaux */
+    flex-wrap: wrap; /* Responsive : s'empile si l'espace est insuffisant */
+	padding-bottom: 20px;
+}
+
+.league-container {
+    width: 300px; /* Largeur fixe pour chaque tableau */
+    background: #fff; /* Fond blanc */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.league-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.league-header h3 {
+    text-align: center;
+}
+
+
+.league-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espace entre l'image et le texte */
+	padding: 10px;
+}
+
+.league-header-medal {
+    width: 40px;
+    height: auto;
+    object-fit: contain;
+}
+
+.league-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.league-dropdown-bar {
+    text-align: center;
+}
+
+.league-dropdown-bar select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.league-table {
+    border-collapse: collapse;
+}
+.game-title {
+    text-align: center; /* Centre le texte horizontalement */
+    font-size: 22px; /* Taille du texte */
+    font-weight: bold; /* Texte en gras */
+    color: #333; /* Couleur du texte */
+    margin-bottom: 15px; /* Espace entre le titre et le bloc */
+    text-transform: uppercase; /* Met en majuscules */
+    letter-spacing: 1px; /* Espacement entre les lettres */
+    width: 100%; /* S'assure que le titre occupe toute la largeur */
+    display: block; /* Force le titre à se placer sur une ligne séparée */
+}
+
+.logo-container {
+    background-image: url('../img/bg-table.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    display: flex; /* Active Flexbox */
+    justify-content: center; /* Centre les images horizontalement */
+    align-items: center; /* Centre les images verticalement */
+}
+
+.logo-container img {
+    display: block;
+}
+
+.logo-table, .logo-league-table, .logo-avatar-table, .logo-avatar-table-2 {
+    margin: 0;
+}
+
+.logo-table {
+    height: 80px;
+    padding: 10px;
+}
+
+.logo-league-table {
+    height: 50px;
+}
+
+.logo-ranking-table {
+    height: 30px;
+	margin: 20px;
+}
+
+.logo-avatar-table {
+    height: 110px;
+    padding-top: 20px;
+}
+
+.logo-avatar-table-2 {
+    height: 70px;
+    padding-top: 20px;
+	align-self: flex-end;
+}
+
+.event-container {
+    background-image: url('../img/bg-table.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    justify-content: center; /* Centre les images horizontalement */
+    align-items: center; /* Centre les images verticalement */
+    padding: 0px 20px;
+}
+
+.presentation-top {
+    background-color: #007BFF; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    font-weight: bold; /* Texte en gras */
+    text-align: center; /* Centre horizontalement */
+    border-radius: 10px 10px 0 0; /* Coins arrondis */
+    height: 50px; /* Hauteur fixe */
+    display: flex; /* Utiliser Flexbox */
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+    gap: 10px; /* Espace entre l'icône et le texte */
+}
+
+.presentation-top i {
+    display: inline-block; /* S'assure que l'icône est alignée */
+    font-size: 20px; /* Taille de l'icône (ajuster si nécessaire) */
+}
+
+.presentation-top span {
+    display: inline-block; /* S'assure que le texte est aligné */
+    line-height: 1.5; /* Ajuste l'espacement vertical du texte */
+}
+
+.presentation-footer {
+    background-color: #efbc85; /* Couleur de fond */
+    color: #444; /* Couleur du texte */
+    font-weight: bold; /* Texte en gras */
+    text-align: center; /* Centre horizontalement */
+    border-radius: 0px 0px 10px 10px; /* Coins arrondis */
+    height: 30px; /* Hauteur fixe */
+    display: flex; /* Utiliser Flexbox */
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+    gap: 10px; /* Espace entre l'icône et le texte */
+	font-size: 12px;
+}
+
+.avatar-box-home {
+    background-color: #45bfe6;
+    border-radius: 20px;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto; /* Centre horizontalement et ajoute un espacement vertical */
+	border: 4px solid #f3004e
+}
+
+.wins {
+    background-color: #7bb82d;
+    color: white;
+    font-weight: bold;
+    padding: 8px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+}
+
+.losses {
+    background-color: #d31105;
+    color: white;
+    font-weight: bold;
+    padding: 8px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+}
+
+
+.selector {
+	background-color: #f4f4f9;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+	
+	}

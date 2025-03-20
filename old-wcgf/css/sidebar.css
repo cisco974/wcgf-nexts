@@ -1,0 +1,83 @@
+.content-with-sidebar {
+    display: flex;
+    gap: 20px; /* Espace entre le contenu principal et la barre latérale */
+	line-height: 1.6;
+}
+
+.main-content {
+    flex: 1; /* Occupe tout l'espace disponible */
+}
+
+.sidebar {
+    width: 300px; /* Largeur fixe pour la barre latérale */
+}
+
+.ad-container {
+    margin-bottom: 20px; /* Espacement entre la publicité et la box */
+}
+
+.ad-banner {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cta-box {
+    background: url('../img/bg-table.jpg') no-repeat center;
+    background-size: cover;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: white;
+    text-align: center;
+}
+.sidebar-cta-game {
+    text-align: center;
+    margin: 40px 0; /* Espacement au-dessus et en dessous */
+}
+
+.sidebar-cta-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px; /* Coins arrondis */
+    border: solid 4px #fff; /* Bordure blanche */
+}
+
+.sidebar-cta-title {
+    text-align: center; /* Centre le texte */
+    color: white;
+    font-size: 28px; /* Taille adaptée pour un titre principal */
+    font-weight: bold; /* Style gras pour souligner l'importance */
+    margin-bottom: 20px; /* Espacement en bas pour une séparation claire */
+    text-transform: uppercase; /* Texte en majuscules */
+}
+
+.sidebar-cta-description {
+    color: white;
+    font-size: 20px; /* Taille du texte */
+    margin: 10px 0 30px; /* Espacement au-dessus et en dessous */
+    text-align: center; /* Centrer le texte */
+}
+
+.sidebar-cta-buttons {
+    display: flex;
+    flex-direction: column; /* Aligne les boutons verticalement */
+    align-items: center; /* Centre les boutons horizontalement */
+    gap: 15px; /* Espacement entre les boutons */
+}
+
+.sidebar-cta-buttons .play-button {
+    width: 100%;
+}
+
+.partner {
+    display: block; /* Permet à l'image de se comporter comme un bloc */
+    margin: 0 auto; /* Centre l'image horizontalement */
+    height: 20px; /* Hauteur fixe */
+    width: auto; /* Conserve les proportions */
+}

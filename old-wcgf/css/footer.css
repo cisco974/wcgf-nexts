@@ -1,0 +1,172 @@
+footer {
+    background-color: #000;
+    color: white;
+    text-align: center;
+    border-top: solid 8px #f3004e;
+}
+
+.footer-logo {
+    margin-top: 20px;
+    height: 30px;
+}
+
+.footer-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 80%;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.footer-column {
+    flex: 1;
+    max-width: 200px;
+    text-align: left;
+}
+
+.footer-column h3 {
+    color: #f3004e;
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 5px;
+}
+
+.footer-column ul li a {
+    color: #9d9d9d;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.footer-column ul li a:hover {
+    color: #f3004e;
+    text-decoration: none;
+}
+
+/* Section grise */
+.footer-gray-bg {
+    padding: 10px 0;
+    margin-top: 20px;
+}
+
+.footer-mission {
+    margin: 20px auto;
+    color: #9d9d9d;
+    font-size: 14px;
+    max-width: 80%;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* Styles pour la section des liens du footer */
+.footer-links {
+    margin: 20px auto;
+    font-size: 14px;
+    color: #9d9d9d;
+    text-align: center; /* Centre les liens horizontalement */
+}
+
+.footer-links a {
+    color: #9d9d9d;
+    text-decoration: none;
+    padding: 0 10px; /* Espacement autour des liens */
+}
+
+.footer-links a:hover,
+.footer-languages a:hover {
+    color: #f3004e; /* Couleur rouge au survol */
+    text-decoration: none; /* Supprime la sous-ligne au survol */
+}
+
+.footer-separator {
+    border: none; /* Supprime les styles par défaut */
+    border-top: solid 1px #292f3f; /* Ligne solide */
+    margin: 20px auto; /* Espacement vertical autour de la ligne */
+	width: 90% ;
+}
+
+.footer-languages {
+    margin: 20px auto;
+    font-size: 14px;
+    color: #9d9d9d;
+    text-align: center; /* Centrer le contenu */
+    display: flex; /* Utiliser flexbox pour l'organisation */
+    justify-content: center;
+    align-items: center; /* Alignement vertical parfait */
+    gap: 15px; /* Espacement entre chaque groupe langue-séparateur */
+}
+
+.footer-languages a {
+    color: #9d9d9d;
+    text-decoration: none;
+    display: inline-flex; /* Flexbox pour chaque lien */
+    align-items: center; /* Alignement vertical */
+    gap: 5px; /* Espace entre le drapeau et le texte */
+}
+
+.footer-languages a img.language-flag {
+    width: 20px; /* Taille des drapeaux */
+    height: 14px; /* Hauteur des drapeaux */
+    border-radius: 2px; /* Coins légèrement arrondis */
+    vertical-align: middle;
+}
+
+.footer-languages a::after {
+    content: '|';
+    color: #9d9d9d; /* Couleur du séparateur */
+    margin-left: 10px; /* Espacement après le texte */
+}
+
+.footer-languages a:last-child::after {
+    content: ''; /* Supprime le séparateur après le dernier lien */
+}
+
+/* Style pour la mission */
+.footer-mission p {
+	text-align: center;
+	color: #9d9d9d;
+	line-height: 1.6;
+	margin: 20px auto;
+	max-width: 800px; /* Limite la largeur pour meilleure lisibilité */
+}
+
+/* Styles pour les logos dans le footer */
+.footer-logos {
+	display: flex;
+	justify-content: center;
+	gap: 20px; /* Espacement entre les logos */
+	margin: 20px auto;
+}
+
+.footer-logos img {
+	height: 50px;
+	width: auto;
+}
+/* Section des logos dans le footer */
+.footer-logos {
+    display: flex;
+    justify-content: center; /* Centre les logos horizontalement */
+    gap: 20px; /* Espace entre les logos */
+}
+
+.footer-logos img {
+    max-height: 60px; /* Hauteur maximale des logos */
+    height: auto; /* Maintient les proportions */
+    width: auto; /* Permet de respecter le ratio d'aspect */
+}
+
+.footer-gray-bg .copyright {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #9d9d9d;
+}

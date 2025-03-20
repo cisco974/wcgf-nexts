@@ -1,0 +1,35 @@
+/* CTA Game Section */
+.cta-game {
+    text-align: center;
+    margin: 40px 0; /* Espacement au-dessus et en dessous */
+}
+
+.cta-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px; /* Coins arrondis */
+	border:solid 4px #fff;
+	
+}
+
+.cta-title {
+    text-align: center; /* Centre le texte */
+	color:white;
+	font-size: 28px; /* Taille adaptée pour un titre principal */
+    font-weight: bold; /* Style gras pour souligner l'importance */
+    margin-bottom: 20px; /* Espacement en bas pour une séparation claire */
+    text-transform: uppercase; /* Texte en majuscules */
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center; /* Centre les boutons horizontalement */
+    gap: 15px; /* Espacement entre les boutons */
+}
+
+.cta-description {
+    color: white;
+    font-size: 20px;
+    margin: 10px 0 30px; /* Espacement au-dessus et en dessous */
+    text-align: center; /* Centrer le texte */
+}

@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/top.css">
+<link rel="stylesheet" href="css/language.css">
+<link rel="stylesheet" href="css/page-header.css">
+<link rel="stylesheet" href="css/header.css">
+<link rel="stylesheet" href="css/events.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/table.css">
+<link rel="stylesheet" href="css/graph.css">
+<link rel="stylesheet" href="css/feature.css">
+<link rel="stylesheet" href="css/cta-game.css">
+<link rel="stylesheet" href="css/boxes.css">
+<link rel="stylesheet" href="css/more-game.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="icon" href="img/icon.png" type="image/png">
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-brands/css/uicons-brands.css'>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>

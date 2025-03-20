@@ -1,0 +1,127 @@
+.nav-button {
+    background-color: #007BFF; /* Bleu pour les boutons */
+    color: white;
+    padding: 20px;
+    border: none;
+    border-radius: 10px; /* Boutons rectangulaires */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 120px;
+    position: absolute;
+    top: 50%; /* Alignement vertical au centre */
+    transform: translateY(-50%);
+    z-index: 5; /* Assurez-vous que le header reste au-dessus */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button:hover {
+    background-color: #004bbd;
+    transform: translateY(-50%) scale(1.1); /* Légère élévation */
+}
+
+
+.nav-button img {
+    width: 20px; /* Taille de l'icône */
+}
+
+.nav-button.left img {
+    transform: rotate(90deg); /* Rotation correcte pour la flèche gauche */
+}
+
+.nav-button.right img {
+    transform: rotate(-90deg); /* Rotation correcte pour la flèche droite */
+}
+
+.nav-button.left {
+    left: 10px; /* Positionnement à gauche */
+}
+
+.nav-button.right {
+    right: 10px; /* Positionnement à droite */
+}
+
+/* Section More Games */
+.more-games-box {
+    padding-bottom: 40px;
+    position: relative; /* Nécessaire pour positionner les flèches */
+}
+
+.more-games-title {
+    text-align: center;
+    font-size: 34px;
+    color: #f3004e; /* Rouge pour le titre */
+    margin: 20px 0;
+}
+
+.more-games-title::before {
+    content: none; /* Supprime l'icône */
+}
+
+.more-games-title {
+    padding-left: 0; /* Supprime l'espace réservé à l'icône */
+}
+
+.more-games-description {
+    text-align: center;
+    font-size: 22px;
+    color: #666; /* Gris pour le texte */
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Container des jeux */
+.games-container {
+    display: flex;
+    gap: 20px; /* Espace entre les colonnes */
+    overflow: hidden; /* Masque les parties hors écran */
+    position: relative;
+    width: 100%; /* Prend toute la largeur disponible */
+    box-sizing: border-box; /* Inclut le padding dans le calcul de largeur */
+	padding-bottom:10px;
+}
+
+/* Colonnes des jeux */
+.game-column {
+    flex: 1; /* Chaque colonne prend une part égale de l'espace */
+    background-color: white;
+    border-radius: 20px 20px 10px 10px;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    opacity: 0.5; /* Colonnes non centrées opaques */
+    transition: opacity 0.3s ease, transform 0.5s ease;
+    box-sizing: border-box; /* Pour inclure les bordures et le padding */
+}
+
+.game-column.active {
+    opacity: 1; /* Colonne centrale pleinement visible */
+}
+
+/* Suppression des comportements imprévus */
+.game-column img {
+    max-width: 120px;
+    height: auto; /* Garde les proportions des images */
+    border-radius: 20px;
+}
+
+/* Game Title */
+.game-title {
+    font-size: 26px;
+    color: #f3004e;
+    margin-bottom: 5px;
+    margin-top: 10px;
+	text-align: center;
+}
+
+/* Game Description */
+.game-description {
+    font-size: 20px;
+    color: #666; /* Gris */
+    margin-bottom: 20px;
+}

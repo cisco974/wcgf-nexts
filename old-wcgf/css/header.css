@@ -1,0 +1,159 @@
+header {
+    background-color: #000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
+    position: sticky; /* Fixed sticky */
+    top: 0;
+    z-index: 900;
+	transition: transform 0.3s ease, height 0.3s ease;
+}
+
+header.sticky {
+    height: 55px; /* Ajuste la hauteur si nécessaire */
+}
+
+header img {
+    height: 30px;
+}
+
+header nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+header nav .nav-item {
+    position: relative;
+}
+
+
+header nav a:hover,
+header nav a.active {
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Sous-menu */
+header nav .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 3px); /* Réduit la distance entre le lien et le sous-menu */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: black;
+    list-style: none;
+    padding: 0; /* Ajuste l'espace interne */
+    margin: 0;
+    border-radius: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 350px;
+}
+
+/* Affichage du sous-menu lorsque survolé */
+header nav .nav-item:hover .dropdown-menu,
+header nav .dropdown-menu:hover {
+    display: block;
+}
+
+/* Élément du sous-menu */
+header nav .dropdown-menu li {
+    padding: 10px 10px; 
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    transition: background-color 0.3s ease;
+    gap: 10px;
+	border-radius: 20px;
+
+}
+
+header nav .dropdown-menu li:hover {
+    background-color: #f4f4f9;
+}
+
+/* Liens dans le sous-menu */
+header nav .dropdown-menu li a {
+    color: #000;
+    text-decoration: none;
+    font-size: 18px; /* Texte des titres */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espace entre l'icône et le texte */
+    flex-wrap: wrap; /* Permet au sous-texte de s'afficher en dessous */
+}
+
+/* Sous-texte */
+header nav .dropdown-menu li div {
+    display: flex;
+    flex-direction: column; /* Affiche le sous-texte sous le titre */
+    gap: 3px; /* Espace entre le titre et le sous-texte */
+}
+
+header nav .dropdown-menu li div strong {
+    font-size: 20px; /* Taille du titre */
+    color: #000;
+}
+
+header nav .dropdown-menu li div span {
+    font-size: 14px; /* Taille du sous-texte */
+    color: #666;
+}
+
+/* Icônes */
+header nav .dropdown-menu li img {
+    width: 75px;
+    height: 75px;
+    border-radius: 10px;
+}
+
+/* Derniers liens (ALL GAMES, ALL LEAGUES, etc.) */
+header nav .dropdown-menu li:last-child {
+    text-align: center;
+    justify-content: center;
+}
+
+header nav .dropdown-menu li:last-child a {
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+header nav .dropdown-menu li:last-child img {
+    display: none; /* Cache les icônes des derniers liens */
+}
+
+/* Supprime les underline sur hover */
+header nav .dropdown-menu li a:hover {
+    text-decoration: none;
+}
+
+/* Réduit encore la distance entre lien et sous-menu */
+header nav .nav-item:hover .dropdown-menu {
+    margin-top: -3px;
+}
+
+header nav a i.fi {
+    font-size: 30px; /* Ajustez la taille de l'icône */
+    margin-right: 5px; /* Espacement entre l'icône et le texte */
+    color: white; /* Couleur de l'icône */
+    vertical-align: middle; /* Aligne l'icône avec le texte */
+}

@@ -1,0 +1,10 @@
+<script src="js/slider.js"></script>
+<script src="js/header-sticky.js"></script>
+<script src="js/page-header-sticky.js"></script>
+<script src="js/page-header-home-sticky.js"></script>
+<script src="js/events.js"></script>
+<script src="js/graph-tarot-leagues.js"></script>
+<script src="js/graph-tarot-experience.js"></script>
+<script src="js/graph-tarot-coins.js"></script>
+<script src="js/graph-tarot-all.js"></script>
+<script src="js/graph-tarot-win-loss.js"></script>
