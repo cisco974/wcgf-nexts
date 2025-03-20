@@ -1,12 +1,16 @@
 // src/app/types/ui.ts
 // Types pour l'UI qui n'ont pas d'équivalent direct dans la base de données
 
-export type Player = {
+export interface Player {
   rank: number;
   name: string;
   avatar: string;
+  wins: number;
+  losses: number;
+  level: number;
   points: number;
-};
+  pts: number;
+}
 
 export type TournamentEvent = {
   title: string;
