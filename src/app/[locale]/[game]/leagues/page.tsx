@@ -241,23 +241,29 @@ export default async function LeagueRankingsPage(props: {
               </div>
 
               {/* League Rankings Card */}
-              <div className={`${styles.leagueCard} card shadow-sm mb-5`}>
+              <div
+                className={`${styles.leagueCard} p-4 card border-0 rounded-4 h-100`}
+              >
                 {/* Search bar */}
-                <div className={`${styles.searchBar} p-2 rounded-top`}>
+                <div
+                  className={`${styles.searchBar} my-4 card border-0 rounded`}
+                >
                   <div className="d-flex justify-content-center">
                     <input
                       type="text"
-                      className="form-control me-2 mx-auto"
+                      className="form-control m-2 mx-auto"
                       style={{ maxWidth: "550px" }}
                       placeholder="SEARCH FOR A PLAYER BY USERNAME OR ID..."
                     />
-                    <button className="btn btn-danger">SEARCH</button>
+                    <button className="btn btn-danger text-white fw-bold">
+                      SEARCH
+                    </button>
                   </div>
                 </div>
 
                 {/* League header */}
                 <div
-                  className={`${styles.leagueBar} d-flex justify-content-between align-items-center px-3 py-3`}
+                  className={`${styles.leagueBar} d-flex   justify-content-between align-items-center px-3 py-3`}
                 >
                   <div className="d-flex align-items-center">
                     <div className={styles.medalIcon}>

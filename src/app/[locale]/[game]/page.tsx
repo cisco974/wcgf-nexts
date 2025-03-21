@@ -111,7 +111,7 @@ export default async function GamePage(props: { params: PageParams }) {
           background={`/img/header/header-${game}.jpg`}
           title={content.page_header?.title ?? game.toUpperCase()}
           logo={`/img/${game}/logo.png`}
-          activeTab="game"
+          activeTab="home"
           gamePath={`/${locale}/${game}`}
         />
 
