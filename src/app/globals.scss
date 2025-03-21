@@ -49,4 +49,16 @@ body a, a:hover {
     transform: scale(1.05);
     color: white;
   }
+
+
+
+}
+
+.bgRankingLineRankNumber {
+  background-color: $ranking-line-rank-number !important;
+  color: $white !important;
+}
+.bgColorAzur {
+  background-color: $point-color !important;
+
 }

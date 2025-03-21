@@ -1,219 +1,29 @@
-// Ajouts à votre LeagueRankings.module.scss pour reproduire le design fourni
+.playerRow {
 
+  background-color: $ranking-line-bg-color !important;
+  border-bottom: 4px solid $ranking-bg-color   !important;
 
-
-// Barre de recherche
-.searchBar {
-  background-color: $white;
-  border-bottom: 1px solid #e9ecef;
-  padding: 15px;
-
-  input {
-    border-radius: 4px;
-    height: 38px;
-  }
-
-  input::placeholder {
-    font-size: 0.8rem;
-    color: $secondary;
-  }
 }
 
-// Barre d'entête avec le nom de la ligue
-.leagueBar {
-  background-color: $primary;
-  color: white;
-  padding: 10px 15px;
-}
-
-.medalIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: $primary;
-  border-radius: 5px;
-  padding: 5px;
-  margin-right: 5px;
-}
-
-.leagueTitle {
-  font-weight: bold;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
-
-// Zones du tableau
-.zonePromotion, .zoneMaintien, .zoneRelegation {
-  width: 100%;
-}
-
-.zoneHeader {
-  padding: 10px 0;
-  text-align: center;
-  font-weight: bold;
-  color: white;
-  letter-spacing: 1px;
-  font-size: 1rem;
-  text-transform: uppercase;
-}
-
-.zonePromotion .zoneHeader {
-  background-color: #4caf50; // Vert pour la promotion
-}
-
-.zoneMaintien .zoneHeader {
-  background-color:$ranking-line-rank-number; // Orange pour le maintien
-}
-
-.zoneRelegation .zoneHeader {
-  background-color: $danger; // Rouge pour la relégation
-}
-
-// Lignes de joueurs
-.playersTable {
-  width: 100%;
-}
 
 .playerRow {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  background-color: $ranking-line-bg-color;
-
-  &:nth-child(even) {
-    background-color: $ranking-bg-color;
-  }
+  background-color: $ranking-line-bg-color !important;
+  border-bottom: 4px solid $ranking-bg-color !important;
 }
 
-// Colonnes
-.rankArrow {
-  width: 20px;
-  text-align: center;
-  color: #555;
-  font-weight: bold;
+// Cette règle spécifique va surcharger les styles par défaut de Bootstrap pour les cellules
+.playerRow td {
+  background-color: inherit !important;
+  box-shadow: none !important;
 }
 
-.rankSpace {
-  width: 20px;
+// Pour les lignes alternées (optionnel)
+.playerRowAlt {
+  background-color: $ranking-line-bg-color  !important;
+  border-bottom: 4px solid $ranking-bg-color !important;
 }
 
-.rankNumber {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 36px;
-  height: 36px;
-  background-color: $danger;
-  color: white;
-  font-weight: bold;
-  border-radius: 4px;
-  margin: 0 10px;
-  font-size: 1.1rem;
-}
-
-.playerAvatar {
-  margin-right: 10px;
-
-  img {
-    border-radius: 4px;
-    background-color: #e0e0e0;
-    object-fit: cover;
-  }
-}
-
-.playerName {
-  flex: 1;
-  font-weight: 500;
-}
-
-.playerForm {
-  display: flex;
-  gap: 2px;
-  margin-right: 10px;
-}
-
-.resultWin, .resultLoss {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  border-radius: 50%;
-  font-size: 0.85rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.resultWin {
-  background-color: #4caf50;
-}
-
-.resultLoss {
-  background-color: $danger;
-}
-
-.playerLevel {
-  padding: 6px 10px;
-  background-color: $ranking-line-bg-color;
-  color: white;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  margin-right: 10px;
-  min-width: 80px;
-  text-align: center;
-}
-
-.playerPoints {
-  width: 60px;
-  text-align: center;
-  color: #555;
-  font-weight: 500;
-}
-
-.playerPts {
-  min-width: 100px;
-  padding: 6px 10px;
-  background-color: #2196f3;
-  color: white;
-  border-radius: 4px;
-  font-weight: bold;
-  text-align: center;
-  font-size: 1rem;
-}
-
-// Footer du tableau
-.tableFooter {
-  padding: 8px;
-  background-color: #f5f5f5;
-  color: #555;
-  font-size: 0.8rem;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top: 1px solid #e0e0e0;
-}
-
-// Responsive
-@media (max-width: 768px) {
-  .playerForm, .playerLevel {
-    display: none;
-  }
-
-  .playerPts {
-    min-width: 70px;
-    font-size: 0.85rem;
-  }
-
-  .playerPoints {
-    width: 40px;
-    font-size: 0.85rem;
-  }
-
-  .playerName {
-    font-size: 0.9rem;
-  }
+.playerRowAlt td {
+  background-color: inherit !important;
+  box-shadow: none !important;
 }

@@ -7,12 +7,11 @@ import { Player, SupportedLocale } from "@/app/types";
 import MoreGamesSlider from "@app/components/MoreGamesSlider";
 import Link from "next/link";
 import CtaBox from "@app/components/CtaBox";
-import styles from "@styles/LeagueRankings.module.scss";
 import SectionContent from "@app/components/SectionContentPage";
 import SectionHeader from "@app/components/SectionHeader";
 import React from "react";
 import Image from "next/image";
-
+import styles from "@styles/LeagueRankings.module.scss";
 // Types pour les paramètres de la page
 type PageParams = Promise<{
   locale: SupportedLocale;
@@ -93,9 +92,13 @@ const divisionOptions = [
 // Fonction pour obtenir un indicateur victoire/défaite
 const getStatusIndicator = (isWin: boolean) => {
   return isWin ? (
-    <div className={styles.resultWin}>V</div>
+    <span className="bg-success text-white d-inline-block rounded px-2 py-1 fw-bold">
+      V
+    </span>
   ) : (
-    <div className={styles.resultLoss}>L</div>
+    <span className="bg-danger text-white d-inline-block rounded px-2 py-1 fw-bold">
+      L
+    </span>
   );
 };
 
@@ -209,7 +212,10 @@ export default async function LeagueRankingsPage(props: {
           <div className="row">
             <div className="col-lg-9">
               {/* Introduction */}
-              <div className="bg-light p-4 rounded-4 mb-4">
+              <SectionHeader
+                title={"Welcome to the official Super Tarot league rankings!"}
+              ></SectionHeader>
+              <div className="p-4 rounded-4 mb-4">
                 <p>
                   Here, you can explore the latest{" "}
                   <span className="text-primary fw-bold">league rankings</span>,
@@ -240,18 +246,13 @@ export default async function LeagueRankingsPage(props: {
                 </p>
               </div>
 
-              {/* League Rankings Card */}
-              <div
-                className={`${styles.leagueCard} p-4 card border-0 rounded-4 h-100`}
-              >
-                {/* Search bar */}
-                <div
-                  className={`${styles.searchBar} my-4 card border-0 rounded`}
-                >
+              {/* Search Bar */}
+              <div className="card rounded-4 bg-light mb-4 border-0 shadow-sm">
+                <div className="p-3">
                   <div className="d-flex justify-content-center">
                     <input
                       type="text"
-                      className="form-control m-2 mx-auto"
+                      className="form-control me-2 mx-auto"
                       style={{ maxWidth: "550px" }}
                       placeholder="SEARCH FOR A PLAYER BY USERNAME OR ID..."
                     />
@@ -260,21 +261,22 @@ export default async function LeagueRankingsPage(props: {
                     </button>
                   </div>
                 </div>
+              </div>
 
-                {/* League header */}
-                <div
-                  className={`${styles.leagueBar} d-flex   justify-content-between align-items-center px-3 py-3`}
-                >
+              {/* League Rankings */}
+              <div className="rounded-4 overflow-hidden shadow-sm mb-5">
+                {/* League Header */}
+                <div className="bg-primary text-white d-flex justify-content-between align-items-center p-3">
                   <div className="d-flex align-items-center">
-                    <div className={styles.medalIcon}>
+                    <div className="position-relative me-2">
                       <Image
                         src={"/img/medals/1.webp"}
-                        alt="League 1"
-                        width={30}
-                        height={30}
+                        alt="ddd"
+                        width={40}
+                        height={60}
                       />
                     </div>
-                    <div className={`${styles.leagueTitle} ms-2`}>LEAGUE 1</div>
+                    <div className="fs-4 fw-bold ms-2">LEAGUE 1</div>
                   </div>
                   <div className="d-flex align-items-center">
                     <select className="form-select me-2">
@@ -296,111 +298,188 @@ export default async function LeagueRankingsPage(props: {
                 </div>
 
                 {/* Zone de Promotion */}
-                <div className={`${styles.zonePromotion}`}>
-                  <div className={styles.zoneHeader}>ZONE DE PROMOTION</div>
-                  <div className={styles.playersTable}>
-                    {zonePromotion.map((player: Player) => (
-                      <div key={player.rank} className={styles.playerRow}>
-                        <div className={styles.rankArrow}>↑</div>
-                        <div className={styles.rankNumber}>{player.rank}</div>
-                        <div className={styles.playerAvatar}>
-                          <img
-                            src={player.avatar}
-                            alt={player.name}
-                            width="36"
-                            height="36"
-                          />
-                        </div>
-                        <div className={styles.playerName}>{player.name}</div>
-                        <div className={styles.playerForm}>
-                          {getPlayerForm(player)}
-                        </div>
-                        <div className={styles.playerLevel}>
-                          Level {player.level}
-                        </div>
-                        <div className={styles.playerPoints}>
-                          {player.points}
-                        </div>
-                        <div className={styles.playerPts}>{player.pts} PTS</div>
-                      </div>
-                    ))}
+                <div>
+                  <div className="bg-success text-white p-2 text-center fw-bold text-uppercase">
+                    ZONE DE PROMOTION
+                  </div>
+                  <div className="table-responsive">
+                    <table className="table mb-0">
+                      <tbody>
+                        {zonePromotion.map((player: Player) => (
+                          <tr
+                            className={`   ${styles.playerRow} `}
+                            key={player.rank}
+                          >
+                            <td
+                              className={`   align-middle text-center`}
+                              width="30"
+                            >
+                              ↑
+                            </td>
+                            <td className="align-middle text-center" width="50">
+                              <span className="bgRankingLineRankNumber text-white d-inline-block rounded px-2 py-1 fw-bold">
+                                {player.rank}
+                              </span>
+                            </td>
+                            <td className="align-middle" width="60">
+                              <img
+                                src={player.avatar}
+                                alt={player.name}
+                                className="rounded"
+                                width="36"
+                                height="36"
+                              />
+                            </td>
+                            <td className="align-middle fw-medium">
+                              {player.name}
+                            </td>
+                            <td className="align-middle">
+                              {getPlayerForm(player)}
+                            </td>
+                            <td className="align-middle text-center">
+                              <span className="bgRankingLineRankNumber text-white rounded px-3 py-1 fw-bold">
+                                Level {player.level}
+                              </span>
+                            </td>
+                            <td className="align-middle text-center">
+                              {player.points}
+                            </td>
+                            <td className="align-middle text-end">
+                              <span className="bgColorAzur text-white rounded px-3 py-1 fw-bold">
+                                {player.pts} PTS
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
                 {/* Zone de Maintien */}
-                <div className={`${styles.zoneMaintien}`}>
-                  <div className={styles.zoneHeader}>ZONE DE MAINTIEN</div>
-                  <div className={styles.playersTable}>
-                    {zoneMaintien.map((player: Player) => (
-                      <div key={player.rank} className={styles.playerRow}>
-                        <div className={styles.rankSpace}></div>
-                        <div className={styles.rankNumber}>{player.rank}</div>
-                        <div className={styles.playerAvatar}>
-                          <img
-                            src={player.avatar}
-                            alt={player.name}
-                            width="36"
-                            height="36"
-                          />
-                        </div>
-                        <div className={styles.playerName}>{player.name}</div>
-                        <div className={styles.playerForm}>
-                          {getPlayerForm(player)}
-                        </div>
-                        <div className={styles.playerLevel}>
-                          Level {player.level}
-                        </div>
-                        <div className={styles.playerPoints}>
-                          {player.points}
-                        </div>
-                        <div className={styles.playerPts}>{player.pts} PTS</div>
-                      </div>
-                    ))}
+                <div>
+                  <div className="bg-warning text-white p-2 text-center fw-bold text-uppercase">
+                    ZONE DE MAINTIEN
+                  </div>
+                  <div className="table-responsive">
+                    <table className="table mb-0">
+                      <tbody>
+                        {zoneMaintien.map((player: Player) => (
+                          <tr
+                            className={`   ${styles.playerRow} `}
+                            key={player.rank}
+                          >
+                            <td
+                              className="align-middle text-center"
+                              width="30"
+                            ></td>
+                            <td
+                              className="align-middle text-center "
+                              width="50"
+                            >
+                              <span className="bgRankingLineRankNumber text-white d-inline-block rounded px-2 py-1 fw-bold">
+                                {player.rank}
+                              </span>
+                            </td>
+                            <td className="align-middle" width="60">
+                              <img
+                                src={player.avatar}
+                                alt={player.name}
+                                className="rounded"
+                                width="36"
+                                height="36"
+                              />
+                            </td>
+                            <td className="align-middle fw-medium">
+                              {player.name}
+                            </td>
+                            <td className="align-middle">
+                              {getPlayerForm(player)}
+                            </td>
+                            <td className="align-middle text-center">
+                              <span className="bgRankingLineRankNumber text-white rounded px-3 py-1 fw-bold">
+                                Level {player.level}
+                              </span>
+                            </td>
+                            <td className="align-middle text-center">
+                              {player.points}
+                            </td>
+                            <td className="align-middle text-end">
+                              <span className="bgColorAzur text-white rounded px-3 py-1 fw-bold">
+                                {player.pts} PTS
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
                 {/* Zone de Relégation */}
-                <div className={`${styles.zoneRelegation}`}>
-                  <div className={styles.zoneHeader}>ZONE DE RELEGATION</div>
-                  <div className={styles.playersTable}>
-                    {zoneRelegation.map((player: Player) => (
-                      <div key={player.rank} className={styles.playerRow}>
-                        <div className={styles.rankArrow}>↓</div>
-                        <div className={styles.rankNumber}>{player.rank}</div>
-                        <div className={styles.playerAvatar}>
-                          <img
-                            src={player.avatar}
-                            alt={player.name}
-                            width="36"
-                            height="36"
-                          />
-                        </div>
-                        <div className={styles.playerName}>{player.name}</div>
-                        <div className={styles.playerForm}>
-                          {getPlayerForm(player)}
-                        </div>
-                        <div className={styles.playerLevel}>
-                          Level {player.level}
-                        </div>
-                        <div className={styles.playerPoints}>
-                          {player.points}
-                        </div>
-                        <div className={styles.playerPts}>{player.pts} PTS</div>
-                      </div>
-                    ))}
+                <div>
+                  <div className="bg-danger text-white p-2 text-center fw-bold text-uppercase">
+                    ZONE DE RELÉGATION
                   </div>
-                </div>
-
-                {/* Footer */}
-                <div className={styles.tableFooter}>
-                  This is the official ranking of the WCGF{" "}
-                  {game.charAt(0).toUpperCase() + game.slice(1)} Super League.
-                  <img
-                    src="/img/wcgf-logo.png"
-                    alt="WCGF Logo"
-                    className="ms-2"
-                    height="20"
-                  />
+                  <div className="table-responsive">
+                    <table className="table mb-0">
+                      <tbody>
+                        {zoneRelegation.map((player: Player) => (
+                          <tr
+                            className={`   ${styles.playerRow} `}
+                            key={player.rank}
+                          >
+                            <td className="align-middle text-center" width="30">
+                              ↓
+                            </td>
+                            <td className="align-middle text-center" width="50">
+                              <span className="bgRankingLineRankNumber text-white d-inline-block rounded px-2 py-1 fw-bold">
+                                {player.rank}
+                              </span>
+                            </td>
+                            <td className="align-middle" width="60">
+                              <img
+                                src={player.avatar}
+                                alt={player.name}
+                                className="rounded"
+                                width="36"
+                                height="36"
+                              />
+                            </td>
+                            <td className="align-middle fw-medium">
+                              {player.name}
+                            </td>
+                            <td className="align-middle">
+                              {getPlayerForm(player)}
+                            </td>
+                            <td className="align-middle text-center">
+                              <span className="bgRankingLineRankNumber text-white rounded px-3 py-1 fw-bold">
+                                Level {player.level}
+                              </span>
+                            </td>
+                            <td className="align-middle text-center">
+                              {player.points}
+                            </td>
+                            <td className="align-middle text-end">
+                              <span className="bgColorAzur text-white rounded px-3 py-1 fw-bold">
+                                {player.pts} PTS
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="bg-light p-2 text-center small">
+                    This is the official ranking of the WCGF{" "}
+                    {game.charAt(0).toUpperCase() + game.slice(1)} Super League.
+                    <img
+                      src="/img/wcgf-logo.png"
+                      alt="WCGF Logo"
+                      className="ms-2"
+                      height="20"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -444,10 +523,6 @@ export default async function LeagueRankingsPage(props: {
               />
             </div>
           </div>
-        </div>
-
-        {/* More Games Section */}
-        <div className="container mb-5 text-center">
           <MoreGamesSlider
             locale={locale as SupportedLocale}
             currentGame={game}
