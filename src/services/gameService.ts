@@ -76,7 +76,7 @@ class GameService {
             "DiscardKing",
             "DeadHand",
           ][i],
-          avatar: `/img/avatars/avatar${(i % 5) + 1}.png`,
+          avatar: `/img/avatars/${(i % 5) + 1}.webp`,
           wins,
           losses,
           level,

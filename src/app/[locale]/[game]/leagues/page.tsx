@@ -11,6 +11,7 @@ import styles from "@styles/LeagueRankings.module.scss";
 import SectionContent from "@app/components/SectionContentPage";
 import SectionHeader from "@app/components/SectionHeader";
 import React from "react";
+import Image from "next/image";
 
 // Types pour les paramètres de la page
 type PageParams = Promise<{
@@ -292,198 +293,207 @@ export default async function LeagueRankingsPage(props: {
                 </div>
               </div>
 
-              {/* League Header */}
-              <div
-                className={`${styles.leagueHeader} d-flex align-items-center mb-2 p-2 rounded-3`}
-              >
-                <div className={styles.leagueIcon}>1</div>
-                <div className={styles.leagueName}>LEAGUE 1</div>
-              </div>
-
-              {/* Rankings Table - Zone de Promotion */}
-              <div className={`${styles.rankingTable} mb-4`}>
-                <div
-                  className={`${styles.zoneHeader} bg-success text-white p-2 text-center`}
-                >
-                  ZONE DE PROMOTION
+              {/* League Header - style adapté de LeagueTable */}
+              <div className="card border-0 shadow-sm p-3 mb-4">
+                <div className="card-header bg-white border-0 p-0 pb-2">
+                  <div className="lt-logo-container gap-3 py-2 mb-3">
+                    <img
+                      src="/img/logos/super-leagues-en.webp"
+                      alt="League Logo"
+                      className="lt-league-logo"
+                      width={150}
+                      height={50}
+                    />
+                    <img
+                      src={`/img/${game}/logo.png`}
+                      alt="Game Logo"
+                      className="lt-league-icon"
+                      width={70}
+                      height={80}
+                    />
+                  </div>
                 </div>
-                <div className="table-responsive">
-                  <table className="table table-striped table-hover mb-0">
-                    <thead className="bg-light">
-                      <tr>
-                        <th>#</th>
-                        <th>Player</th>
-                        <th>Form</th>
-                        <th>Level</th>
-                        <th>Points</th>
-                        <th className="text-end">PTS</th>
-                      </tr>
-                    </thead>
+
+                <div className="bg-light rounded mb-3">
+                  <div className="d-flex align-items-center gap-3 py-3 px-5">
+                    <select className="form-select">
+                      {leagueOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <select className="form-select">
+                      {divisionOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Timer header */}
+                <div className="lt-timer py-2 fs-5 mb-0">
+                  End in 3 days and 8 hours
+                </div>
+
+                {/* Zone de Promotion */}
+                <div className="lt-table-container mb-3">
+                  <div
+                    className="bg-success text-white p-2 text-center fw-bold text-uppercase"
+                    style={{ letterSpacing: "1px", fontSize: "0.9rem" }}
+                  >
+                    ZONE DE PROMOTION
+                  </div>
+                  <table className="lt-table table mb-0">
                     <tbody>
                       {zonePromotion.map((player: Player) => (
-                        <tr key={player.rank} className={styles.playerRow}>
-                          <td className="align-middle">{player.rank}</td>
-                          <td className="align-middle">
-                            <div className="d-flex align-items-center">
-                              <img
-                                src={player.avatar}
-                                alt={player.name}
-                                className="rounded-circle me-2"
-                                width="36"
-                                height="36"
-                              />
-                              <span>{player.name}</span>
-                            </div>
+                        <tr key={player.rank} className="lt-row">
+                          <td className="lt-rank">
+                            <div className="lt-rank-number">{player.rank}</div>
                           </td>
-                          <td className="align-middle">
+                          <td className="lt-avatar">
+                            <img
+                              src={player.avatar}
+                              alt={player.name}
+                              width={40}
+                              height={40}
+                            />
+                          </td>
+                          <td className="fs-5">{player.name}</td>
+                          <td className="d-none d-md-table-cell">
                             {getPlayerForm(player)}
                           </td>
-                          <td className="align-middle">
+                          <td className="d-none d-md-table-cell">
                             <span
-                              className={`${styles.levelBadge} bg-warning text-white px-2 py-1 rounded`}
+                              className="bg-warning text-white px-2 py-1 rounded"
+                              style={{
+                                fontSize: "0.75rem",
+                                fontWeight: "bold",
+                              }}
                             >
                               Level {player.level}
                             </span>
                           </td>
-                          <td className="align-middle">{player.points}</td>
-                          <td
-                            className={`${styles.pointsColumn} text-danger fw-bold align-middle text-end`}
-                          >
-                            {player.pts} PTS
+                          <td className="lt-points">
+                            <span className="p-2 fs-5 fw-bold rounded">
+                              {player.pts} PTS
+                            </span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-              </div>
 
-              {/* Rankings Table - Zone de Maintien */}
-              <div className={`${styles.rankingTable} mb-4`}>
-                <div
-                  className={`${styles.zoneHeader} bg-primary text-white p-2 text-center`}
-                >
-                  ZONE DE MAINTIEN
-                </div>
-                <div className="table-responsive">
-                  <table className="table table-striped table-hover mb-0">
-                    <thead className="bg-light">
-                      <tr>
-                        <th>#</th>
-                        <th>Player</th>
-                        <th>Form</th>
-                        <th>Level</th>
-                        <th>Points</th>
-                        <th className="text-end">PTS</th>
-                      </tr>
-                    </thead>
+                {/* Zone de Maintien */}
+                <div className="lt-table-container mb-3">
+                  <div
+                    className="bg-primary text-white p-2 text-center fw-bold text-uppercase"
+                    style={{ letterSpacing: "1px", fontSize: "0.9rem" }}
+                  >
+                    ZONE DE MAINTIEN
+                  </div>
+                  <table className="lt-table table mb-0">
                     <tbody>
                       {zoneMaintien.map((player: Player) => (
-                        <tr key={player.rank} className={styles.playerRow}>
-                          <td className="align-middle">{player.rank}</td>
-                          <td className="align-middle">
-                            <div className="d-flex align-items-center">
-                              <img
-                                src={player.avatar}
-                                alt={player.name}
-                                className="rounded-circle me-2"
-                                width="36"
-                                height="36"
-                              />
-                              <span>{player.name}</span>
-                            </div>
+                        <tr key={player.rank} className="lt-row">
+                          <td className="lt-rank">
+                            <div className="lt-rank-number">{player.rank}</div>
                           </td>
-                          <td className="align-middle">
+                          <td className="lt-avatar">
+                            <img
+                              src={player.avatar}
+                              alt={player.name}
+                              width={40}
+                              height={40}
+                            />
+                          </td>
+                          <td className="fs-5">{player.name}</td>
+                          <td className="d-none d-md-table-cell">
                             {getPlayerForm(player)}
                           </td>
-                          <td className="align-middle">
+                          <td className="d-none d-md-table-cell">
                             <span
-                              className={`${styles.levelBadge} bg-warning text-white px-2 py-1 rounded`}
+                              className="bg-warning text-white px-2 py-1 rounded"
+                              style={{
+                                fontSize: "0.75rem",
+                                fontWeight: "bold",
+                              }}
                             >
                               Level {player.level}
                             </span>
                           </td>
-                          <td className="align-middle">{player.points}</td>
-                          <td
-                            className={`${styles.pointsColumn} text-danger fw-bold align-middle text-end`}
-                          >
-                            {player.pts} PTS
+                          <td className="lt-points">
+                            <span className="p-2 fs-5 fw-bold rounded">
+                              {player.pts} PTS
+                            </span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-              </div>
 
-              {/* Rankings Table - Zone de Relégation */}
-              <div className={`${styles.rankingTable} mb-5`}>
-                <div
-                  className={`${styles.zoneHeader} bg-danger text-white p-2 text-center`}
-                >
-                  ZONE DE RELÉGATION
-                </div>
-                <div className="table-responsive">
-                  <table className="table table-striped table-hover mb-0">
-                    <thead className="bg-light">
-                      <tr>
-                        <th>#</th>
-                        <th>Player</th>
-                        <th>Form</th>
-                        <th>Level</th>
-                        <th>Points</th>
-                        <th className="text-end">PTS</th>
-                      </tr>
-                    </thead>
+                {/* Zone de Relégation */}
+                <div className="lt-table-container">
+                  <div
+                    className="bg-danger text-white p-2 text-center fw-bold text-uppercase"
+                    style={{ letterSpacing: "1px", fontSize: "0.9rem" }}
+                  >
+                    ZONE DE RELÉGATION
+                  </div>
+                  <table className="lt-table table mb-0">
                     <tbody>
                       {zoneRelegation.map((player: Player) => (
-                        <tr key={player.rank} className={styles.playerRow}>
-                          <td className="align-middle">{player.rank}</td>
-                          <td className="align-middle">
-                            <div className="d-flex align-items-center">
-                              <img
-                                src={player.avatar}
-                                alt={player.name}
-                                className="rounded-circle me-2"
-                                width="36"
-                                height="36"
-                              />
-                              <span>{player.name}</span>
-                            </div>
+                        <tr key={player.rank} className="lt-row">
+                          <td className="lt-rank">
+                            <div className="lt-rank-number">{player.rank}</div>
                           </td>
-                          <td className="align-middle">
+                          <td className="lt-avatar">
+                            <Image
+                              src={player.avatar}
+                              alt={player.name}
+                              width={40}
+                              height={40}
+                            />
+                          </td>
+                          <td className="fs-5">{player.name}</td>
+                          <td className="d-none d-md-table-cell">
                             {getPlayerForm(player)}
                           </td>
-                          <td className="align-middle">
+                          <td className="d-none d-md-table-cell">
                             <span
-                              className={`${styles.levelBadge} bg-warning text-white px-2 py-1 rounded`}
+                              className="bg-warning text-white px-2 py-1 rounded"
+                              style={{
+                                fontSize: "0.75rem",
+                                fontWeight: "bold",
+                              }}
                             >
                               Level {player.level}
                             </span>
                           </td>
-                          <td className="align-middle">{player.points}</td>
-                          <td
-                            className={`${styles.pointsColumn} text-danger fw-bold align-middle text-end`}
-                          >
-                            {player.pts} PTS
+                          <td className="lt-points">
+                            <span className="p-2 fs-5 fw-bold rounded">
+                              {player.pts} PTS
+                            </span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                  <div className="lt-footer">
+                    Official WCGF Super{" "}
+                    {game.charAt(0).toUpperCase() + game.slice(1)} League
+                  </div>
                 </div>
-                <div className="bg-light p-2 text-center">
-                  <small>
-                    This is the official ranking of the WCGF Super{" "}
-                    {game.charAt(0).toUpperCase() + game.slice(1)} League.
-                  </small>
-                  <img
-                    src="/img/wcgf-logo.png"
-                    alt="WCGF"
-                    height="20"
-                    className="ms-2"
-                  />
-                </div>
+
+                <p className="text-center mt-3 fs-5">
+                  In league 1｜Division 1, {zonePromotion[0]?.name},{" "}
+                  {zonePromotion[1]?.name}, and {zonePromotion[2]?.name} are the
+                  current leaders on {game}.
+                </p>
               </div>
 
               {/* League Rankings and Player Highlights */}

@@ -70,9 +70,9 @@ const META_FIELDS: MetaField[] = [
   { key: "title", label: "Page Title" },
   { key: "description", label: "Description" },
   { key: "keywords", label: "Keywords" },
-  { key: "og_title", label: "OG Title" },
-  { key: "og_description", label: "OG Description" },
-  { key: "og_image", label: "OG Image URL" },
+  { key: "og_title", label: "Title" },
+  { key: "og_description", label: "Description" },
+  { key: "og_image", label: "Image URL" },
 ];
 
 export default function GamePageAdminPage(): JSX.Element {

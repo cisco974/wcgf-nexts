@@ -1,95 +1,111 @@
-// LeagueRankings.module.scss
-@import 'variables';
-
-.filterBox {
-  border: 1px solid $light;
-
-  input::placeholder {
-    font-size: 0.8rem;
-  }
+//LeagueRankings.module.scss
+.lt-logo-container {
+  background-image: url('/img/bg-table.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.leagueHeader {
-  background-color: #1e88e5;
+.lt-league-logo {
+  height: 50px;
+  width: auto;
+}
+
+.lt-league-icon {
+  height: 80px;
+  width: auto;
+}
+
+.lt-timer {
+  background-color: #1e88e5; // Couleur primaire
   color: white;
-
-  .leagueIcon {
-    background-color: white;
-    color: #1e88e5;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    margin-right: 10px;
-  }
-
-  .leagueName {
-    font-weight: bold;
-    font-size: 1.2rem;
-  }
+  font-weight: bold;
+  text-align: center;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-.rankingTable {
-  border-radius: 8px;
+.lt-table-container {
+  background-color: #f5f5f5; // Couleur de fond
+  border-radius: 0 0 8px 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
 
-  .zoneHeader {
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.9rem;
-  }
+.lt-table {
+  background-color: transparent;
+  border-spacing: 0;
+  width: 100%;
+}
 
-  .playerRow {
-    transition: background-color 0.2s;
+.lt-row {
+  background-color: #ffffff;
+  vertical-align: middle;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.05);
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.02);
-    }
-  }
-
-  .levelBadge {
-    font-size: 0.75rem;
-    font-weight: bold;
-  }
-
-  .pointsColumn {
-    font-size: 1rem;
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-.sectionTitle {
-  border-bottom: 2px solid $light;
-  padding-bottom: 0.5rem;
+.lt-rank {
+  width: 40px;
+  text-align: center;
+  padding: 12px;
+}
 
-  h2 {
-    font-weight: bold;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    color: $dark;
+.lt-rank-number {
+  background-color: #444;
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.lt-avatar {
+  img {
+    background-color: #f8971d; // Couleur des points
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
   }
 }
 
-@media (max-width: 767.98px) {
-  .leagueHeader {
-    .leagueName {
-      font-size: 1rem;
-    }
-  }
+.lt-points {
+  text-align: center;
 
-  .rankingTable {
-    .zoneHeader {
-      font-size: 0.8rem;
-    }
+  span {
+    background-color: #f8971d; // Couleur des points
+    color: white;
   }
+}
 
-  .sectionTitle {
-    h2 {
-      font-size: 1.25rem;
-    }
+.lt-footer {
+  background-color: #efbc85;
+  color: #444;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 0px 0px 10px 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+// Assurez-vous que la table ne soit pas affectée par d'autres styles Bootstrap
+.lt-table.table {
+  > :not(caption) > * > * {
+    background: none;
+    border: none;
+    padding: 8px;
   }
 }
