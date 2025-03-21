@@ -1,111 +1,225 @@
-//LeagueRankings.module.scss
-.lt-logo-container {
-  background-image: url('/img/bg-table.webp');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+// Ajouts à votre LeagueRankings.module.scss pour reproduire le design fourni
 
-.lt-league-logo {
-  height: 50px;
-  width: auto;
-}
-
-.lt-league-icon {
-  height: 80px;
-  width: auto;
-}
-
-.lt-timer {
-  background-color: #1e88e5; // Couleur primaire
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 10px 10px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.lt-table-container {
-  background-color: #f5f5f5; // Couleur de fond
-  border-radius: 0 0 8px 8px;
+// Carte principale
+.leagueCard {
+  border-radius: 12px;
   overflow: hidden;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
 }
 
-.lt-table {
-  background-color: transparent;
-  border-spacing: 0;
-  width: 100%;
-}
+// Barre de recherche
+.searchBar {
+  background-color: #f1f3f5;
+  border-bottom: 1px solid #e9ecef;
+  padding: 15px;
 
-.lt-row {
-  background-color: #ffffff;
-  vertical-align: middle;
-  border-bottom: 4px solid rgba(0, 0, 0, 0.05);
+  input {
+    border-radius: 4px;
+    height: 38px;
+  }
 
-  &:last-child {
-    border-bottom: none;
+  input::placeholder {
+    font-size: 0.8rem;
+    color: #6c757d;
   }
 }
 
-.lt-rank {
-  width: 40px;
-  text-align: center;
-  padding: 12px;
+// Barre d'entête avec le nom de la ligue
+.leagueBar {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
 }
 
-.lt-rank-number {
-  background-color: #444;
+.medalIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0062cc;
+  border-radius: 5px;
+  padding: 5px;
+  margin-right: 5px;
+}
+
+.leagueTitle {
+  font-weight: bold;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+// Zones du tableau
+.zonePromotion, .zoneMaintien, .zoneRelegation {
+  width: 100%;
+}
+
+.zoneHeader {
+  padding: 10px 0;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 1px;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.zonePromotion .zoneHeader {
+  background-color: #4caf50; // Vert pour la promotion
+}
+
+.zoneMaintien .zoneHeader {
+  background-color: #ff9800; // Orange pour le maintien
+}
+
+.zoneRelegation .zoneHeader {
+  background-color: #f44336; // Rouge pour la relégation
+}
+
+// Lignes de joueurs
+.playersTable {
+  width: 100%;
+}
+
+.playerRow {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: #f8ad46;
+
+  &:nth-child(even) {
+    background-color: #fac273;
+  }
+}
+
+// Colonnes
+.rankArrow {
+  width: 20px;
+  text-align: center;
+  color: #555;
+  font-weight: bold;
+}
+
+.rankSpace {
+  width: 20px;
+}
+
+.rankNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  background-color: #e64a19;
   color: white;
   font-weight: bold;
-  padding: 10px 15px;
-  border-radius: 5px;
+  border-radius: 4px;
+  margin: 0 10px;
+  font-size: 1.1rem;
 }
 
-.lt-avatar {
+.playerAvatar {
+  margin-right: 10px;
+
   img {
-    background-color: #f8971d; // Couleur des points
-    border-radius: 5px;
-    width: 40px;
-    height: 40px;
+    border-radius: 4px;
+    background-color: #e0e0e0;
     object-fit: cover;
   }
 }
 
-.lt-points {
-  text-align: center;
-
-  span {
-    background-color: #f8971d; // Couleur des points
-    color: white;
-  }
+.playerName {
+  flex: 1;
+  font-weight: 500;
 }
 
-.lt-footer {
-  background-color: #efbc85;
-  color: #444;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 0px 0px 10px 10px;
+.playerForm {
+  display: flex;
+  gap: 2px;
+  margin-right: 10px;
+}
+
+.resultWin, .resultLoss {
+  width: 30px;
   height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  font-size: 12px;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-// Assurez-vous que la table ne soit pas affectée par d'autres styles Bootstrap
-.lt-table.table {
-  > :not(caption) > * > * {
-    background: none;
-    border: none;
-    padding: 8px;
+.resultWin {
+  background-color: #4caf50;
+}
+
+.resultLoss {
+  background-color: #f44336;
+}
+
+.playerLevel {
+  padding: 6px 10px;
+  background-color: #ff9800;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-right: 10px;
+  min-width: 80px;
+  text-align: center;
+}
+
+.playerPoints {
+  width: 60px;
+  text-align: center;
+  color: #555;
+  font-weight: 500;
+}
+
+.playerPts {
+  min-width: 100px;
+  padding: 6px 10px;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1rem;
+}
+
+// Footer du tableau
+.tableFooter {
+  padding: 8px;
+  background-color: #f5f5f5;
+  color: #555;
+  font-size: 0.8rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #e0e0e0;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .playerForm, .playerLevel {
+    display: none;
+  }
+
+  .playerPts {
+    min-width: 70px;
+    font-size: 0.85rem;
+  }
+
+  .playerPoints {
+    width: 40px;
+    font-size: 0.85rem;
+  }
+
+  .playerName {
+    font-size: 0.9rem;
   }
 }
