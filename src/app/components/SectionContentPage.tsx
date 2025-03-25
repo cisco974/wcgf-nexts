@@ -50,7 +50,7 @@ const SectionContent: React.FC<SectionContentProps> = ({
         className={`text-${color} ${fontWeight} text-uppercase mb-3`}
         dangerouslySetInnerHTML={{ __html: title }}
       />
-      <div className="mb-4" dangerouslySetInnerHTML={{ __html: text }} />
+      <div className="mb-4 lead" dangerouslySetInnerHTML={{ __html: text }} />
       {cta && (
         <Link
           href={

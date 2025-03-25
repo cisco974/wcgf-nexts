@@ -28,7 +28,7 @@ export async function generateMetadata(props: {
   // Attendre la résolution de la promesse params
   const params = await props.params;
   const { locale, game } = params;
-
+  console.log("GAMEEEEEEE" + game);
   try {
     // Récupérer les données de la page
     const pageData = await GameService.getGamePageByLocale(

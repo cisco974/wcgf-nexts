@@ -1,0 +1,23 @@
+
+// Styles pour les lignes de tournoi
+.tournamentsRow {
+  background-color: $ranking-line-bg-color !important;
+  border-bottom: 4px solid $ranking-bg-color !important;
+}
+
+// Cette règle spécifique va surcharger les styles par défaut de Bootstrap pour les cellules
+.tournamentsRow td {
+  background-color: inherit !important;
+  box-shadow: none !important;
+}
+
+// Pour les lignes alternées (optionnel)
+.tournamentsRowAlt {
+  background-color: $ranking-line-bg-color !important;
+  border-bottom: 4px solid $ranking-bg-color !important;
+}
+
+.tournamentsRowAlt td {
+  background-color: inherit !important;
+  box-shadow: none !important;
+}
