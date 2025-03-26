@@ -86,7 +86,7 @@ const MoreGamesSlider: React.FC<MoreGamesSliderProps> = ({
           <>
             <Button
               variant="primary"
-              className={`${styles.gh_nav_button} ${styles.gh_left}`}
+              className={`${styles.gh_nav_button} ${styles.gh_left} z-1`}
               onClick={() => navigateSlider("prev")}
               aria-label="Previous game"
             >
@@ -95,7 +95,7 @@ const MoreGamesSlider: React.FC<MoreGamesSliderProps> = ({
 
             <Button
               variant="primary"
-              className={`${styles.gh_nav_button} ${styles.gh_right}`}
+              className={`${styles.gh_nav_button} ${styles.gh_right} z-1`}
               onClick={() => navigateSlider("next")}
               aria-label="Next game"
             >

@@ -6,18 +6,25 @@ import { notFound } from "next/navigation";
 import PageHeader from "@/app/components/PageHeader";
 import { GameContentPage, SupportedLocale } from "@/app/types";
 import GameService from "@/services/gameService";
-import styles from "@styles/Game.module.scss";
-
 import GameButtonsClient from "./components/GameButtonsClient";
 import MoreGamesSlider from "@/app/components/MoreGamesSlider";
 import CtaBox from "@/app/components/CtaBox";
 import SectionHeader from "@app/components/SectionHeader";
+import SectionContent, {
+  SectionItem,
+} from "@/app/components/SectionContentPage";
 import Image from "next/image";
+
+// Extension de SectionItem pour inclure l'image
+interface FeatureItem extends SectionItem {
+  image: string;
+}
 
 type PageParams = Promise<{
   locale: SupportedLocale;
   game: string;
 }>;
+
 export async function generateMetadata(props: {
   params: PageParams;
 }): Promise<Metadata> {
@@ -62,102 +69,6 @@ export async function generateMetadata(props: {
   }
 }
 
-// Features de jeu par défaut
-const defaultFeatures = [
-  {
-    id: "gameplay",
-    title: "Gameplay",
-    description:
-      "Super Tarot brings the classic card game to life with thrilling gameplay, engaging mechanics, and a competitive edge that challenges players to showcase their strategy and skills.",
-    image: "/img/features/home-super-tarot.png",
-  },
-  {
-    id: "variant",
-    title: "Variant Super Tarot",
-    description:
-      "Explore different game variants, including 3, 4, or 5-player configurations, each offering unique strategic dynamics and exciting opportunities to outwit your opponents.",
-    image: "/img/features/ingame-super-tarot.png",
-  },
-  {
-    id: "leagues",
-    title: "Leagues Super Tarot",
-    description:
-      "Climb the ranks in competitive leagues and prove your mastery. Earn points through your victories and secure a spot among the best players on the leaderboard.",
-    image: "/img/features/leagues.png",
-  },
-  {
-    id: "tournaments",
-    title: "Tournaments Super Tarot",
-    description:
-      "Participate in thrilling tournaments with varying buy-ins and prize pools. Each match tests your mettle, with quarterfinals, semifinals, and finals determining the ultimate champion.",
-    image: "/img/features/tournaments.png",
-  },
-  {
-    id: "missions",
-    title: "Missions Super Tarot",
-    description:
-      "Complete daily and weekly missions to earn rewards, boost your ranking, and unlock exclusive items that enhance your Super Tarot experience.",
-    image: "/img/features/missions.png",
-  },
-  {
-    id: "vip",
-    title: "VIP Program Super Tarot",
-    description:
-      "Join the VIP program to enjoy premium benefits, including exclusive tournaments, higher rewards, and a dedicated VIP leaderboard for top-tier competitors.",
-    image: "/img/features/vip.png",
-  },
-  {
-    id: "villages",
-    title: "Villages Super Tarot",
-    description:
-      "Progress through charming villages as you advance in the game. Each village offers new challenges, rewards, and a unique theme that keeps the experience fresh and exciting.",
-    image: "/img/features/villages.png",
-  },
-  {
-    id: "clubs",
-    title: "Clubs Super Tarot",
-    description:
-      "Join clubs to connect with fellow players, share strategies, and participate in exclusive club-based challenges and leaderboards. Build your community within the game!",
-    image: "/img/features/clubs.png",
-  },
-  {
-    id: "slots",
-    title: "Slots Super Tarot",
-    description:
-      "Spin the slots for a chance to win tokens, boosters, and other in-game rewards. Slots add an element of luck to your journey, enhancing the excitement of the game.",
-    image: "/img/features/slots.png",
-  },
-  {
-    id: "boosters",
-    title: "Boosters Super Tarot",
-    description:
-      "Utilize boosters to gain an edge in your matches. From score multipliers to strategic advantages, boosters help you dominate the competition and climb the ranks.",
-    image: "/img/features/boosters.png",
-  },
-];
-
-// Historique du jeu par défaut
-const defaultHistory = {
-  title: "Discover More About Tarot",
-  intro:
-    "Tarot is a timeless card game that has captivated players for centuries. Its rich history, unique deck, and strategic depth have made it a favorite among card enthusiasts worldwide. Learn about its fascinating origins and how it has evolved into the modern game enjoyed today.",
-  sections: [
-    {
-      title: "History of Tarot",
-      subsections: [
-        {
-          title: "Origins of Tarot",
-          text: "Tarot originated in the 15th century in northern Italy as a deck of playing cards used for various games. These early Tarot cards featured four traditional suits along with an additional set of illustrated trump cards, making it distinct from standard card decks of the time. The game quickly spread across Europe, gaining popularity in France, where its unique rules and symbolism were further developed.",
-        },
-        {
-          title: "Modern Evolution",
-          text: "In the 18th century, Tarot began to gain prominence as a strategic card game in France, evolving into the 78-card deck used today. Featuring 21 trump cards and the Fool, Tarot introduced unique gameplay mechanics such as bidding, partnerships, and scoring systems. Over time, its competitive nature solidified its place as one of the most cherished card games. Today, Tarot continues to thrive, blending tradition with innovation, as players worldwide enjoy it in tournaments, leagues, and casual play.",
-        },
-      ],
-    },
-  ],
-};
-
 // Données des plateformes
 const platforms = [
   { name: "iOS", icon: "fi-brands-apple", class: "btn-ios" },
@@ -182,18 +93,11 @@ export default async function GamePage({ params }: { params: PageParams }) {
   const pageTitle = content.page_header?.title || `SUPER ${game.toUpperCase()}`;
 
   // Features du jeu (personnalisées ou par défaut)
-  const gameFeatures =
-    content.features ||
-    defaultFeatures.map((feature) => ({
-      ...feature,
-      title: feature.title.replace(
-        "Tarot",
-        game.charAt(0).toUpperCase() + game.slice(1),
-      ),
-    }));
+  // Le contenu features est déjà au format SectionItem avec une propriété image supplémentaire
+  const gameFeatures = (content.features as FeatureItem[]) || [];
 
   // Historique du jeu (personnalisé ou par défaut)
-  const gameHistory = content.gameHistory || defaultHistory;
+  const gameHistory = content.gameHistorySections;
 
   return (
     <>
@@ -210,7 +114,6 @@ export default async function GamePage({ params }: { params: PageParams }) {
         <div className="row">
           <div className="col-12">
             {/* Introduction */}
-            {/* Introduction */}
             {content.introduction && (
               <SectionHeader
                 title={content.introduction?.title}
@@ -219,22 +122,24 @@ export default async function GamePage({ params }: { params: PageParams }) {
             )}
             <GameButtonsClient platforms={platforms} game={game} />
 
-            <div className={styles.contentWithSidebar}>
-              <div className={styles.mainContent}>
-                {/* Features du jeu */}
+            <div className="row g-4 pt-4">
+              {/* Main Content */}
+              <div className="col-lg-8">
+                {/* Features du jeu utilisant le composant SectionContent */}
                 {gameFeatures.map((feature, index) => (
-                  <div
-                    key={feature.id || index}
-                    className={styles.featureSection}
-                  >
-                    <SectionHeader title={feature.title} />
-
-                    <p>{feature.description}</p>
-                    <div className={styles.presentationImage}>
+                  <div key={index} className="mb-5">
+                    <SectionContent
+                      section={feature}
+                      locale={locale}
+                      game={game}
+                      headingTag="h3"
+                      headingColor="danger"
+                    />
+                    <div className="rounded-4 overflow-hidden shadow-sm mb-4">
                       <Image
                         src={feature.image}
                         alt={feature.title}
-                        className="img-fluid"
+                        className="img-fluid w-100"
                         width={1000}
                         height={685}
                       />
@@ -244,27 +149,13 @@ export default async function GamePage({ params }: { params: PageParams }) {
               </div>
 
               {/* Sidebar */}
-              <div className={styles.sidebar}>
+              <div className="col-lg-4">
                 {/* Advertisement */}
-                <div className={styles.adContainer}>
-                  <div className={styles.adVideo}>
-                    <video
-                      autoPlay
-                      loop
-                      muted
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    >
-                      <source
-                        src={`/videos/${game}/ad1.mp4`}
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
+                <div className="rounded-4 overflow-hidden shadow-sm mb-4">
+                  <video autoPlay loop muted className="w-100">
+                    <source src={`/videos/${game}/ad1.mp4`} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
 
                 {/* Sidebar CTA */}
@@ -287,20 +178,23 @@ export default async function GamePage({ params }: { params: PageParams }) {
             </div>
 
             {/* Historique du jeu */}
-            <div className={styles.moreText}>
-              <h2>{gameHistory.title}</h2>
-              <p>{gameHistory.intro}</p>
+            <div className="mt-5 mb-4">
+              {content.introduction && (
+                <SectionHeader
+                  title={content.gameHistoryTitle}
+                  subtitle={content.gameHistoryIntro}
+                />
+              )}
 
-              {gameHistory.sections.map((section, sectionIndex) => (
-                <div key={sectionIndex}>
-                  <h3>{section.title}</h3>
-                  {section.subsections?.map((subsection, subsectionIndex) => (
-                    <div key={subsectionIndex}>
-                      <h4>{subsection.title}</h4>
-                      <p>{subsection.text}</p>
-                    </div>
-                  ))}
-                </div>
+              {gameHistory.map((section, sectionIndex) => (
+                <SectionContent
+                  key={sectionIndex}
+                  section={section}
+                  locale={locale}
+                  game={game}
+                  headingTag="h3"
+                  headingColor="primary"
+                />
               ))}
             </div>
           </div>

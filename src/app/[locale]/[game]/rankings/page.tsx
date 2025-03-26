@@ -6,10 +6,9 @@ import { notFound } from "next/navigation";
 import PageHeader from "@/app/components/PageHeader";
 import { SupportedLocale } from "@/app/types";
 import GameService from "@/services/gameService";
-import styles from "@styles/Rankings.module.scss";
 import SectionHeader from "@app/components/SectionHeader";
 import RankingComponent from "@app/components/RankingComponent";
-import Image from "next/image";
+import MoreGamesSlider from "@app/components/MoreGamesSlider";
 
 // Constantes partagées
 //const rankingTypes = ["Leagues", "Experience", "Coins"];
@@ -69,33 +68,6 @@ const rankingCategories = [
   },
 ];
 
-// Games data for the slider at the bottom
-const games = [
-  {
-    key: "tarot",
-    title: "SUPER TAROT",
-    description: "The classic French card game of strategy and skill.",
-  },
-  {
-    key: "rummy",
-    title: "SUPER RUMMY",
-    description: "Match cards, form sets, and beat your opponents.",
-  },
-  {
-    key: "scopa",
-    title: "SUPER SCOPA",
-    description: "The famous Italian card game, easy to learn and play.",
-  },
-];
-
-// Game image paths
-const gamePaths = {
-  icons: {
-    tarot: "/img/store/icon-tarot.webp",
-    rummy: "/img/store/icon-rummy.webp",
-    scopa: "/img/store/icon-rummy500.webp",
-  },
-};
 type PageParams = Promise<{
   locale: SupportedLocale;
   game: string;
@@ -205,59 +177,10 @@ export default async function RankingsPage(props: { params: PageParams }) {
 
         {/* More Games Section */}
         <div className="my-5 text-center">
-          <h2 className={styles.moreGamesTitle}>MORE GAMES?</h2>
-          <p className={styles.moreGamesSubtitle}>
-            Discover and enjoy more exciting games like Tarot, Rummy,
-            <br />
-            and Scopa. Play online or on your favorite device now!
-          </p>
-
-          <div className="row g-4 mt-4">
-            <div className="col-1">
-              <button className="btn btn-primary h-100 d-flex align-items-center justify-content-center">
-                <i className="fi fi-sr-angle-left"></i>
-              </button>
-            </div>
-            {games.map((gameItem) => (
-              <div className="col-10 col-md-3" key={gameItem.key}>
-                <div className={styles.gameCard}>
-                  <div className={styles.gameIcon}>
-                    <Image
-                      src={
-                        gamePaths.icons[
-                          gameItem.key as keyof typeof gamePaths.icons
-                        ]
-                      }
-                      alt={gameItem.title}
-                      className="img-fluid"
-                      width={40}
-                      height={60}
-                    />
-                  </div>
-                  <h3 className={styles.gameTitle}>{gameItem.title}</h3>
-                  <p className={styles.gameDescription}>
-                    {gameItem.description}
-                  </p>
-                  <div className={styles.platformButtons}>
-                    <button className="btn btn-light btn-sm">
-                      <i className="fi fi-brands-apple me-1"></i> iOS
-                    </button>
-                    <button className="btn btn-light btn-sm">
-                      <i className="fi fi-brands-android me-1"></i> Android
-                    </button>
-                    <button className="btn btn-light btn-sm">
-                      <i className="fi fi-ss-spade me-1"></i> Online
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className="col-1">
-              <button className="btn btn-primary h-100 d-flex align-items-center justify-content-center">
-                <i className="fi fi-sr-angle-right"></i>
-              </button>
-            </div>
-          </div>
+          <MoreGamesSlider
+            locale={locale as SupportedLocale}
+            currentGame={game}
+          />
         </div>
       </div>
     </>

@@ -1,6 +1,7 @@
 // src/app/types/gamePages.ts
 import { Game } from "./games";
 import { PageType } from "./pageTypes";
+import { SectionItem } from "@app/components/SectionContentPage";
 
 // Type pour la structure de contenu d'une langue
 export type LocalizedContent = {
@@ -120,25 +121,15 @@ export interface LeagueContentLeagues extends LocalizedContent {
   }>;
 }
 
+export interface FeatureItem extends SectionItem {
+  image: string;
+}
 export interface GameContentPage extends LocalizedContent {
-  features?: Array<{
-    id: string;
-    title: string;
-    description: string;
-    image: string;
-  }>;
-  gameHistory?: {
-    // Renommé en gameHistory au lieu de history
-    title: string;
-    intro: string;
-    sections: Array<{
-      title: string;
-      subsections: Array<{
-        title: string;
-        text: string;
-      }>;
-    }>;
-  };
+  features: FeatureItem[];
+
+  gameHistoryTitle: string;
+  gameHistoryIntro: string;
+  gameHistorySections: SectionItem[];
 }
 // Type pour marquer les champs contenant du HTML
 export type HtmlString = string & { __htmlString: never };
