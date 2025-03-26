@@ -119,5 +119,26 @@ export interface LeagueContentLeagues extends LocalizedContent {
     text: string;
   }>;
 }
+
+export interface GameContentPage extends LocalizedContent {
+  features?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+  }>;
+  gameHistory?: {
+    // Renommé en gameHistory au lieu de history
+    title: string;
+    intro: string;
+    sections: Array<{
+      title: string;
+      subsections: Array<{
+        title: string;
+        text: string;
+      }>;
+    }>;
+  };
+}
 // Type pour marquer les champs contenant du HTML
 export type HtmlString = string & { __htmlString: never };

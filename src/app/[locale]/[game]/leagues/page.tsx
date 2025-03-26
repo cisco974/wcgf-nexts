@@ -25,10 +25,8 @@ export const revalidate = 3600;
 export async function generateMetadata(props: {
   params: PageParams;
 }): Promise<Metadata> {
-  // Attendre la résolution de la promesse params
-  const params = await props.params;
-  const { locale, game } = params;
-  console.log("GAMEEEEEEE" + game);
+  const { locale, game } = await props.params;
+
   try {
     // Récupérer les données de la page
     const pageData = await GameService.getGamePageByLocale(
@@ -322,12 +320,12 @@ export default async function LeagueRankingsPage(props: {
                               </span>
                             </td>
                             <td className="align-middle" width="60">
-                              <img
+                              <Image
                                 src={player.avatar}
                                 alt={player.name}
                                 className="rounded"
-                                width="36"
-                                height="36"
+                                width={36}
+                                height={36}
                               />
                             </td>
                             <td className="align-middle fw-medium">
@@ -382,12 +380,12 @@ export default async function LeagueRankingsPage(props: {
                               </span>
                             </td>
                             <td className="align-middle" width="60">
-                              <img
+                              <Image
                                 src={player.avatar}
                                 alt={player.name}
                                 className="rounded"
-                                width="36"
-                                height="36"
+                                width={36}
+                                height={36}
                               />
                             </td>
                             <td className="align-middle fw-medium">
@@ -438,12 +436,12 @@ export default async function LeagueRankingsPage(props: {
                               </span>
                             </td>
                             <td className="align-middle" width="60">
-                              <img
+                              <Image
                                 src={player.avatar}
                                 alt={player.name}
                                 className="rounded"
-                                width="36"
-                                height="36"
+                                width={36}
+                                height={36}
                               />
                             </td>
                             <td className="align-middle fw-medium">
@@ -473,11 +471,12 @@ export default async function LeagueRankingsPage(props: {
                   <div className="bg-light p-2 text-center small">
                     This is the official ranking of the WCGF{" "}
                     {game.charAt(0).toUpperCase() + game.slice(1)} Super League.
-                    <img
-                      src="/img/wcgf-logo.png"
+                    <Image
+                      src={"/img/wcgf-logo.png"}
                       alt="WCGF Logo"
-                      className="ms-2"
-                      height="20"
+                      className="rounded"
+                      width={20}
+                      height={20}
                     />
                   </div>
                 </div>
